@@ -1,0 +1,160 @@
+import { Logo } from '@/components/logo'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import Link from 'next/link'
+
+export default function SignUpPage() {
+    return (
+        <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
+            <form
+                action=""
+                className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
+                <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
+                    <div className="text-center">
+                        <Link
+                            href="/"
+                            aria-label="go home"
+                            className="mx-auto block w-fit">
+                            <Logo />
+                        </Link>
+                        <h1 className="mb-1 mt-4 text-xl font-semibold">Create an Account</h1>
+                        <p className="text-sm">Welcome! Fill up the form below to get started</p>
+                    </div>
+
+                    <div className="mt-6 space-y-6">
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-2">
+                                <Label
+                                    htmlFor="firstname"
+                                    className="block text-sm">
+                                    Firstname
+                                </Label>
+                                <Input
+                                    type="text"
+                                    required
+                                    name="firstname"
+                                    id="firstname"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label
+                                    htmlFor="lastname"
+                                    className="block text-sm">
+                                    Lastname
+                                </Label>
+                                <Input
+                                    type="text"
+                                    required
+                                    name="lastname"
+                                    id="lastname"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label
+                                htmlFor="email"
+                                className="block text-sm">
+                                Username
+                            </Label>
+                            <Input
+                                type="email"
+                                required
+                                name="email"
+                                id="email"
+                            />
+                        </div>
+
+                        <div className="space-y-0.5">
+                            <div className="flex items-center justify-between">
+                                <Label
+                                    htmlFor="pwd"
+                                    className="text-sm">
+                                    Password
+                                </Label>
+                                <Button
+                                    asChild
+                                    variant="link"
+                                    size="sm">
+                                    <Link
+                                        href="#"
+                                        className="link intent-info variant-ghost text-sm">
+                                        Forgot your Password ?
+                                    </Link>
+                                </Button>
+                            </div>
+                            <Input
+                                type="password"
+                                required
+                                name="pwd"
+                                id="pwd"
+                                className="input sz-md variant-mixed"
+                            />
+                        </div>
+
+                        <Button className="w-full">Sign In</Button>
+                    </div>
+
+                    <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                        <hr className="border-dashed" />
+                        <span className="text-muted-foreground text-xs">Or continue With</span>
+                        <hr className="border-dashed" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <Button
+                            type="button"
+                            variant="outline">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="0.98em"
+                                height="1em"
+                                viewBox="0 0 256 262">
+                                <path
+                                    fill="#4285f4"
+                                    d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"></path>
+                                <path
+                                    fill="#34a853"
+                                    d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"></path>
+                                <path
+                                    fill="#fbbc05"
+                                    d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"></path>
+                                <path
+                                    fill="#eb4335"
+                                    d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"></path>
+                            </svg>
+                            <span>Google</span>
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline">
+                           <svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" 
+	 viewBox="0 0 474.294 474.294" >
+
+<path d="M474.077 236.966A236.966 236.966 0 1 1 0.145 236.966A236.966 236.966 0 1 1 474.077 236.966Z" fill="#3A5A98"/>
+<path d="M404.742,69.754c92.541,92.541,92.545,242.586-0.004,335.134c-92.545,92.541-242.593,92.541-335.134,0L404.742,69.754z" fill="#345387"/>
+<path d="M472.543,263.656L301.129,92.238l-88.998,88.998l5.302,5.302l-50.671,50.667l41.474,41.474l-5.455,5.452l44.901,44.901l-51.764,51.764l88.429,88.429C384.065,449.045,461.037,366.255,472.543,263.656z" fill="#2E4D72"/>
+<path d="M195.682,148.937c0,7.27,0,39.741,0,39.741h-29.115v48.598h29.115v144.402h59.808V237.276h40.134c0,0,3.76-23.307,5.579-48.781c-5.224,0-45.485,0-45.485,0s0-28.276,0-33.231c0-4.962,6.518-11.641,12.965-11.641c6.436,0,20.015,0,32.587,0c0-6.623,0-29.481,0-50.592c-16.786,0-35.883,0-44.306,0C194.201,93.028,195.682,141.671,195.682,148.937z" fill="#FFFFFF"/>
+
+</svg>
+                            <span>Facebook</span>
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="p-3">
+                    <p className="text-accent-foreground text-center text-sm">
+                        Have an account ?
+                        <Button
+                            asChild
+                            variant="link"
+                            className="px-2">
+                            <Link href="login">Sign In</Link>
+                        </Button>
+                    </p>
+                </div>
+            </form>
+        </section>
+    )
+}
