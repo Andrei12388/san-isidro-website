@@ -3,22 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const links = [
-    {
-        title: 'Features',
-        href: '#',
-    },
-    {
-        title: 'Solution',
-        href: '#',
-    },
-    {
-        title: 'Customers',
-        href: '#',
-    },
-    {
-        title: 'Pricing',
-        href: '#',
-    },
+   
     {
         title: 'Help',
         href: '#',
@@ -37,8 +22,8 @@ export default function FooterSection() {
                   <Link
                     href="/"
                     aria-label="go home"
-                    className="flex flex-row justify-center align-middle item size-fit">
-                  <Image src="/images/logo.png" alt="San Isidro Logo" width={150} height={150} /> 
+                    className="flex flex-row justify-center gap-4 align-middle item size-fit">
+                  <Image src="/images/logonotitle.png" alt="San Isidro Logo" width={150} height={150} /> 
                    <span className=" text-white text-3xl font-bold self-center">JCSGO: SAN ISIDRO OUTREACH</span>
                 </Link>
                 </div>
