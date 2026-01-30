@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "San Isidro Website",
+  title: "JCSGO: San Isidro Website",
   description: "A Site for Systematic Discipleship",
 };
 
