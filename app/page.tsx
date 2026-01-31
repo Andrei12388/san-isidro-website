@@ -6,10 +6,21 @@ import IntegrationsSection from "@/components/integrations-3";
 export default function Home() {
   return (
     <div>
+      <section id="updates">
      <HeroSection />
+     </section>
+     
+     <section id="discipleship">
      <Features />
-     <IntegrationsSection />
+     </section>
+
+     <section id="org">
+      <IntegrationsSection />
+     </section>
+
+     <section id="about">
      <FooterSection />
+     </section>
     </div>
   );
 }

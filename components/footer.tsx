@@ -1,6 +1,7 @@
 import { Logo } from '@/components/logo'
 import Image from 'next/image'
 import Link from 'next/link'
+import  styles from './components.module.css'
 
 const links = [
    
@@ -24,7 +25,7 @@ export default function FooterSection() {
                     aria-label="go home"
                     className="flex flex-row justify-center gap-4 align-middle item size-fit">
                   <Image src="/images/logonotitle.png" alt="San Isidro Logo" width={150} height={150} /> 
-                   <span className=" text-white text-3xl font-bold self-center">JCSGO: SAN ISIDRO OUTREACH</span>
+                   <span className={` ${styles.underline} text-white text-3xl font-bold self-center`}>JCSGO: SAN ISIDRO OUTREACH</span>
                 </Link>
                 </div>
                
@@ -45,7 +46,7 @@ export default function FooterSection() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="X/Twitter"
-                        className="text-white hover:text-primary block">
+                        className={`text-white ${styles.link} hover:text-primary block`}>
                         <svg
                             className="size-6"
                             xmlns="http://www.w3.org/2000/svg"
@@ -59,12 +60,13 @@ export default function FooterSection() {
                     </Link>
                    
                     <Link
-                        href="#"
+                        href="https://www.facebook.com/SanIsidroOutreachChamp"
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Facebook"
-                        className="text-white hover:text-primary block">
+                        className={`text-white ${styles.link} hover:text-primary block`}>
                         <svg
+                           
                             className="size-6"
                             xmlns="http://www.w3.org/2000/svg"
                             width="1em"
@@ -81,7 +83,7 @@ export default function FooterSection() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Instagram"
-                        className="text-white hover:text-primary block">
+                        className={`text-white ${styles.link} hover:text-primary block`}>
                         <svg
                             className="size-6"
                             xmlns="http://www.w3.org/2000/svg"
