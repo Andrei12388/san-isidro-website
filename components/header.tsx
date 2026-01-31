@@ -34,7 +34,7 @@ React.useEffect(() => {
       })
     },
     {
-      rootMargin: '-40% 0px -50% 0px', // triggers near middle of screen
+      rootMargin: '-40% 0px -50% 0px',
     }
   )
 
@@ -82,7 +82,7 @@ React.useEffect(() => {
                                     href={item.href}
                                     className={cn(
                                         "relative block text-muted-foreground transition-colors duration-200 ",
-                                        "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-current after:origin-left after:transition-transform after:duration-300",
+                                        "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-current text-red-500 after:origin-left after:transition-transform after:duration-300",
                                         active === item.href
                                         ? "text-accent-foreground after:scale-x-100"
                                         : "hover:text-accent-foreground after:scale-x-0 hover:after:scale-x-100"
@@ -101,10 +101,17 @@ React.useEffect(() => {
                                     {menuItems.map((item, index) => (
                                         <li key={index}>
                                             <Link
-                                                href={item.href}
-                                                className="text-muted-foreground hover:text-accent-foreground block duration-150">
-                                                <span>{item.name}</span>
-                                            </Link>
+                                    href={item.href}
+                                    className={cn(
+                                        "relative block text-muted-foreground transition-colors duration-200 ",
+                                        "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-current text-red-500 after:origin-left after:transition-transform after:duration-300",
+                                        active === item.href
+                                        ? "text-accent-foreground after:scale-x-25"
+                                        : "hover:text-accent-foreground after:scale-x-0 hover:after:scale-x-100"
+                                    )}
+                                    >
+                                    {item.name}
+                                    </Link>
                                         </li>
                                     ))}
                                 </ul>

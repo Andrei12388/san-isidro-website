@@ -16,6 +16,7 @@
     "lucide-react": "^0.563.0",
     "motion": "^12.29.2",
     "next": "16.1.6",
+    "nprogress": "^0.2.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tailwind-merge": "^3.4.0",
