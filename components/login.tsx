@@ -1,14 +1,52 @@
+'use client'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
+import { authLogin } from '@/app/api/fetchdata';
+import React, { FormEvent, useState } from 'react'
+
 
 export default function LoginPage() {
+
+     const [isSumitted, setSubmitted] = useState(false)
+        const [errMsg, setErrMsg] = useState('error null')
+        const [errorEnable, setErrorEnable] = useState(false)
+        const [password, setPassword] = useState('')
+        const [email, setEmail] = useState('')
+        const [message, setMessage] = useState('')
+        const [isSubmitting, setSubmitting] = useState(false)
+       
+   
+
+const onSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  if (!email || !password) {
+    alert("Empty entries!");
+    return;
+  }
+
+  try {
+    setSubmitting(true);
+    const result = await authLogin(email, password);
+    console.log("Login success:", result);
+    setMessage("Login successful!");
+  } catch (err: any) {
+    console.error("Login failed:", err);
+    setErrorEnable(true);
+    setMessage("Login Failed!");
+    setErrMsg(err.message);
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+
+  
     return (
         <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
-            <form
-                action=""
+            <form onSubmit={onSubmit}
                 className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
                 <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
                     <div className="text-center">
@@ -32,6 +70,8 @@ export default function LoginPage() {
                             <Input
                                 type="email"
                                 required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 name="email"
                                 id="email"
                             />
@@ -57,6 +97,8 @@ export default function LoginPage() {
                             </div>
                             <Input
                                 type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                                 name="pwd"
                                 id="pwd"
@@ -64,7 +106,8 @@ export default function LoginPage() {
                             />
                         </div>
 
-                        <Button className="w-full">Sign In</Button>
+                        <Button className="w-full" type='submit'>{isSubmitting ? "Logging In..." : "Sign In"}</Button>
+                       {errorEnable ?<div className='text-center justify-center'> <span className='text-red-500 text-right'> {message} </span> </div>: ""} 
                     </div>
 
                     <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">

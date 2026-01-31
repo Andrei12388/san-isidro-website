@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { ArrowRight, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { TextEffect } from '@/components/ui/text-effect'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { HeroHeader } from './header'
+import SampleApi from '@/app/api/fetchdata'
 
 const transitionVariants = {
     item: {
@@ -29,30 +30,7 @@ const transitionVariants = {
 }
 
 export default function HeroSection() {
-    const [loader, setLoader] = useState(true);
-    const [error, setError] = useState(false);
-    const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://www.cheapshark.com/api/1.0/deals?storeID=1&pageSize=150"
-        );
-        const data = await response.json();
-        setData(data);
-        setLoader(false);
-      } catch (error) {
-        console.error("Error fetching deals:", error);
-        setError(true);
-        setLoader(false);
-      }
-    };
     
-    fetchData();
-  }, []);
-
-
     return (
         <>
             <HeroHeader />
@@ -66,13 +44,6 @@ export default function HeroSection() {
                     <div className="h-320 -translate-y-87.5 absolute left-0 top-0 w-60 -rotate-45 bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.04)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)]" />
                 </div>
                 <section>
-                    
-                    <div>
-                        {loader ? <p>Loading...</p> : error ? <p>Error loading Data.</p> : <div></div>}
-            {data.map((item: any) => (
-                <div key={item.dealID}><span>{item.title}</span></div>
-            ))}
-            </div>
                     <div className="relative pt-30 md:pt-30">
                         <AnimatedGroup
                             variants={{
@@ -197,6 +168,7 @@ export default function HeroSection() {
                             }}>
                             <div className="mask-b-from-55% relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20">
                                 <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
+                                  
                                     <Image
                                         className="bg-background aspect-15/8 relative hidden rounded-2xl dark:block"
                                         src="/images/logo.png"
@@ -211,6 +183,7 @@ export default function HeroSection() {
                                         width="2700"
                                         height="1440"
                                     />
+                                    
                                 </div>
                             </div>
                         </AnimatedGroup>
@@ -236,6 +209,7 @@ export default function HeroSection() {
                                     height="20"
                                     width="auto"
                                 />
+                                
                             </div>
 
                             <div className="flex">
