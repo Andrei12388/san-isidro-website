@@ -17,7 +17,7 @@ const links = [
 
 export default function FooterSection() {
     return (
-        <footer className="bg-black flex flex-col py-16 md:py-12 items-start content-start">
+        <footer className="bg-black w-full flex flex-col py-16 md:py-12 items-start content-start">
             <div className=" w-full flex flex-col items-start px-6">
                 <div className='w-full flex flex-row justify-between items-stretch '>
                   <Link

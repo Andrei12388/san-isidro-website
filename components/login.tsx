@@ -6,7 +6,9 @@ import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import { authLogin } from '@/app/api/fetchdata';
 import React, { FormEvent, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
+const authLoginApi = "https://isidro-webapi.onrender.com/api/auth/login"
 
 export default function LoginPage() {
 
@@ -17,21 +19,47 @@ export default function LoginPage() {
         const [email, setEmail] = useState('')
         const [message, setMessage] = useState('')
         const [isSubmitting, setSubmitting] = useState(false)
-       
-   
+
+        const router = useRouter();
+
 
 const onSubmit = async (e: FormEvent) => {
   e.preventDefault();
   if (!email || !password) {
-    alert("Empty entries!");
+   
     return;
   }
 
   try {
     setSubmitting(true);
     const result = await authLogin(email, password);
+
+    //login with refresh token
+    try {
+      const res = await fetch(authLoginApi, {
+        method: "POST",
+        credentials: "include", // ⭐ VERY IMPORTANT
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+
+      if (!res.ok) throw new Error("Login failed")
+
+      const data = await res.json()
+
+      console.log("access token:", data);
+
+      // optionally store access token in memory/state only
+    
+      console.log("login success!")
+    } catch (err: any) {
+    
+      console.log("Log in failed!",err.message);
+    }
+
     console.log("Login success:", result);
     setMessage("Login successful!");
+    router.push("/dashboard");
   } catch (err: any) {
     console.error("Login failed:", err);
     setErrorEnable(true);
@@ -45,7 +73,7 @@ const onSubmit = async (e: FormEvent) => {
 
   
     return (
-        <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
+        <section className="flex min-h-screen bg-zinc-50 dark:bg-transparent mt-2 mb-2">
             <form onSubmit={onSubmit}
                 className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
                 <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
@@ -56,7 +84,7 @@ const onSubmit = async (e: FormEvent) => {
                             className="mx-auto block w-fit">
                             <Logo />
                         </Link>
-                        <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to JSCGO: San Isidro</h1>
+                        <h1 className="mb-1 mt-4 text-xl font-semibold">Log In to JSCGO: San Isidro</h1>
                         <p className="text-sm">Fill up the form below to access your account.</p>
                     </div>
 
@@ -65,7 +93,7 @@ const onSubmit = async (e: FormEvent) => {
                             <Label
                                 htmlFor="email"
                                 className="block text-sm">
-                                Username
+                                Email
                             </Label>
                             <Input
                                 type="email"
@@ -101,12 +129,13 @@ const onSubmit = async (e: FormEvent) => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 name="pwd"
+                                minLength={8}
                                 id="pwd"
                                 className="input sz-md variant-mixed"
                             />
                         </div>
 
-                        <Button className="w-full" type='submit'>{isSubmitting ? "Logging In..." : "Sign In"}</Button>
+                        <Button className="w-full" disabled={isSubmitting} type='submit'>{isSubmitting ? "Logging In..." : "Log In"}</Button>
                        {errorEnable ?<div className='text-center justify-center'> <span className='text-red-500 text-right'> {message} </span> </div>: ""} 
                     </div>
 

@@ -1,4 +1,5 @@
 'use client';
+
 import {useState, useEffect} from 'react';
 
 export const URL = "https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=15"
@@ -9,8 +10,27 @@ export const tempUrl = "https://api.open-meteo.com/v1/forecast?latitude=14.2&lon
 
 export const authLoginApi = "https://isidro-webapi.onrender.com/api/auth/login"
 
+
+
+
 // api/fetchdata.ts
 export async function authLogin(email: string, password: string) {
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  })
+
+ 
+
+  if (!response.ok) throw new Error("Login failed")
+
+  return await response.json()
+}
+
+//Old fetch method
+// api/fetchdata.ts
+export async function authLognOld(email: string, password: string) {
   try {
     const response = await fetch(authLoginApi, {
       method: "POST",
@@ -32,7 +52,6 @@ export async function authLogin(email: string, password: string) {
 }
 
 
-
 function SampleApi(){
 
       const [loader, setLoader] = useState(true);
@@ -49,12 +68,12 @@ function SampleApi(){
             );
             const datas = await response.json();
             setData(datas || []);
-            alert("Fetching Users Successful!");
+           
             setLoader(false);
           } catch (error: any) {
             console.error("Error fetching deals:", error);
             setErrMsg(error.message || "Unknown error");
-             alert(error);
+           
             setError(true);
             setLoader(false);
           }

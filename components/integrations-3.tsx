@@ -3,6 +3,7 @@ import { LogoIcon } from '@/components/logo'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import UserCard from './userCard/userCard'
 
 export default function IntegrationsSection() {
     return (
@@ -58,6 +59,7 @@ export default function IntegrationsSection() {
                                 <Link href="#">Get Started</Link>
                             </Button>
                         </div>
+                        <UserCard />
                     </div>
                 </div>
             </div>

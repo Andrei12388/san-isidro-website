@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Logo } from '@/components/logo'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const menuItems = [
@@ -14,12 +14,60 @@ const menuItems = [
 ]
 
 
-
 export const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
 
     const [active, setActive] = React.useState('')
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [user, setUser] = useState<any>(null)
+    const [hideAuth, setHideAuth]= useState(false)
+    const fetchOnce = useRef(false) // ✅ track fetch status
+  
+  useEffect(() => {
+    if (fetchOnce.current) return
+
+    const fetchUserFromCookies = async () => {
+      setIsLoading(true)
+      setError(null)
+
+      try {
+        // Fetch session from cookie
+        const sessionRes = await fetch('/api/auth/getSession')
+        if (!sessionRes.ok)
+          throw new Error(`Failed to fetch session: ${sessionRes.status}`)
+
+        const sessionData = await sessionRes.json()
+        console.log('Fetched session data:', sessionData)
+
+        // Only use cookies data; no backend fetch
+        if (sessionData.user) {
+          setUser(sessionData.user)
+          setHideAuth(true) // hide auth buttons if user exists
+        } else {
+          setUser(null)
+          setHideAuth(false)
+        }
+
+        fetchOnce.current = true
+      } catch (err: any) {
+        console.error('Error fetching user session:', err)
+        setUser(null)
+        setHideAuth(false)
+        setError(err.message || 'Unknown error')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchUserFromCookies()
+  }, [])
+
+
+  
+
 
 React.useEffect(() => {
   const sections = document.querySelectorAll('section[id]')
@@ -54,28 +102,29 @@ React.useEffect(() => {
         <header>
             <nav
                 data-state={menuState && 'active'}
-                className="fixed z-50 w-full px-2">
-                <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5')}>
-                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
+                className=" fixed z-50 w-full px-2">
+                <div className={cn(' mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12 lg:rounded-2xl lg:border lg:backdrop-blur-lg lg:px-5', isScrolled && 'lg:bg-background/50 max-w-4xl lg:rounded-2xl lg:border lg:backdrop-blur-lg lg:px-5')}>
+                    <div className=" relative flex flex-col gap-6 py-3 lg:gap-0 lg:py-4">
+                        <div>
                         <div className="flex w-full justify-between lg:w-auto">
                             <Link
                                 href="/"
                                 aria-label="home"
                                 className="flex items-center space-x-2">
-                                <Logo />
+                                <Logo className='lg:block hidden' />
                             </Link>
 
                             <button
                                 onClick={() => setMenuState(!menuState)}
                                 aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
                                 className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
-                                <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
                                 <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
+                                <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
                             </button>
                         </div>
 
-                        <div className="absolute inset-0 m-auto hidden size-fit lg:block">
-                            <ul className="flex gap-8 text-sm">
+                        <div className="z-50 absolute inset-0 m-auto mt-5 hidden size-fit lg:block">
+                            <ul className="h-30 items-center flex gap-8 text-sm">
                                 {menuItems.map((item, index) => (
                                     <li key={index}>
                                         <Link
@@ -94,8 +143,9 @@ React.useEffect(() => {
                                 ))}
                             </ul>
                         </div>
+                        </div>
 
-                        <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+                        <div className="backdrop-blur-2xl ml-auto in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden lg:w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
                             <div className="lg:hidden">
                                 <ul className="space-y-6 text-base">
                                     {menuItems.map((item, index) => (
@@ -106,7 +156,7 @@ React.useEffect(() => {
                                         "relative block text-muted-foreground transition-colors duration-200 ",
                                         "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-current text-red-500 after:origin-left after:transition-transform after:duration-300",
                                         active === item.href
-                                        ? "text-accent-foreground after:scale-x-25"
+                                        ? "text-accent-foreground after:scale-x-50"
                                         : "hover:text-accent-foreground after:scale-x-0 hover:after:scale-x-100"
                                     )}
                                     >
@@ -116,7 +166,8 @@ React.useEffect(() => {
                                     ))}
                                 </ul>
                             </div>
-                            <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                            {hideAuth ? <></> :
+                            <div className={cn(hideAuth ? 'hidden' : ' flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit')}>
                                 <Button
                                     asChild
                                     variant="outline"
@@ -137,12 +188,13 @@ React.useEffect(() => {
                                 <Button
                                     asChild
                                     size="sm"
-                                    className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}>
+                                    className={cn(isScrolled ? 'lg:inline-flex hidden' : 'hidden')}>
                                     <Link href="login">
                                         <span>Connect with Us</span>
                                     </Link>
                                 </Button>
                             </div>
+                            }
                         </div>
                     </div>
                 </div>
