@@ -9,12 +9,14 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 import data from "./data.json"
 import { useEffect, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<any>(null)
   const fetchOnce = useRef(false) // ✅ track fetch status
+  const router = useRouter();
 
  useEffect(() => {
   if (fetchOnce.current) return // already fetched
@@ -61,9 +63,10 @@ export default function Page() {
     } catch (err: any) {
       console.error("Error fetching user:", err)
       setError(err.message || "Unknown error")
+      router.push('/login');
       setUser(null)
     } finally {
-      
+      if(!user)
       setIsLoading(false)
     }
   }
@@ -90,11 +93,13 @@ export default function Page() {
               {isLoading && <p className="text-center text-gray-500">Loading user info...</p>}
               {error && <p className="text-center text-red-500">Error: {error}</p>}
 
-              <SectionCards />
+             {user && <div> <SectionCards />
               <div className="px-4 lg:px-6">
                 <ChartAreaInteractive />
               </div>
               <DataTable data={data} />
+              </div>
+             }
             </div>
           </div>
         </div>

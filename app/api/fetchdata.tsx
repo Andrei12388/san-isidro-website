@@ -19,14 +19,14 @@ export async function authLogin(email: string, password: string) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
-  })
+    credentials: "include",
+  });
 
- 
+  if (!response.ok) throw new Error("Login failed");
 
-  if (!response.ok) throw new Error("Login failed")
-
-  return await response.json()
+  return await response.json();
 }
+
 
 //Old fetch method
 // api/fetchdata.ts

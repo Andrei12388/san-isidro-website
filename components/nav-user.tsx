@@ -29,6 +29,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { Button } from "./ui/button"
+import { useRouter } from "next/navigation"
 
 interface UserType {
   name: string
@@ -38,11 +40,20 @@ interface UserType {
 
 export function NavUser({ user }: { user: UserType | null }) {
   const { isMobile } = useSidebar()
+ const router = useRouter();
+  const logout = async () => {
+  await fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  router.push("/"); // or home
+};
 
   // Show placeholder while user data is null
   const displayName = user?.name || "Guest"
   const displayEmail = user?.email || "guest@example.com"
-  const displayAvatar = user?.avatar || "/images/usericon.jpg"
+  const displayAvatar = user?.avatar || "/images/userIcon.png"
 
   return (
     <SidebarMenu>
@@ -77,10 +88,7 @@ export function NavUser({ user }: { user: UserType | null }) {
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
+             
               <DropdownMenuItem>
                 <IconBell />
                 Notifications
@@ -88,8 +96,8 @@ export function NavUser({ user }: { user: UserType | null }) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <IconLogout />
-              <Link href="/">Log Out</Link>
+              
+              <Button onClick={logout}><IconLogout />Log Out</Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

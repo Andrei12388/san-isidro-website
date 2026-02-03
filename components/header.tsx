@@ -20,7 +20,7 @@ export const HeroHeader = () => {
 
     const [active, setActive] = React.useState('')
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [user, setUser] = useState<any>(null)
     const [hideAuth, setHideAuth]= useState(false)
@@ -103,6 +103,7 @@ React.useEffect(() => {
             <nav
                 data-state={menuState && 'active'}
                 className=" fixed z-50 w-full px-2">
+                    {!isLoading && 
                 <div className={cn(' mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12 lg:rounded-2xl lg:border lg:backdrop-blur-lg lg:px-5', isScrolled && 'lg:bg-background/50 max-w-4xl lg:rounded-2xl lg:border lg:backdrop-blur-lg lg:px-5')}>
                     <div className=" relative flex flex-col gap-6 py-3 lg:gap-0 lg:py-4">
                         <div>
@@ -198,6 +199,7 @@ React.useEffect(() => {
                         </div>
                     </div>
                 </div>
+                }
             </nav>
         </header>
     )

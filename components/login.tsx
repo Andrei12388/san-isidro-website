@@ -25,50 +25,46 @@ export default function LoginPage() {
 
 const onSubmit = async (e: FormEvent) => {
   e.preventDefault();
+
+  // reset UI
+  setErrorEnable(false);
+  setMessage("");
+  setErrMsg("");
+
+  // validate first (no loading yet)
   if (!email || !password) {
-   
+    setErrorEnable(true);
+    setMessage("Email and password are required");
     return;
   }
 
   try {
     setSubmitting(true);
+    setMessage("Logging in...");
+
     const result = await authLogin(email, password);
 
-    //login with refresh token
-    try {
-      const res = await fetch(authLoginApi, {
-        method: "POST",
-        credentials: "include", // ⭐ VERY IMPORTANT
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
-
-      if (!res.ok) throw new Error("Login failed")
-
-      const data = await res.json()
-
-      console.log("access token:", data);
-
-      // optionally store access token in memory/state only
-    
-      console.log("login success!")
-    } catch (err: any) {
-    
-      console.log("Log in failed!",err.message);
+    // your route returns { success: true }
+    if (!result?.success) {
+      throw new Error("Invalid email or password");
     }
 
-    console.log("Login success:", result);
     setMessage("Login successful!");
+
     router.push("/dashboard");
+
   } catch (err: any) {
-    console.error("Login failed:", err);
+    console.error(err);
+
     setErrorEnable(true);
+    setErrMsg(err.message || "Login failed");
     setMessage("Login Failed!");
-    setErrMsg(err.message);
+
   } finally {
     setSubmitting(false);
   }
 };
+
 
 
   
