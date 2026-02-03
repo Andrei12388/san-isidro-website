@@ -16,10 +16,10 @@ export default function ContentSection() {
 
       setTimeout(() => {
        
-        setBgImage(prev => (prev >= 4 ? 1 : prev + 1));
+        setBgImage(prev => (prev >= 5 ? 1 : prev + 1));
         setFade(true); // fade in
       }, 500); // 
-    }, 5000); //
+    }, 8000); //
 
     return () => clearInterval(interval);
   }, []);
