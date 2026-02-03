@@ -38,7 +38,7 @@ interface UserType {
   avatar: string
 }
 
-export function NavUser({ user }: { user: UserType | null }) {
+export function NavUser({ item }: { item: UserType | null }) {
   const { isMobile } = useSidebar()
  const router = useRouter();
   const logout = async () => {
@@ -48,12 +48,14 @@ export function NavUser({ user }: { user: UserType | null }) {
   });
 
   router.push("/"); // or home
+  router.refresh();
+  window.location.reload();
 };
 
   // Show placeholder while user data is null
-  const displayName = user?.name || "Guest"
-  const displayEmail = user?.email || "guest@example.com"
-  const displayAvatar = user?.avatar || "/images/userIcon.png"
+  const displayName = item?.name || "Guest"
+  const displayEmail = item?.email || "guest@example.com"
+  const displayAvatar = item?.avatar || "/images/userIcon.png"
 
   return (
     <SidebarMenu>

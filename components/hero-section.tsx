@@ -29,11 +29,19 @@ const transitionVariants = {
     },
 }
 
-export default function HeroSection() {
+export default function HeroSection({
+  user,
+}: {
+  user: {
+    name: string
+    email: string
+    avatar: string
+  }
+}) {
     
     return (
         <>
-            <HeroHeader />
+            <HeroHeader item={user}/>
             
             <main className="overflow-hidden">
                 <div

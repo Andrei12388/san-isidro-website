@@ -49,7 +49,7 @@ export function SiteHeader({
               <IconBell />
               <span className="sr-only">Notifications</span>
             </Button>
-           <NavUser user={user} />
+           <NavUser item={user} />
         </div>
       </div>
     </header>

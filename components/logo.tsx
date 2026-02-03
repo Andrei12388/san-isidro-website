@@ -5,7 +5,7 @@ import Link from 'next/link';
 export const Logo = ({ className, uniColor }: { className?: string; uniColor?: boolean }) => {
     return (
         <>
-        <Link href="/"><Image src="/images/logo.png" alt="San Isidro Logo" width={150} height={150} className={className} /></Link>
+        <Link href="/"><Image src="/images/logo.png" alt="San Isidro Logo" width={100} height={100} className={className} /></Link>
         </>
 
     )

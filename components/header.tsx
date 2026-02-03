@@ -5,6 +5,9 @@ import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import React, { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { NavMain } from './nav-main'
+import { NavUser } from './nav-user'
+import { SidebarProvider } from './ui/sidebar'
 
 const menuItems = [
   { name: 'Updates', href: '#updates' },
@@ -14,7 +17,15 @@ const menuItems = [
 ]
 
 
-export const HeroHeader = () => {
+export const HeroHeader = ({
+  item,
+}: {
+  item: {
+    name: string
+    email: string
+    avatar: string
+  }
+}) => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
 
@@ -122,10 +133,17 @@ React.useEffect(() => {
                                 <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
                                 <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
                             </button>
+                            
+                           {user &&  <SidebarProvider className='absolute right-5 top-0 m-auto w-50 h-20'
+    >
+                             <NavUser item={item}/>
+                             </SidebarProvider>
+                             }
                         </div>
 
                         <div className="z-50 absolute inset-0 m-auto mt-5 hidden size-fit lg:block">
-                            <ul className="h-30 items-center flex gap-8 text-sm">
+                            <ul className="m-auto mt-3 items-center flex gap-4 text-sm">
+                                
                                 {menuItems.map((item, index) => (
                                     <li key={index}>
                                         <Link
@@ -142,13 +160,16 @@ React.useEffect(() => {
                                     </Link>
                                     </li>
                                 ))}
+                                
                             </ul>
+                            
                         </div>
                         </div>
 
-                        <div className="backdrop-blur-2xl ml-auto in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden lg:w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+                        <div className="lg:border-none border lg:bg-transparent lg:backdrop-blur-none bg-white backdrop-blur-lg ml-auto in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden lg:w-full flex-wrap items-center justify-end space-y-8 rounded-3xl  p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex  lg:gap-6 lg:space-y-0  lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
                             <div className="lg:hidden">
                                 <ul className="space-y-6 text-base">
+                                    
                                     {menuItems.map((item, index) => (
                                         <li key={index}>
                                             <Link
@@ -194,13 +215,19 @@ React.useEffect(() => {
                                         <span>Connect with Us</span>
                                     </Link>
                                 </Button>
+                               
                             </div>
                             }
+                            
                         </div>
+                          
                     </div>
+                   
                 </div>
                 }
+                
             </nav>
+            
         </header>
     )
 }
