@@ -9,6 +9,15 @@ export default function ContentSection() {
   const [bgImage, setBgImage] = useState(1);
   const [fade, setFade] = useState(true);
 
+  const nextImage = () => {
+    setFade(false); // fade out first
+
+    setTimeout(() => {
+      setBgImage(prev => (prev >= 4 ? 1 : prev + 1));
+      setFade(true); // fade in
+    }, 300); // match transition time
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
     
@@ -26,7 +35,7 @@ export default function ContentSection() {
     return (
         <section className="py-16 md:py-32">
             <div className="mx-auto max-w-5xl space-y-8 px-6 md:space-y-12">
-                 <img
+                 <img onClick={nextImage}
       src={`/images/bg/background${bgImage}.jpg`}
       className={`w-full h-100 object-cover rounded-(--radius)
         transition-opacity duration-500 ease-in-out
