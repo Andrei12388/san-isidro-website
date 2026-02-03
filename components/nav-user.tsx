@@ -48,7 +48,10 @@ export function NavUser({ item }: { item: UserType | null }) {
   });
 
   router.push("/"); // or home
-  window.location.reload();
+ if (window.location.pathname === "/") {
+    window.location.reload();
+}
+
 };
 
 const dashboard = async () => {
