@@ -59,8 +59,8 @@ const dashboard = async () => {
 };
 
   // Show placeholder while user data is null
-  const displayName = item?.name || "Guest"
-  const displayEmail = item?.email || "guest@example.com"
+  const displayName = item?.name || "Loading..."
+  const displayEmail = item?.email || "Loading..."
   const displayAvatar = item?.avatar || "/images/userIcon.png"
 
   return (
@@ -94,7 +94,11 @@ const dashboard = async () => {
             <DropdownMenuGroup>
               <DropdownMenuItem  onClick={dashboard}>
                 <IconUserCircle />
-                Account
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem  onClick={dashboard}>
+                <IconUserCircle />
+                Dashboard
               </DropdownMenuItem>
              
               <DropdownMenuItem>

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     if (!response.ok) {
       const errorData = await response.json();
       return NextResponse.json(
-        { message: errorData.message || "Signup failed" },
+        { message: errorData.detail || "Signup failed" },
         { status: response.status }
       );
     }
@@ -74,10 +74,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, user: result });
 
-  } catch (err) {
+  } catch (err: any) {
     console.error("Signup error:", err);
     return NextResponse.json(
-      { message: "Signup failed" },
+      { message: err.message },
       { status: 500 }
     );
   }

@@ -1,5 +1,6 @@
 
 'use client'
+import ContentSection from "@/components/content-3";
 import Features from "@/components/features-3";
 import FooterSection from "@/components/footer";
 import HeroSection from "@/components/hero-section";
@@ -75,6 +76,7 @@ export default function Home() {
     <div>
       <section id="updates">
      <HeroSection user={user}/>
+     <ContentSection />
      </section>
      
      <section id="discipleship">

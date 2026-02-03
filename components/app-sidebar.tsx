@@ -45,17 +45,17 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "#dashboard",
       icon: IconDashboard,
     },
     {
       title: "Posts",
-      url: "#",
+      url: "#posts",
       icon: IconListDetails,
     },
     {
       title: "Analytics",
-      url: "#",
+      url: "#analytics",
       icon: IconChartBar,
     },
     {
@@ -137,12 +137,12 @@ const data = {
   documents: [
     {
       name: "Devotion",
-      url: "#",
+      url: "#devotion",
       icon: IconDatabase,
     },
     {
       name: "Reports",
-      url: "#",
+      url: "#reports",
       icon: IconReport,
     },
     {

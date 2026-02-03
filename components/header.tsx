@@ -113,17 +113,17 @@ React.useEffect(() => {
         <header>
             <nav
                 data-state={menuState && 'active'}
-                className=" fixed z-50 w-full px-2">
+                className="fixed z-50 w-full px-2">
                     {!isLoading && 
                 <div className={cn(' mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12 lg:rounded-2xl lg:border lg:backdrop-blur-lg lg:px-5', isScrolled && 'lg:bg-background/50 max-w-4xl lg:rounded-2xl lg:border lg:backdrop-blur-lg lg:px-5')}>
-                    <div className=" relative flex flex-col gap-6 py-3 lg:gap-0 lg:py-4">
+                    <div className=" relative flex flex-col gap-0 py-3 lg:gap-0 lg:py-4">
                         <div>
                         <div className="flex w-full justify-between lg:w-auto">
                             <Link
                                 href="/"
                                 aria-label="home"
                                 className="flex items-center space-x-2">
-                                <Logo className='lg:block hidden' />
+                                <Logo className='lg:block' />
                             </Link>
 
                             <button
@@ -134,7 +134,7 @@ React.useEffect(() => {
                                 <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
                             </button>
                             
-                           {user &&  <SidebarProvider className='lg:top-5 absolute right-5 top-0 m-auto w-50 h-20'
+                           {user &&  <SidebarProvider className='lg:top-5 absolute right-5 top-4.5 m-auto w-50 h-20'
     >
                              <NavUser item={item}/>
                              </SidebarProvider>
@@ -150,7 +150,7 @@ React.useEffect(() => {
                                     href={item.href}
                                     className={cn(
                                         "relative block text-muted-foreground transition-colors duration-200 ",
-                                        "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-current text-red-500 after:origin-left after:transition-transform after:duration-300",
+                                        "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-current text-blue-500 after:origin-left after:transition-transform after:duration-300",
                                         active === item.href
                                         ? "text-accent-foreground after:scale-x-100"
                                         : "hover:text-accent-foreground after:scale-x-0 hover:after:scale-x-100"
@@ -166,7 +166,7 @@ React.useEffect(() => {
                         </div>
                         </div>
 
-                        <div className="lg:border-none border lg:bg-transparent lg:backdrop-blur-none bg-white backdrop-blur-lg ml-auto in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden lg:w-full flex-wrap items-center justify-end space-y-8 rounded-3xl  p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex  lg:gap-6 lg:space-y-0  lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+                        <div className="lg:border-none border lg:bg-transparent lg:backdrop-blur-none bg-white backdrop-blur-lg ml-auto in-data-[state=active]:block  lg:in-data-[state=active]:flex mb-6 hidden lg:w-full flex-wrap items-center justify-end space-y-8 rounded-3xl  p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex  lg:gap-6 lg:space-y-0  lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
                             <div className="lg:hidden">
                                 <ul className="space-y-6 text-base">
                                     
@@ -176,7 +176,7 @@ React.useEffect(() => {
                                     href={item.href}
                                     className={cn(
                                         "relative block text-muted-foreground transition-colors duration-200 ",
-                                        "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-current text-red-500 after:origin-left after:transition-transform after:duration-300",
+                                        "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-current text-blue-500 after:origin-left after:transition-transform after:duration-300",
                                         active === item.href
                                         ? "text-accent-foreground after:scale-x-50"
                                         : "hover:text-accent-foreground after:scale-x-0 hover:after:scale-x-100"
@@ -189,7 +189,7 @@ React.useEffect(() => {
                                 </ul>
                             </div>
                             {hideAuth ? <></> :
-                            <div className={cn(hideAuth ? 'hidden' : ' flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit')}>
+                            <div className={cn(hideAuth ? 'hidden' : 'lg:absolute lg:top-7 flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit')}>
                                 <Button
                                     asChild
                                     variant="outline"

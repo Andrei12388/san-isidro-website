@@ -32,3 +32,7 @@
 .underline:hover::after {
   transform: scaleX(1);
 }
+
+.imageTransition{
+  transition: all 0.5s ease-in-out;
+}
