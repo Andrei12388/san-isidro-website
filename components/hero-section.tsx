@@ -164,7 +164,7 @@ export default function HeroSection() {
                                 },
                                 ...transitionVariants,
                             }}>
-                          
+                          <div></div>
                         </AnimatedGroup>
                     </div>
                 </section>
