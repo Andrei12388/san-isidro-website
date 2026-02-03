@@ -1,14 +1,60 @@
+'use client'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export default function SignUpPage() {
+     const [Fname, setFName] = useState("");
+     const [Lname, setLName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const router = useRouter();
+ 
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+     const fullname = `${Fname} ${Lname}`;
+    setLoading(true);
+    setMessage("");
+    
+
+    try {
+      const res = await fetch("/api/auth/signUp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullname, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMessage(data.message || "Signup failed");
+      } else {
+        setMessage("Signup successful! Welcome " + data.user.name);
+        setFName("");
+        setLName("");
+        setEmail("");
+        setPassword("");
+        router.push('/login');
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
     return (
         <section className="flex min-h-screen bg-zinc-50 dark:bg-transparent mt-2 mb-2">
             <form
-                action=""
+                onSubmit={handleSignup}
                 className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
                 <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
                     <div className="text-center">
@@ -35,6 +81,8 @@ export default function SignUpPage() {
                                     required
                                     name="firstname"
                                     id="firstname"
+                                     value={Fname}
+                                    onChange={(e) => setFName(e.target.value)}
                                 />
                             </div>
                             <div className="space-y-2">
@@ -47,6 +95,8 @@ export default function SignUpPage() {
                                     type="text"
                                     required
                                     name="lastname"
+                                    value={Lname}
+                                    onChange={(e) => setLName(e.target.value)}
                                     id="lastname"
                                 />
                             </div>
@@ -63,6 +113,8 @@ export default function SignUpPage() {
                                 required
                                 name="email"
                                 id="email"
+                                 value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
 
@@ -89,11 +141,23 @@ export default function SignUpPage() {
                                 required
                                 name="pwd"
                                 id="pwd"
+                                value={password}
+                                minLength={8}
+                                onChange={(e) => setPassword(e.target.value)}
                                 className="input sz-md variant-mixed"
                             />
                         </div>
 
-                        <Button className="w-full">Sign Up</Button>
+                        <Button className="w-full" type='submit' disabled={loading} > {loading ? 'Signing Up' : 'Sign Up'}</Button>
+                        {message && (
+                                <div
+                                className={`mb-4 text-center justify-center p-2 rounded ${
+                                    message.includes("successful") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                                }`}
+                                >
+                                {message}
+                                </div>
+                            )}
                     </div>
 
                     <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">

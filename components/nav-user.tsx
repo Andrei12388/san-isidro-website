@@ -48,8 +48,11 @@ export function NavUser({ item }: { item: UserType | null }) {
   });
 
   router.push("/"); // or home
-  router.refresh();
   window.location.reload();
+};
+
+const dashboard = async () => {
+  router.push("/dashboard"); 
 };
 
   // Show placeholder while user data is null
@@ -86,7 +89,7 @@ export function NavUser({ item }: { item: UserType | null }) {
             <DropdownMenuLabel className="p-0 font-normal"></DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem  onClick={dashboard}>
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>

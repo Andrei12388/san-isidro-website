@@ -134,7 +134,7 @@ React.useEffect(() => {
                                 <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
                             </button>
                             
-                           {user &&  <SidebarProvider className='absolute right-5 top-0 m-auto w-50 h-20'
+                           {user &&  <SidebarProvider className='lg:top-5 absolute right-5 top-0 m-auto w-50 h-20'
     >
                              <NavUser item={item}/>
                              </SidebarProvider>
