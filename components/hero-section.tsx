@@ -142,9 +142,9 @@ export default function HeroSection({
                                             asChild
                                             size="lg"
                                             className="rounded-xl px-5 text-base">
-                                            <Link href="login">
+                                            {!user && <Link href="login">
                                                 <span className="text-nowrap">Connect with Us</span>
-                                            </Link>
+                                            </Link>}
                                         </Button>
                                     </div>
                                     <Button

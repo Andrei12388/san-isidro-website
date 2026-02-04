@@ -18,7 +18,7 @@ export default function ContentSection() {
       setTimeout(() => {
         setBgImage(prev => (prev >= 5 ? 1 : prev + 1));
         setFade(true);
-      }, 500);
+      }, 600);
     }, 8000);
   };
 
@@ -30,7 +30,7 @@ export default function ContentSection() {
     setTimeout(() => {
       setBgImage(prev => (prev >= 5 ? 1 : prev + 1));
       setFade(true);
-    }, 300);
+    }, 600);
 
     intervalRef.current = startInterval();
   };
@@ -42,7 +42,7 @@ export default function ContentSection() {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, []);
-  
+
     return (
         <section className="py-16 md:py-32">
             <div className="mx-auto max-w-5xl space-y-8 px-6 md:space-y-12">

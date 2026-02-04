@@ -5,8 +5,8 @@ import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import React, { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { NavMain } from './nav-main'
-import { NavUser } from './nav-user'
+import { NavMain } from './dashboard/nav-main'
+import { NavUser } from './dashboard/nav-user'
 import { SidebarProvider } from './ui/sidebar'
 
 const menuItems = [
@@ -115,7 +115,7 @@ React.useEffect(() => {
                 data-state={menuState && 'active'}
                 className="fixed z-50 w-full px-2">
                     {!isLoading && 
-                <div className={cn(' mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12 lg:rounded-2xl lg:border lg:backdrop-blur-lg lg:px-5', isScrolled && 'lg:bg-background/50 max-w-4xl lg:rounded-2xl lg:border lg:backdrop-blur-lg lg:px-5')}>
+                <div className={cn(' lg:bg-none mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12 lg:rounded-2xl lg:border backdrop-blur-lg lg:px-5', isScrolled && 'lg:bg-background/50 max-w-4xl rounded-2xl border lg:backdrop-blur-lg lg:px-5')}>
                     <div className=" relative flex flex-col gap-0 py-3 lg:gap-0 lg:py-4">
                         <div>
                         <div className="flex w-full justify-between lg:w-auto">
@@ -166,7 +166,7 @@ React.useEffect(() => {
                         </div>
                         </div>
 
-                        <div className="lg:border-none border lg:bg-transparent lg:backdrop-blur-none bg-white backdrop-blur-lg ml-auto in-data-[state=active]:block  lg:in-data-[state=active]:flex mb-6 hidden lg:w-full flex-wrap items-center justify-end space-y-8 rounded-3xl  p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex  lg:gap-6 lg:space-y-0  lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+                        <div className="lg:border-none border lg:bg-transparent lg:backdrop-blur-none bg-white dark:bg-black backdrop-blur-lg ml-auto in-data-[state=active]:block  lg:in-data-[state=active]:flex mb-6 hidden lg:w-full flex-wrap items-center justify-end space-y-8 rounded-3xl  p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex  lg:gap-6 lg:space-y-0  lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
                             <div className="lg:hidden">
                                 <ul className="space-y-6 text-base">
                                     

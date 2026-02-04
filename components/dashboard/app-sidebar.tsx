@@ -19,10 +19,10 @@ import {
   IconUsers,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavDocuments } from "@/components/dashboard/nav-documents"
+import { NavMain } from "@/components/dashboard/nav-main"
+import { NavSecondary } from "@/components/dashboard/nav-secondary"
+import { NavUser } from "@/components/dashboard/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -32,9 +32,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Logo } from "./logo"
+import { Logo } from "../logo"
 import Link from "next/link"
 import Image from "next/image"
+import { useSidebar } from "@/components/ui/sidebar"
 
 const data = {
   user: {
@@ -154,6 +155,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { state, open, setOpen, toggleSidebar } = useSidebar()
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -166,7 +168,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="/">
                 <Link href="/"><Image src="/images/logonotitle.png" alt="San Isidro Logo" width={50} height={50} /></Link>
-                <span className="text-base font-semibold"> JCSGO: SAN ISIDRO</span>
+               {state === "expanded" &&  <span className="text-base font-semibold"> JCSGO: SAN ISIDRO</span>}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

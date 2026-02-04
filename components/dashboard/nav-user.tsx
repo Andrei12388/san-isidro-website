@@ -30,10 +30,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import ThemeToggleButton from "./toggleThemeButton"
+import ThemeToggleButton from "../toggleThemeButton"
 
 interface UserType {
   name: string
@@ -65,13 +65,6 @@ const dashboard = async () => {
   const displayName = item?.name || "Loading..."
   const displayEmail = item?.email || "Loading..."
   const displayAvatar = item?.avatar || "/images/userIcon.png"
-
-  const toggleDark = () => {
-  const root = document.documentElement;
-  const isDark = root.classList.toggle("dark");
-
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-};
 
 useEffect(() => {
   if (localStorage.getItem("theme") === "dark") {
@@ -109,7 +102,7 @@ useEffect(() => {
             <DropdownMenuLabel className="p-0 font-normal"></DropdownMenuLabel>
              <DropdownMenuItem  onSelect={(e) => e.preventDefault()} >
               <ThemeToggleButton />
-               NightMode
+               NightMode🌙
               </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
