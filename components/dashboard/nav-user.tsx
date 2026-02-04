@@ -74,10 +74,10 @@ useEffect(() => {
 
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+    <SidebarMenu >
+      <SidebarMenuItem >
+        <DropdownMenu >
+          <DropdownMenuTrigger asChild className="bg-background ">
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
