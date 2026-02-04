@@ -85,6 +85,8 @@ export default function Page() {
       }
     >
       <AppSidebar variant="inset" />
+      
+
       <SidebarInset>
         <SiteHeader user={user} />
         <div className="flex flex-1 flex-col border">

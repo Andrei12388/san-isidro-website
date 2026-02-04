@@ -15,6 +15,7 @@ export default function Home() {
     const [user, setUser] = useState<any>(null)
     const fetchOnce = useRef(false) // ✅ track fetch status
     const router = useRouter();
+    
   
    useEffect(() => {
     if (fetchOnce.current) return // already fetched

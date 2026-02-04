@@ -6,6 +6,7 @@ import {
   IconLogout,
   IconUserCircle,
   IconBell,
+  IconLighter,
 } from "@tabler/icons-react"
 
 import {
@@ -31,6 +32,8 @@ import {
 import Link from "next/link"
 import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import ThemeToggleButton from "./toggleThemeButton"
 
 interface UserType {
   name: string
@@ -63,6 +66,20 @@ const dashboard = async () => {
   const displayEmail = item?.email || "Loading..."
   const displayAvatar = item?.avatar || "/images/userIcon.png"
 
+  const toggleDark = () => {
+  const root = document.documentElement;
+  const isDark = root.classList.toggle("dark");
+
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+};
+
+useEffect(() => {
+  if (localStorage.getItem("theme") === "dark") {
+    document.documentElement.classList.add("dark");
+  }
+}, []);
+
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -90,12 +107,17 @@ const dashboard = async () => {
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal"></DropdownMenuLabel>
+             <DropdownMenuItem  onSelect={(e) => e.preventDefault()} >
+              <ThemeToggleButton />
+               NightMode
+              </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem  onClick={dashboard}>
                 <IconUserCircle />
                 Profile
               </DropdownMenuItem>
+              
               <DropdownMenuItem  onClick={dashboard}>
                 <IconUserCircle />
                 Dashboard
@@ -106,9 +128,10 @@ const dashboard = async () => {
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
+            
             <DropdownMenuSeparator />
+            
             <DropdownMenuItem>
-              
               <Button onClick={logout}><IconLogout />Log Out</Button>
             </DropdownMenuItem>
           </DropdownMenuContent>

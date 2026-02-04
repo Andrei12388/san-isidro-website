@@ -2,36 +2,47 @@
 import { Button } from '@/components/ui/button'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import  styles from './components.module.css'
 
 export default function ContentSection() {
-  const [bgImage, setBgImage] = useState(1);
-  const [fade, setFade] = useState(true);
+  const [bgImage, setBgImage] = useState<number>(1);
+  const [fade, setFade] = useState<boolean>(true);
 
-  const nextImage = () => {
-    setFade(false); // fade out first
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-    setTimeout(() => {
-      setBgImage(prev => (prev >= 4 ? 1 : prev + 1));
-      setFade(true); // fade in
-    }, 300); // match transition time
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-    
+  const startInterval = () => {
+    return setInterval(() => {
       setFade(false);
 
       setTimeout(() => {
-       
         setBgImage(prev => (prev >= 5 ? 1 : prev + 1));
-        setFade(true); // fade in
-      }, 500); // 
-    }, 8000); //
+        setFade(true);
+      }, 500);
+    }, 8000);
+  };
 
-    return () => clearInterval(interval);
+  const nextImage = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    setFade(false);
+
+    setTimeout(() => {
+      setBgImage(prev => (prev >= 5 ? 1 : prev + 1));
+      setFade(true);
+    }, 300);
+
+    intervalRef.current = startInterval();
+  };
+
+  useEffect(() => {
+    intervalRef.current = startInterval();
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
+  
     return (
         <section className="py-16 md:py-32">
             <div className="mx-auto max-w-5xl space-y-8 px-6 md:space-y-12">
