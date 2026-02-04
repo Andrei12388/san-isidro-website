@@ -1,5 +1,6 @@
 
-'use client'
+'use client';
+import LightRays from '@/components/LightRays';
 import ContentSection from "@/components/content-3";
 import Features from "@/components/features-3";
 import FooterSection from "@/components/footer";
@@ -16,10 +17,16 @@ export default function Home() {
     const fetchOnce = useRef(false) // ✅ track fetch status
     const router = useRouter();
     
+    
   
    useEffect(() => {
+     const fetchGet = async() => {
+      const res = await fetch('/api/api')
+      const data = await res.json();
+     console.log(data.message);
+    }
     if (fetchOnce.current) return // already fetched
-  
+   
     const fetchUser = async () => {
       setIsLoading(true)
       setError(null)
@@ -69,6 +76,7 @@ export default function Home() {
         setIsLoading(false)
       }
     }
+  fetchGet()
   
     fetchUser()
   }, []) 
@@ -76,6 +84,23 @@ export default function Home() {
   return (
     <div>
       <section id="updates">
+        <div style={{ width: '100%', height: '600px', position: 'absolute' }}>
+  <LightRays
+    raysOrigin="top-center"
+    raysColor="#ffffff"
+    raysSpeed={1}
+    lightSpread={0.5}
+    rayLength={10}
+    followMouse={true}
+    mouseInfluence={0.1}
+    noiseAmount={0}
+    distortion={0}
+    className="custom-rays hidden dark:block"
+    
+    fadeDistance={1}
+    saturation={1}
+/>
+</div>
      <HeroSection user={user}/>
      <ContentSection />
      </section>

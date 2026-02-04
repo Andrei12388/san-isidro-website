@@ -157,7 +157,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state, open, setOpen, toggleSidebar } = useSidebar()
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
       
         <SidebarMenu>
