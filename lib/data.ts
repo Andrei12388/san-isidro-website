@@ -1,6 +1,41 @@
-// TEMPORARY DATA
+// ================= TYPES =================
 
-export let role = "admin";
+export type Role = "admin" | "member";
+
+export type Gender = "Male" | "Female";
+
+export type Level =
+  | "pastor"
+  | "head"
+  | "cluster"
+  | "vine"
+  | "disciple";
+
+export interface Member {
+  email: string;
+  id: number;
+  password: string;
+  name: string;
+  age: number;
+  phone: string;
+  gender: Gender;
+  address: string;
+  bio: string;
+  level: Level;
+  mentor_id: number;
+  group_name: string;
+  image: string;
+}
+
+export interface Attendance {
+  date: string; // or Date if you prefer
+  male: number;
+  female: number;
+}
+
+// ================= DATA =================
+
+export let role: Role = "admin";
 
 export const membersData = [
   {

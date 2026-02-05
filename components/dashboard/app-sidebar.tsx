@@ -49,6 +49,11 @@ const data = {
       url: "#dashboard",
       icon: IconDashboard,
     },
+     {
+      title: "Members",
+      url: "#",
+      icon: IconUsers,
+    },
     {
       title: "Posts",
       url: "#posts",
@@ -64,11 +69,7 @@ const data = {
       url: "#",
       icon: IconFolder,
     },
-    {
-      title: "Members",
-      url: "#",
-      icon: IconUsers,
-    },
+   
   ],
   navClouds: [
     {
