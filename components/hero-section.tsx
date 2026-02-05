@@ -30,13 +30,14 @@ const transitionVariants = {
 }
 
 export default function HeroSection({
-  user,
+  user, isLoading,
 }: {
   user: {
     name: string
     email: string
     avatar: string
   }
+  isLoading:boolean
 }) {
     
     return (
@@ -138,7 +139,7 @@ export default function HeroSection({
                                     <div
                                         key={1}
                                         className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5">
-                                        <Button
+                                       {!isLoading && <Button
                                             asChild
                                             size="lg"
                                             className="rounded-xl px-5 text-base">
@@ -146,6 +147,7 @@ export default function HeroSection({
                                                 <span className="text-nowrap">Connect with Us</span>
                                             </Link>}
                                         </Button>
+                                            }
                                     </div>
                                     <Button
                                         key={2}

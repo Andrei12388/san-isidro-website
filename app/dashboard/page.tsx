@@ -11,6 +11,7 @@ import data from "./data.json"
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 
+
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

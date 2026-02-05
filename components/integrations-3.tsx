@@ -59,7 +59,7 @@ export default function IntegrationsSection() {
                                 <Link href="#">Get Started</Link>
                             </Button>
                         </div>
-                        <UserCard />
+                       
                     </div>
                 </div>
             </div>

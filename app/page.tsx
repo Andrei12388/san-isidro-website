@@ -11,7 +11,7 @@ import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [user, setUser] = useState<any>(null)
     const fetchOnce = useRef(false) // ✅ track fetch status
@@ -21,6 +21,7 @@ export default function Home() {
   
    useEffect(() => {
      const fetchGet = async() => {
+      
       const res = await fetch('/api/api')
       const data = await res.json();
      console.log(data.message);
@@ -84,7 +85,7 @@ export default function Home() {
   return (
     <div>
       <section id="updates">
-        <div style={{ width: '100%', height: '600px', position: 'absolute' }}>
+        <div className='z-[-1]' style={{ width: '100%', height: '600px', position: 'absolute' }}>
   <LightRays
     raysOrigin="top-center"
     raysColor="#ffffff"
@@ -101,7 +102,7 @@ export default function Home() {
     saturation={1}
 />
 </div>
-     <HeroSection user={user}/>
+     <HeroSection user={user} isLoading={isLoading}/>
      <ContentSection />
      </section>
      
