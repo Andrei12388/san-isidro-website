@@ -74,7 +74,7 @@ export function ChartAreaInteractive() {
   })
 
   return (
-    <Card className="@container/card">
+    <Card className="@container/card mt-2">
       <CardHeader>
         <CardTitle>Total Attendees</CardTitle>
         <CardDescription>

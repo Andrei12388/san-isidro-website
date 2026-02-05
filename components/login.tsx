@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { authLogin } from '@/app/api/fetchdata';
 import React, { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import FacebookLogin, {SuccessResponse} from '@greatsumini/react-facebook-login';
 
 const authLoginApi = "https://isidro-webapi.onrender.com/api/auth/login"
 
@@ -21,6 +22,22 @@ export default function LoginPage() {
         const [isSubmitting, setSubmitting] = useState(false)
 
         const router = useRouter();
+
+    const [messageFB, setMessageFB] = useState<{text:string, severity: "error" | "success"}>();
+
+  const onSuccessHandler = async (response: SuccessResponse) => {
+    //Api request function
+    const apiResponse = await fetch("/api/facebook-login",{
+      method: "POST",
+      body: JSON.stringify({userId: response.userID, accessToken: response.accessToken})
+    });
+    const data = await apiResponse.json();
+    if(data.success){ setMessageFB({text: "Login Successful.", severity: "success"})
+       console.log(message)
+    }
+    console.log(response);
+   
+  }
 
 
 const onSubmit = async (e: FormEvent) => {
@@ -177,8 +194,24 @@ const onSubmit = async (e: FormEvent) => {
 <path d="M195.682,148.937c0,7.27,0,39.741,0,39.741h-29.115v48.598h29.115v144.402h59.808V237.276h40.134c0,0,3.76-23.307,5.579-48.781c-5.224,0-45.485,0-45.485,0s0-28.276,0-33.231c0-4.962,6.518-11.641,12.965-11.641c6.436,0,20.015,0,32.587,0c0-6.623,0-29.481,0-50.592c-16.786,0-35.883,0-44.306,0C194.201,93.028,195.682,141.671,195.682,148.937z" fill="#FFFFFF"/>
 
 </svg>
-                            <span>Facebook</span>
+                          
+                            <FacebookLogin
+                            appId="1088597931155576"
+                            onSuccess={onSuccessHandler}
+                            onFail={(error) => {
+                                setMessageFB({text: "Error Occured", severity: "error"});
+                            }}
+                                onProfileSuccess={(response) => {
+                                
+                                }}
+                                render={({ onClick }) => (
+                                <button onClick={onClick}> 
+                                Facebook
+                                </button>
+                                )}
+                            />
                         </Button>
+                        
                     </div>
                 </div>
 
@@ -194,6 +227,7 @@ const onSubmit = async (e: FormEvent) => {
                     </p>
                 </div>
             </form>
+            
         </section>
     )
 }
