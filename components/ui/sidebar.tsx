@@ -39,8 +39,13 @@ type SidebarContextProps = {
   openMobile: boolean
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
+  itemKey?: string
   toggleSidebar: () => void
+
+  activeItem: string | null
+  setActiveItem: (id: string) => void
 }
+
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
@@ -66,6 +71,7 @@ function SidebarProvider({
   open?: boolean
   onOpenChange?: (open: boolean) => void
 }) {
+  const [activeItem, setActiveItem] = React.useState<string | null>('Dashboard')
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
 
@@ -115,15 +121,17 @@ function SidebarProvider({
 
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
-      state,
-      open,
-      setOpen,
-      isMobile,
-      openMobile,
-      setOpenMobile,
-      toggleSidebar,
-    }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+    state,
+    open,
+    setOpen,
+    isMobile,
+    openMobile,
+    setOpenMobile,
+    toggleSidebar,
+    activeItem,
+    setActiveItem,
+  }),
+  [state, open, isMobile, openMobile, activeItem]
   )
 
   return (
@@ -498,38 +506,53 @@ const sidebarMenuButtonVariants = cva(
 function SidebarMenuButton({
   asChild = false,
   isActive = false,
-  variant = "default",
+  variant = "outline",
   size = "default",
   tooltip,
   className,
+  itemKey, // 👈 add this
+  onClick,
   ...props
 }: React.ComponentProps<"button"> & {
   asChild?: boolean
   isActive?: boolean
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
+  itemKey?: string
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
+
   const Comp = asChild ? Slot : "button"
-  const { isMobile, state } = useSidebar()
+
+  const { isMobile, activeItem, state, setActiveItem, setOpen } = useSidebar()
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+     console.log(activeItem)
+    // 🔥 automatically set active
+    if (itemKey) setActiveItem(itemKey)
+
+    // 🔥 auto close on mobile
+    if (isMobile) setOpen(false)
+
+    // still allow user click
+    onClick?.(e)
+   
+  }
 
   const button = (
     <Comp
       data-slot="sidebar-menu-button"
       data-sidebar="menu-button"
       data-size={size}
-      data-active={isActive}
+      data-active={activeItem === itemKey}
+      onClick={handleClick}
       className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
       {...props}
     />
   )
 
-  if (!tooltip) {
-    return button
-  }
+  if (!tooltip) return button
 
   if (typeof tooltip === "string") {
-    tooltip = {
-      children: tooltip,
-    }
+    tooltip = { children: tooltip }
   }
 
   return (
@@ -544,6 +567,7 @@ function SidebarMenuButton({
     </Tooltip>
   )
 }
+
 
 function SidebarMenuAction({
   className,

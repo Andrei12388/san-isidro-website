@@ -119,12 +119,10 @@ React.useEffect(() => {
                     <div className=" relative flex flex-col gap-0 py-3 lg:gap-0 lg:py-4">
                         <div>
                         <div className="flex w-full justify-between lg:w-auto">
-                            <Link
-                                href="/"
-                                aria-label="home"
+                            <div
                                 className="flex items-center space-x-2">
                                 <Logo className='lg:block' />
-                            </Link>
+                            </div>
 
                             <button
                                 onClick={() => setMenuState(!menuState)}

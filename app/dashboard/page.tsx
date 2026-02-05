@@ -5,15 +5,17 @@ import { ChartAreaInteractive } from "@/components/dashboard/chart-area-interact
 import { DataTable } from "@/components/dashboard/data-table"
 import { SectionCards } from "@/components/dashboard/section-cards"
 import { SiteHeader } from "@/components/dashboard/site-header"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { SidebarInset, SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 
-import data from "./data.json"
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
+import PostsSection from "@/components/dashboard/sections/posts"
+import AnalyticsSection from "@/components/dashboard/sections/analytics"
+import MembersSection from "@/components/dashboard/sections/members"
 
 
 export default function Page() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<any>(null)
   const fetchOnce = useRef(false) // ✅ track fetch status
@@ -23,7 +25,7 @@ export default function Page() {
   if (fetchOnce.current) return // already fetched
 
   const fetchUser = async () => {
-    setIsLoading(true)
+   // setIsLoading(true)
     setError(null)
 
     try {
@@ -64,7 +66,7 @@ export default function Page() {
     } catch (err: any) {
       console.error("Error fetching user:", err)
       setError(err.message || "Unknown error")
-      router.push('/login');
+    //  router.push('/login');
       setUser(null)
     } finally {
       if(!user)
@@ -75,22 +77,23 @@ export default function Page() {
   fetchUser()
 }, []) 
 
+    const { activeItem } = useSidebar()
+
+    console.log('dashboard:',activeItem)
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      
+    <>
+      {/* Left Side of the Dashboard */}
+      <AppSidebar isLoading={isLoading} variant="inset" />
 
+      {/* Right Side of the Dashboard */}
       <SidebarInset>
+
+          {/* contains title and user info */}
         <SiteHeader user={user} />
-        <div className="flex flex-1 flex-col border">
+
+         {/* Entire Right section of the dashboard*/}
+       {activeItem === 'Dashboard' && <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               {isLoading && <p className="text-center text-gray-500">Loading user info...</p>}
@@ -100,13 +103,17 @@ export default function Page() {
               <div className="px-4 lg:px-6">
                 <ChartAreaInteractive />
               </div>
-              <DataTable data={data} />
+             
               </div>
              }
             </div>
           </div>
         </div>
+        }
+        {activeItem === 'Posts' && <PostsSection />}
+        {activeItem === 'Analytics' && <AnalyticsSection />}
+        {activeItem === 'Members' && <MembersSection />}
       </SidebarInset>
-    </SidebarProvider>
+    </>
   )
 }

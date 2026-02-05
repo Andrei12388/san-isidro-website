@@ -154,7 +154,13 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps =
+  React.ComponentProps<typeof Sidebar> & {
+    isLoading: boolean;
+  };
+
+export function AppSidebar({ isLoading, ...props }: AppSidebarProps) {
+  
   const { state, open, setOpen, toggleSidebar } = useSidebar()
   return (
     <Sidebar collapsible="icon" {...props} >
@@ -162,12 +168,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       
         <SidebarMenu>
           <SidebarMenuItem>
+            
+            {/* Logo button of the left side nav */}
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/">
-                <Link href="/"><Image src="/images/logonotitle.png" alt="San Isidro Logo" width={50} height={50} /></Link>
+                <div><Image src="/images/logonotitle.png" alt="San Isidro Logo" width={50} height={50} /></div>
                {state === "expanded" &&  <span className="text-base font-semibold"> JCSGO: SAN ISIDRO</span>}
               </a>
             </SidebarMenuButton>
@@ -176,8 +184,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         
-        <NavMain items={data.navMain} />
+       {isLoading ? <span className="text-center">Loading...</span> : <> <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
+                </>}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
         
       </SidebarContent>

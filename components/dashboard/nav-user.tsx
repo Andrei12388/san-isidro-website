@@ -7,6 +7,7 @@ import {
   IconUserCircle,
   IconBell,
   IconLighter,
+  IconDashboard,
 } from "@tabler/icons-react"
 
 import {
@@ -112,7 +113,7 @@ useEffect(() => {
               </DropdownMenuItem>
               
               <DropdownMenuItem  onClick={dashboard}>
-                <IconUserCircle />
+                <IconDashboard />
                 Dashboard
               </DropdownMenuItem>
              
