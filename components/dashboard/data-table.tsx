@@ -106,6 +106,9 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 
+type TableMeta = {
+  deleteRow: (id: number) => void
+}
 
 
 export const memberSchema = z.object({
@@ -159,16 +162,22 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
   },
 
   // ✅ PHOTO (ADD HERE)
-  {
-    accessorKey: "image",
-    header: "Photo",
-    cell: ({ row }) => (
+ {
+  accessorKey: "image",
+  header: "Photo",
+  cell: ({ row }) => {
+    const [src, setSrc] = React.useState(row.original.image)
+
+    return (
       <img
-        src={row.original.image}
+        src={src || "/images/userIcon.png"}
+        onError={() => setSrc("/images/userIcon.png")} // fallback if broken
         className="size-9 rounded-full object-cover border"
+        alt={row.original.name}
       />
-    ),
+    )
   },
+},
 
   // Name
   {
@@ -251,7 +260,7 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem
+         {/* <DropdownMenuItem
             variant="destructive"
             onClick={() => {
               table.options.meta?.deleteRow?.(row.original.id)
@@ -259,6 +268,7 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
           >
             Delete
           </DropdownMenuItem>
+          */}
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -414,9 +424,9 @@ export function DataTable({
             <SelectValue placeholder="Select a view" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="outline">Outline</SelectItem>
-            <SelectItem value="past-performance">Past Performance</SelectItem>
-            <SelectItem value="key-personnel">Key Personnel</SelectItem>
+            <SelectItem value="outline">Total</SelectItem>
+            <SelectItem value="past-performance">Leaders</SelectItem>
+            <SelectItem value="key-personnel">Inactive</SelectItem>
             <SelectItem value="focus-documents">Focus Documents</SelectItem>
           </SelectContent>
         </Select>
@@ -428,12 +438,12 @@ export function DataTable({
 />
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
           
-          <TabsTrigger value="outline">Outline</TabsTrigger>
+          <TabsTrigger value="outline">Total</TabsTrigger>
           <TabsTrigger value="past-performance">
-            Past Performance <Badge variant="secondary">2</Badge>
+            Leaders <Badge variant="secondary">2</Badge>
           </TabsTrigger>
           <TabsTrigger value="key-personnel">
-            Key Personnel <Badge variant="secondary">3</Badge>
+            Inactive <Badge variant="secondary">3</Badge>
           </TabsTrigger>
           
         </TabsList>

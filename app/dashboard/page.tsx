@@ -25,7 +25,7 @@ export default function Page() {
   if (fetchOnce.current) return // already fetched
 
   const fetchUser = async () => {
-   // setIsLoading(true)
+    setIsLoading(true)
     setError(null)
 
     try {
@@ -66,7 +66,7 @@ export default function Page() {
     } catch (err: any) {
       console.error("Error fetching user:", err)
       setError(err.message || "Unknown error")
-    //  router.push('/login');
+      router.push('/login');
       setUser(null)
     } finally {
       if(!user)

@@ -37,7 +37,7 @@ export interface Attendance {
 
 export let role: Role = "admin";
 
-export const membersData = [
+export const membersData: Member[] = [
   {
     email: "juan.delacruz@gmail.com",
     id: 1,
@@ -51,7 +51,7 @@ export const membersData = [
     level: "cluster",
     mentor_id: 0,
     group_name: "Genesis",
-    image: "/profile/juan/proPic.jpg"
+    image: "/profile/juan/proPic.jpg",
   },
   {
     email: "maria.santos@gmail.com",
@@ -66,7 +66,7 @@ export const membersData = [
     level: "vine",
     mentor_id: 1,
     group_name: "Exodus",
-    image: "/profile/maria/proPic.jpg"
+    image: "/profile/maria/proPic.jpg",
   },
   {
     email: "paolo.reyes@gmail.com",
@@ -81,7 +81,7 @@ export const membersData = [
     level: "head",
     mentor_id: 2,
     group_name: "Matthew",
-    image: "/profile/paolo/proPic.jpg"
+    image: "/profile/paolo/proPic.jpg",
   },
   {
     email: "anna.lopez@gmail.com",
@@ -96,7 +96,7 @@ export const membersData = [
     level: "disciple",
     mentor_id: 3,
     group_name: "Luke",
-    image: "/profile/anna/proPic.jpg"
+    image: "/profile/anna/proPic.jpg",
   },
   {
     email: "mark.garcia@gmail.com",
@@ -111,7 +111,7 @@ export const membersData = [
     level: "disciple",
     mentor_id: 3,
     group_name: "John",
-    image: "/profile/mark/proPic.jpg"
+    image: "/profile/mark/proPic.jpg",
   },
   {
     email: "jessa.ramos@gmail.com",
@@ -126,7 +126,7 @@ export const membersData = [
     level: "head",
     mentor_id: 2,
     group_name: "Acts",
-    image: "/profile/jessa/proPic.jpg"
+    image: "/profile/jessa/proPic.jpg",
   },
   {
     email: "daniel.mendoza@gmail.com",
@@ -141,7 +141,7 @@ export const membersData = [
     level: "disciple",
     mentor_id: 6,
     group_name: "Romans",
-    image: "/profile/daniel/proPic.jpg"
+    image: "/profile/daniel/proPic.jpg",
   },
   {
     email: "clarisse.tan@gmail.com",
@@ -156,7 +156,7 @@ export const membersData = [
     level: "vine",
     mentor_id: 1,
     group_name: "Corinthians",
-    image: "/profile/clarisse/proPic.jpg"
+    image: "/profile/clarisse/proPic.jpg",
   },
   {
     email: "leo.castillo@gmail.com",
@@ -171,7 +171,7 @@ export const membersData = [
     level: "head",
     mentor_id: 8,
     group_name: "Ephesians",
-    image: "/profile/leo/proPic.jpg"
+    image: "/profile/leo/proPic.jpg",
   },
   {
     email: "michelle.flores@gmail.com",
@@ -186,7 +186,7 @@ export const membersData = [
     level: "disciple",
     mentor_id: 9,
     group_name: "Philippians",
-    image: "/profile/michelle/proPic.jpg"
+    image: "/profile/michelle/proPic.jpg",
   },
   {
     email: "robertandreib.up@gmail.com",
@@ -194,31 +194,32 @@ export const membersData = [
     password: "12345678",
     name: "Robert Andrei Bardoquillo",
     age: 26,
-    phone: "string",
-    gender: "string",
-    address: "string",
-    bio: "string",
-    level: "pastor",
+    phone: "N/A",
+    gender: "Male",
+    address: "N/A",
+    bio: "",
+    level: "disciple",
     mentor_id: 0,
-    group_name: "string",
-    image: '/profile/[name]/proPic.jpg'
-    },
-     {
+    group_name: "",
+    image: "/images/userIcon.png",
+  },
+  {
     email: "robertandrewb.up@gmail.com",
     id: 12,
     password: "87654321",
     name: "Robert Andrew Bardoquillo",
     age: 24,
-    phone: "string",
-    gender: "string",
-    address: "string",
-    bio: "string",
-    level: "Disciple",
+    phone: "N/A",
+    gender: "Male",
+    address: "N/A",
+    bio: "",
+    level: "disciple",
     mentor_id: 0,
-    group_name: "string",
-    image: '/profile/[name]/proPic.jpg'
-    }
+    group_name: "",
+    image: "/images/userIcon.png",
+  },
 ];
+
 
 export const attendanceData = [
   { date: "2026-02-01", male: 18, female: 22 },
