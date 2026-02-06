@@ -6,12 +6,16 @@ import  styles from './components.module.css'
 const links = [
    
     {
-        title: 'Help',
-        href: '#',
+        title: 'Terms of Service',
+        href: '/termsofservice',
     },
     {
-        title: 'About',
-        href: '#',
+        title: 'Privacy Policy',
+        href: '/privacypolicy',
+    },
+     {
+        title: 'Data Deletion',
+        href: '/deletepolicy',
     },
 ]
 

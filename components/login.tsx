@@ -196,7 +196,7 @@ const onSubmit = async (e: FormEvent) => {
 </svg>
                           
                             <FacebookLogin
-                            appId="1088597931155576"
+                            appId="1436802808100156"
                             onSuccess={onSuccessHandler}
                             onFail={(error) => {
                                 setMessageFB({text: "Error Occured", severity: "error"});
