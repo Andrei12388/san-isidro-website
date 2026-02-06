@@ -36,7 +36,7 @@ const startTimer = () => {
     const percent = (elapsed / DURATION) * 100;
 
     setProgress(Math.min(percent, 100));
-    console.log(percent);
+   
 
     if (elapsed >= DURATION) {
       nextImage();

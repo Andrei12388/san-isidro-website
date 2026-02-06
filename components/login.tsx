@@ -9,6 +9,7 @@ import React, { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import FacebookLogin, {SuccessResponse} from '@greatsumini/react-facebook-login';
 
+
 const authLoginApi = "https://isidro-webapi.onrender.com/api/auth/login"
 
 export default function LoginPage() {
@@ -24,20 +25,59 @@ export default function LoginPage() {
         const router = useRouter();
 
     const [messageFB, setMessageFB] = useState<{text:string, severity: "error" | "success"}>();
+    
 
-  const onSuccessHandler = async (response: SuccessResponse) => {
-    //Api request function
-    const apiResponse = await fetch("/api/facebook-login",{
+ const onFacebookSuccess = async (response: SuccessResponse) => {
+  try {
+    // Pass FB token directly to backend
+    const res = await fetch("/api/facebook-login", {
       method: "POST",
-      body: JSON.stringify({userId: response.userID, accessToken: response.accessToken})
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: response.userID,
+        accessToken: response.accessToken // only used for this call
+      }),
     });
-    const data = await apiResponse.json();
-    if(data.success){ setMessageFB({text: "Login Successful.", severity: "success"})
-       console.log(message)
+
+    const fbData = await res.json();
+
+    if (!fbData.success) {
+      setMessageFB({ text: fbData.message || "Facebook login failed", severity: "error" });
+      return;
     }
-    console.log(response);
-   
+
+    const { id, name, email } = fbData.user;
+
+    // Call your signup backend (random password if needed)
+    const signupRes = await fetch("/api/auth/signUp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fullname: name,
+        email: email,
+        password: id,
+      }),
+    });
+
+    const signupData = await signupRes.json();
+
+    if (!signupRes.ok && !signupData.message.includes("already exists")) {
+      setMessageFB({ text: signupData.message || "Signup failed", severity: "error" });
+      return;
+    }
+
+    // Redirect to dashboard
+    setMessageFB({ text: `Welcome ${name}!`, severity: "success" });
+    router.push("/dashboard");
+
+  } catch (err) {
+    console.error(err);
+    setMessageFB({ text: "Facebook login failed", severity: "error" });
   }
+};
+
+
+
 
 
 const onSubmit = async (e: FormEvent) => {
@@ -91,12 +131,12 @@ const onSubmit = async (e: FormEvent) => {
                 className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
                 <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
                     <div className="text-center">
-                        <Link
-                            href="/"
+                        <div
+                          
                             aria-label="go home"
                             className="mx-auto block w-fit">
                             <Logo />
-                        </Link>
+                        </div>
                         <h1 className="mb-1 mt-4 text-xl font-semibold">Log In to JSCGO: San Isidro</h1>
                         <p className="text-sm">Fill up the form below to access your account.</p>
                     </div>
@@ -150,6 +190,11 @@ const onSubmit = async (e: FormEvent) => {
 
                         <Button className="w-full" disabled={isSubmitting} type='submit'>{isSubmitting ? "Logging In..." : "Log In"}</Button>
                        {errorEnable ?<div className='text-center justify-center'> <span className='text-red-500 text-right'> {message} </span> </div>: ""} 
+                       {messageFB && (
+  <div className={`text-center mt-2 ${messageFB.severity === "error" ? "text-red-500" : "text-green-500"}`}>
+    {messageFB.text}
+  </div>
+)}
                     </div>
 
                     <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
@@ -196,20 +241,18 @@ const onSubmit = async (e: FormEvent) => {
 </svg>
                           
                             <FacebookLogin
-                            appId="1436802808100156"
-                            onSuccess={onSuccessHandler}
-                            onFail={(error) => {
-                                setMessageFB({text: "Error Occured", severity: "error"});
-                            }}
-                                onProfileSuccess={(response) => {
-                                
+                                appId="1436802808100156"
+                                onSuccess={onFacebookSuccess}
+                                onFail={(error) => {
+                                    setMessageFB({text: "Error Occurred", severity: "error"});
                                 }}
                                 render={({ onClick }) => (
-                                <button onClick={onClick}> 
-                                Facebook
-                                </button>
+                                    <button type="button" onClick={onClick} >
+                                    Facebook
+                                    </button>
                                 )}
-                            />
+                                />
+
                         </Button>
                         
                     </div>

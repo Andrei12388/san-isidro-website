@@ -42,7 +42,7 @@ export default function Home() {
         console.log("Fetched session data:", userData)
   
         if (!userData.access_token || !userData.user) {
-          throw new Error("Session does not contain access_token or user ID")
+          console.log("Session does not contain access_token or user ID")
         }
   
         // 2️⃣ Fetch full user info from backend API
@@ -58,7 +58,7 @@ export default function Home() {
         })
   
         if (!userInfoRes.ok) {
-          throw new Error(`Failed to fetch user info: ${userInfoRes.status}`)
+          console.log(`Failed to fetch user info: ${userInfoRes.status}`)
         }
   
         const resUser = await userInfoRes.json()
