@@ -20,6 +20,7 @@ export function SiteHeader({
     name: string
     email: string
     avatar: string
+    id: string
   }
 }) {
 

@@ -31,6 +31,8 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "devextreme": "^25.2.4",
+    "devextreme-react": "^25.2.4",
     "lucide-react": "^0.563.0",
     "motion": "^12.29.2",
     "next": "16.1.6",

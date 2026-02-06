@@ -75,6 +75,7 @@ export default function Page() {
   }
 
   fetchUser()
+  console.log(document.cookie)
 }, []) 
 
     const { activeItem } = useSidebar()

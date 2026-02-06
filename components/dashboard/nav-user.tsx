@@ -40,6 +40,7 @@ interface UserType {
   name: string
   email: string
   avatar: string
+  id: string
 }
 
 export function NavUser({ item }: { item: UserType | null }) {
@@ -58,14 +59,22 @@ export function NavUser({ item }: { item: UserType | null }) {
 
 };
 
-const dashboard = async () => {
-  router.push("/dashboard"); 
-};
+
 
   // Show placeholder while user data is null
   const displayName = item?.name || "Loading..."
   const displayEmail = item?.email || "Loading..."
   const displayAvatar = item?.avatar || "/images/userIcon.png"
+
+  const slug = `${item?.id}-${item?.name.toLowerCase().replace(/\s+/g, "-")}`
+
+  const dashboard = async () => {
+    router.push("/dashboard"); 
+  };
+  
+  const profile = async () => {
+    router.push(`/user/${item?.id}`); 
+  };
 
 useEffect(() => {
   if (localStorage.getItem("theme") === "dark") {
@@ -107,7 +116,7 @@ useEffect(() => {
               </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem  onClick={dashboard}>
+              <DropdownMenuItem  onClick={profile}>
                 <IconUserCircle />
                 Profile
               </DropdownMenuItem>
