@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import {
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -37,12 +38,14 @@ export function NavMain({
               <IconCirclePlusFilled />
               <span>Quick Create</span>
             </SidebarMenuButton>
+            
            
           </SidebarMenuItem>
         </SidebarMenu>
 
         {/* Upper sidebar navigation */}
         <SidebarMenu >
+           <SidebarGroupLabel>Admin</SidebarGroupLabel>
           {items.map((item) => (
             <SidebarMenuItem key={item.title} >
               <SidebarMenuButton tooltip={item.title} itemKey={item.title}>

@@ -220,38 +220,33 @@ export const membersData: Member[] = [
   },
 ];
 
-
 export const attendanceData = [
   { date: "2026-02-01", male: 18, female: 22 },
-  { date: "2026-02-02", male: 25, female: 19 },
-  { date: "2026-02-03", male: 12, female: 17 },
-  { date: "2026-02-04", male: 30, female: 28 },
-  { date: "2026-02-05", male: 21, female: 24 },
-  { date: "2026-02-06", male: 35, female: 32 },
-  { date: "2026-02-07", male: 16, female: 20 },
   { date: "2026-02-08", male: 27, female: 29 },
-  { date: "2026-02-09", male: 14, female: 18 },
-  { date: "2026-02-10", male: 22, female: 26 },
-  { date: "2026-02-11", male: 19, female: 23 },
-  { date: "2026-02-12", male: 31, female: 34 },
-  { date: "2026-02-13", male: 24, female: 21 },
-  { date: "2026-02-14", male: 28, female: 30 },
   { date: "2026-02-15", male: 17, female: 16 },
-  { date: "2026-02-16", male: 33, female: 35 },
-  { date: "2026-02-17", male: 26, female: 24 },
-  { date: "2026-02-18", male: 29, female: 27 },
-  { date: "2026-02-19", male: 15, female: 18 },
-  { date: "2026-02-20", male: 34, female: 31 },
-  { date: "2026-02-21", male: 20, female: 22 },
   { date: "2026-02-22", male: 36, female: 38 },
-  { date: "2026-02-23", male: 23, female: 25 },
-  { date: "2026-02-24", male: 32, female: 34 },
-  { date: "2026-02-25", male: 18, female: 20 },
-  { date: "2026-02-26", male: 27, female: 29 },
-  { date: "2026-02-27", male: 21, female: 24 },
-  { date: "2026-02-28", male: 30, female: 33 },
+
   { date: "2026-03-01", male: 19, female: 22 },
-  { date: "2026-03-02", male: 28, female: 26 },
-  { date: "2026-03-03", male: 24, female: 27 },
-];
+  { date: "2026-03-08", male: 28, female: 26 },
+  { date: "2026-03-15", male: 24, female: 27 },
+  { date: "2026-03-22", male: 31, female: 34 },
+  { date: "2026-03-29", male: 29, female: 30 },
+
+  { date: "2026-04-05", male: 35, female: 33 },
+  { date: "2026-04-12", male: 26, female: 28 },
+  { date: "2026-04-19", male: 32, female: 31 },
+  { date: "2026-04-26", male: 30, female: 29 },
+
+  { date: "2026-05-03", male: 34, female: 36 },
+  { date: "2026-05-10", male: 28, female: 30 },
+  { date: "2026-05-17", male: 33, female: 35 },
+  { date: "2026-05-24", male: 27, female: 29 },
+  { date: "2026-05-31", male: 38, female: 40 },
+
+  { date: "2026-06-07", male: 31, female: 32 },
+  { date: "2026-06-14", male: 29, female: 30 },
+  { date: "2026-06-21", male: 36, female: 37 },
+  { date: "2026-06-28", male: 40, female: 42 },
+]
+
 

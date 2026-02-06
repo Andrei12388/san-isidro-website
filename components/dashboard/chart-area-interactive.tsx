@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
@@ -50,6 +50,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function ChartAreaInteractive() {
+  
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
 
@@ -72,6 +73,11 @@ export function ChartAreaInteractive() {
     startDate.setDate(startDate.getDate() - daysToSubtract)
     return date >= startDate
   })
+
+  const maxGenderValue = Math.max(
+  ...filteredData.map(d => Math.max(d.male, d.female))
+)
+
 
   return (
     <Card className="@container/card mt-2">
@@ -124,30 +130,16 @@ export function ChartAreaInteractive() {
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillMale" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-male)"
-                  stopOpacity={1.0}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-male)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillFemale" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-female)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-female)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
+             <linearGradient id="fillMale" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="5%" stopColor="#3b82f6" stopOpacity={1} />
+  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
+</linearGradient>
+
+<linearGradient id="fillFemale" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="5%" stopColor="#ec4899" stopOpacity={0.8} />
+  <stop offset="95%" stopColor="#ec4899" stopOpacity={0.1} />
+</linearGradient>
+
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
@@ -164,6 +156,14 @@ export function ChartAreaInteractive() {
                 })
               }}
             />
+           <YAxis
+          domain={[0, maxGenderValue + 5]}
+          tickCount={5}
+          tickLine={false}
+          axisLine={false}
+        />
+
+
             <ChartTooltip
               cursor={false}
               content={
@@ -178,20 +178,20 @@ export function ChartAreaInteractive() {
                 />
               }
             />
-            <Area
-              dataKey="female"
-              type="natural"
-              fill="url(#fillFemale)"
-              stroke="var(--color-female)"
-              stackId="a"
-            />
-            <Area
-              dataKey="male"
-              type="natural"
-              fill="url(#fillMale)"
-              stroke="var(--color-male)"
-              stackId="a"
-            />
+           <Area
+          dataKey="female"
+          type="linear"
+          fill="url(#fillFemale)"
+          stroke="#ec4899"
+        />
+
+        <Area
+          dataKey="male"
+          type="linear"
+          fill="url(#fillMale)"
+          stroke="#3b82f6"
+        />
+
           </AreaChart>
         </ChartContainer>
       </CardContent>
