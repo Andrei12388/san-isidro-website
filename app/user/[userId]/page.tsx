@@ -195,7 +195,7 @@ const saveForm = () => {
       
         <div className="min-h-full w-full hide-scrollbar-arrows overflow-y-auto flex-1 pt-15 max-w-6xl mx-auto px-4 pb-10 space-y-6">
           {/* scrolable card */}
-          <div className="sticky top-0 z-40 bg-muted flex flex-wrap justify-between align-middle items-center rounded-2xl border shadow-lg p-5 gap-4 border border-blue-500">
+          <div className="sticky top-0 z-40 bg-muted flex flex-wrap justify-between align-middle items-center rounded-2xl border shadow-lg p-5 gap-4 ">
             
             <span className="text-2xl font-semibold">User Profile</span>
             {formError && (
