@@ -2,7 +2,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "User",
+  title: "JCSGO: SAN ISIDRO",
   description: "A Site for Systematic Discipleship",
 };
 export default function RootLayout({
