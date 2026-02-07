@@ -8,9 +8,21 @@ let showMessageCallback: ((msg: Message) => void) | null = null;
 
 export const FloatingMessage = () => {
   const [message, setMessage] = useState<Message>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    showMessageCallback = setMessage;
+    showMessageCallback = (msg) => {
+      if (!msg) {
+        // fade out
+        setVisible(false);
+        // remove after fade
+        setTimeout(() => setMessage(null), 500);
+      } else {
+        setMessage(msg);
+        // small delay to trigger fade-in
+        setTimeout(() => setVisible(true), 10);
+      }
+    };
     return () => {
       showMessageCallback = null;
     };
@@ -24,15 +36,16 @@ export const FloatingMessage = () => {
         position: "absolute",
         top: message.y,
         left: message.x,
-        transform: "translate(-50%, -50%)",
+        transform: `translate(-50%, -50%)`,
         padding: "8px 12px",
-        background: "rgba(0,0,0,0.8)",
-        color: "#fff",
+        background: `var(--background)`,
+        color: `var(--foreground)`,
         borderRadius: "4px",
         pointerEvents: "none",
         whiteSpace: "nowrap",
         zIndex: 1000,
-        transition: "opacity 0.3s",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.5s ease, transform 0.5s ease",
       }}
     >
       {message.text}
