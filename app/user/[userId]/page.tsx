@@ -89,7 +89,7 @@ export default function ProfilePage() {
 
   return<>
     <main className="flex flex-col h-(--header-height) w-full shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-   <header className="flex h-(--header-height) flex-row w-full shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+   <header className="fixed flex h-(--header-height) bg-background flex-row w-full shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center  gap-1 px-4 lg:gap-2 lg:px-6">
                 <div className='flex flex-row gap-2 items-center justify-center'>
                         <a href='/'><Image src="/images/logonotitle.png" alt="San Isidro Logo" width={50} height={50} /></a>
@@ -122,8 +122,8 @@ export default function ProfilePage() {
       </div>
     </header>
     {/*card edit profile container*/}
-    <div className="space-y-6">
- <div className="rounded-2xl max-w-full md:max-w-[100%] min-w-[250px] md:min-w-[500px] h-auto border  shadow-lg overflow-hidden">
+    <div className="border border-red-500 bg-foreground space-y-6 mt-15">
+ <div className=" rounded-2xl mg:max-w-full md:max-w-[100%] min-w-[250px] md:min-w-[500px] h-auto border  shadow-lg overflow-hidden">
       <div className="p-5"><span className='bold'>User Profile</span></div>
   </div>
   {/* Basic Info (full width) */}

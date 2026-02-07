@@ -36,6 +36,7 @@ export default function HeroSection({
     name: string
     email: string
     avatar: string
+    id: string
   }
   isLoading:boolean
 }) {
