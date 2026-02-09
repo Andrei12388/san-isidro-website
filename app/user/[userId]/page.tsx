@@ -18,11 +18,13 @@ import {
   IconDeviceFloppy,
   IconLock,
   IconMail,
+  IconX,
 } from '@tabler/icons-react'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
+import styles from "./PassModalCard.module.css"
 
 interface UserType {
   name: string
@@ -42,12 +44,108 @@ function Card({ title }: { title: string }) {
   )
 }
 
+function PassModalCard({
+  open,
+  onClose,
+}: {
+  open: boolean
+  onClose: () => void
+}) {
+  const [oldPass, setOldPass] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+
+  
+  const [show, setShow] = useState(open);
+
+  useEffect(() => {
+    if (open) {
+      setShow(true); 
+    } else {
+     
+      const timer = setTimeout(() => setShow(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
+  if (!show) return null;
+  return (
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center ${open ? 'bg-black/50 backdrop-blur-sm' : ''}  `}
+      onClick={onClose}
+    >
+      <div
+          className={`w-[360px] rounded-2xl bg-background shadow-2xl p-6 border ${
+    open ? styles.overlay : styles.overlayClose
+  }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <section className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold">Change Password</h2>
+
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-muted"
+          >
+            <IconX size={20} className='cursor-pointer rounded-sm'/>
+          </button>
+        </section>
+        
+        {/* Form */}
+        <section className="flex flex-col gap-4">
+          <input
+            type="password"
+            placeholder="Old Password"
+            value={oldPass}
+            onChange={(e) => setOldPass(e.target.value)}
+            className="border rounded-lg p-3 bg-background"
+          />
+         <div className="border-b my-4" />
+
+          <input
+            type="password"
+            placeholder="New Password"
+            value={newPass}
+            onChange={(e) => setNewPass(e.target.value)}
+            className="border rounded-lg p-3 bg-background"
+          />
+
+          <input
+            type="password"
+            placeholder="Confirm New Password"
+            value={confirmPass}
+            onChange={(e) => setConfirmPass(e.target.value)}
+            className="border rounded-lg p-3 bg-background"
+          />
+
+         <button
+            disabled={
+              !oldPass ||
+              !newPass ||
+              !confirmPass ||
+              newPass !== confirmPass
+            }
+            className="mt-2 bg-button-blue text-background py-3 rounded-lg disabled:opacity-40 disabled:pointer-events-none"
+          >
+            Update Password
+          </button>
+
+        </section>
+      </div>
+    </div>
+  )
+}
+
+
 export default function ProfilePage() {
   const [photo, setPhoto] = useState('')
   const [user, setUser] = useState<UserType | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const fetchOnce = useRef(false)
+  const [passModal, setPassModal] = useState(false)
+  
 
 
   //form inputs
@@ -255,8 +353,11 @@ const saveForm = () => {
                 <span className="text-sm opacity-70 flex flex-row gap-2">ID: {user?.id} <IconCopy className='cursor-pointer' onClick={(e) => copyToClipboard(`${user?.id}`,() => handleClickNotify(e))}/> Age: {age || "0"}</span>
                
            <FloatingMessage />
-
-                <button className="mt-2 border rounded-sm px-4 py-2 flex cursor-pointer items-center gap-2 bg-muted hover:bg-muted-foreground/30">
+              
+               <PassModalCard open={passModal}
+                    onClose={() => setPassModal(false)}
+                    />
+                <button onClick={() => setPassModal(true)} className="mt-2 border rounded-sm px-4 py-2 flex cursor-pointer items-center gap-2 bg-muted hover:bg-muted-foreground/30">
                   <IconLock /> Change Password
                 </button>
               </div>
