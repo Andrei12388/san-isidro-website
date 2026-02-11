@@ -66,9 +66,9 @@ export default function LoginPage() {
       return;
     }
 
-    // Redirect to dashboard
+    // Redirect to Homepage
     setMessageFB({ text: `Welcome ${name}!`, severity: "success" });
-    router.push("/dashboard");
+    router.push("/");
 
   } catch (err) {
     console.error(err);
@@ -108,7 +108,7 @@ const onSubmit = async (e: FormEvent) => {
 
     setMessage("Login successful!");
 
-    router.push("/dashboard");
+    router.push("/");
 
   } catch (err: any) {
     console.error(err);

@@ -2,7 +2,7 @@ import { IconCamera } from "@tabler/icons-react";
 import React, { useRef, useState } from "react";
 
 type FormPhotoProps = {
-  link?: string;          // base64 string
+  link?: string; // can be base64 OR URL
   size: number;
   editable?: boolean;
   onChange?: (base64: string, file: File) => void;
@@ -15,7 +15,12 @@ export const FormPhoto: React.FC<FormPhotoProps> = ({
   onChange,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState(link);
+
+  const [preview, setPreview] = useState(link || "");
+
+React.useEffect(() => {
+  setPreview(link || "");
+}, [link]);
 
   const openFileDialog = () => {
     inputRef.current?.click();
@@ -41,10 +46,13 @@ export const FormPhoto: React.FC<FormPhotoProps> = ({
       >
         {preview ? (
           <img
-            src={`data:image/png;base64,${preview}`}
-            className="w-full h-full rounded-full object-cover"
-            alt="photo"
-          />
+      src={preview?.startsWith("http")
+        ? preview
+        : `data:image/png;base64,${preview}`}
+      className="w-full h-full rounded-full object-cover"
+      alt="photo"
+    />
+
         ) : (
           <span className="text-muted-foreground text-xs">No photo</span>
         )}

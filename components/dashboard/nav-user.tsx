@@ -66,14 +66,12 @@ export function NavUser({ item }: { item: UserType | null }) {
   const displayEmail = item?.email || "Loading..."
   const displayAvatar = item?.avatar || "/images/userIcon.png"
 
-  const slug = `${item?.id}-${item?.name.toLowerCase().replace(/\s+/g, "-")}`
-
   const dashboard = async () => {
     router.push("/dashboard"); 
   };
   
   const profile = async () => {
-    router.push(`/user/${item?.id}`); 
+    router.push(`/user/profile`); 
   };
 
 useEffect(() => {

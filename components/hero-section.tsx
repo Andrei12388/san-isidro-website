@@ -43,9 +43,9 @@ export default function HeroSection({
     
     return (
         <>
-            <HeroHeader item={user}/>
             
-            <main className="overflow-hidden">
+           
+           <main className="overflow-hidden">
            
                 <div
                     aria-hidden

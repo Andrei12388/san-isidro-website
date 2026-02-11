@@ -4,6 +4,7 @@ import LightRays from '@/components/LightRays';
 import ContentSection from "@/components/content-3";
 import Features from "@/components/features-3";
 import FooterSection from "@/components/footer";
+import { HeroHeader } from '@/components/header';
 import HeroSection from "@/components/hero-section";
 import IntegrationsSection from "@/components/integrations-3";
 import { useRouter } from "next/navigation";
@@ -73,7 +74,7 @@ export default function Home() {
        // router.push('/login');
         setUser(null)
       } finally {
-        if(!user)
+        
         setIsLoading(false)
       }
     }
@@ -102,8 +103,11 @@ export default function Home() {
     saturation={1}
 />
 </div>
+     <HeroHeader item={user}/>
+    
      <HeroSection user={user} isLoading={isLoading}/>
      <ContentSection />
+       
      </section>
      
      <section id="discipleship">
