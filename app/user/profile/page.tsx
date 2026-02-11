@@ -26,6 +26,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import styles from "./PassModalCard.module.css"
+import { Spinner } from '@/components/ui/loadingSpinner'
 
 interface UserType {
   name: string
@@ -568,7 +569,12 @@ const saveForm = async () => {
             </div>
           </div>
 
-          
+          {!user ?
+          <div className='w-full flex items-center  justify-center'>
+          <span className='text-center '> Loading Personal Information...</span>
+          <Spinner size={16} />
+          </div> : 
+          <div>
           <section className=" top-4  bg-muted rounded-2xl shadow-lg">
             {/*Upper part border */}
       <div className="px-5 py-3 border-b">
@@ -734,14 +740,16 @@ const saveForm = async () => {
 </div>
 
 
-          </section>
+          </section> 
         
             <div className="grid gap-6 md:grid-cols-2">
               <Card title="Contacts" />
               <Card title="Address" />
             </div>
          
-        </div>
+        </div>}
+        </div> 
+          
      
     </main>
     </>

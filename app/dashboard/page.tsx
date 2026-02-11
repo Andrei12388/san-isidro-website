@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import PostsSection from "@/components/dashboard/sections/posts"
 import AnalyticsSection from "@/components/dashboard/sections/analytics"
 import MembersSection from "@/components/dashboard/sections/members"
+import { Spinner } from "@/components/ui/loadingSpinner"
 
 
 export default function Page() {
@@ -97,7 +98,9 @@ export default function Page() {
        {activeItem === 'Dashboard' && <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              {isLoading && <p className="text-center text-gray-500">Loading user info...</p>}
+              {isLoading && <div className="flex items-center justify-center"> <p className="text-center text-gray-500">Loading user info...</p>
+              <Spinner size={16} />
+              </div>}
               {error && <p className="text-center text-red-500">Error: {error}</p>}
 
              {user && <div> <SectionCards />
