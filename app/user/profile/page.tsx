@@ -132,11 +132,11 @@ const handleChangePassword = async () => {
   if (!show) return null;
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${open ? 'bg-black/50 backdrop-blur-sm' : ''}  `}
+      className={` fixed inset-0 z-50 flex items-center justify-center ${open ? 'bg-black/50 backdrop-blur-sm' : ''}  `}
       onClick={onClose}
     >
       <div
-          className={`w-[360px] rounded-2xl bg-background shadow-2xl p-6 border ${
+          className={`w-[360px] lg:relative lg:top-auto top-[5%] absolute rounded-2xl bg-background shadow-2xl p-6 border ${
     open ? styles.overlay : styles.overlayClose
   }`}
         onClick={(e) => e.stopPropagation()}
@@ -588,12 +588,12 @@ const saveForm = async () => {
           />
 
 
-              <div className="flex flex-col">
+              <div className="flex flex-col ">
                 <span className="font-medium">{form?.fName} {form?.lName}</span>
-                <span className="text-sm opacity-70 flex flex-row gap-2">
-                  ID: {user?.id} <IconCopy className='cursor-pointer' onClick={(e) => copyToClipboard(`${user?.id}`,() => handleClickNotify(e))}/> 
+                <span className="text-sm opacity-70 flex lg:flex-row lg:gap-2 gap-1 flex-col">
+                <span className='flex flex-row gap-1'>  ID: {user?.id} <IconCopy className='cursor-pointer' onClick={(e) => copyToClipboard(`${user?.id}`,() => handleClickNotify(e))}/> </span>
                   Age: {age || "0"} 
-                  <span className='flex flex-row gap-2'>Status: Active <span className="w-3 h-3 bg-green-500 rounded-full self-center mb-0.5 items-center "></span></span>
+                  <span className='flex lg:flex-row lg:gap-2 gap-1'>Status: Active <span className="w-3 h-3 bg-green-500 rounded-full self-center mb-0.5 items-center"></span></span>
                   </span>
                
            <FloatingMessage />
@@ -625,7 +625,7 @@ const saveForm = async () => {
         </div>
       </div>
        {/*below full name section */}
-    <div className="w-full px-5 grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-5 mt-2">
+    <div className="w-full px-5 gap-y-2 gap-x-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5 mt-2  ">
 
   {/* Birthday */}
   <div className="flex flex-col gap-1 ">
@@ -662,7 +662,7 @@ const saveForm = async () => {
   </div>
 
    {/* Gender */}
-  <div className="flex flex-col gap-1 mb-5">
+  <div className="flex flex-col gap-1">
     <label className="text-sm font-medium">Gender</label>
     <Select value={form.gender} onValueChange={(value) =>
               setForm((f) => ({ ...f, gender: value }))
