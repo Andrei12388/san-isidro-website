@@ -31,6 +31,7 @@ import { Spinner } from '@/components/ui/loadingSpinner'
 interface UserType {
   name: string
   email: string
+  avatar: string
   id: number
 }
 
