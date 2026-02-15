@@ -46,26 +46,7 @@ export default function Home() {
           console.log("Session does not contain access_token or user ID")
         }
   
-        // 2️⃣ Fetch full user info from backend API
-        const userUrl = `https://isidro-webapi.onrender.com/users/${userData.user}`
-        console.log("Fetching user info from URL:", userUrl)
-  
-        const userInfoRes = await fetch(userUrl, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${userData.access_token}`,
-          },
-        })
-  
-        if (!userInfoRes.ok) {
-          console.log(`Failed to fetch user info: ${userInfoRes.status}`)
-        }
-  
-        const resUser = await userInfoRes.json()
-        console.log("Fetched full user info:", resUser)
-  
-        setUser(resUser || null)
+        setUser(userData || null)
         fetchOnce.current = true // ✅ mark fetch as done
   
       } catch (err: any) {

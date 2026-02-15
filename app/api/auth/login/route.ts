@@ -10,6 +10,7 @@ export async function POST(req: Request) {
     const response = await fetch(authLoginApi, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      
       body: JSON.stringify({ email, password }),
     });
 
@@ -24,6 +25,8 @@ export async function POST(req: Request) {
 
     const cookieStore = await cookies();
 
+    console.log("cookie fetch data", result, cookieStore)
+
     // ✅ access token
     cookieStore.set("access_token", result.access_token, {
       httpOnly: true,
@@ -34,15 +37,7 @@ export async function POST(req: Request) {
     });
 
     // ✅ refresh token (NEW)
-    if (result.refresh_token) {
-      cookieStore.set("refresh_token", result.refresh_token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
-      });
-    }
+    
 
     // ✅ user id (KEEP OLD WORKING VERSION)
     cookieStore.set("user_id", String(result.id), {
@@ -53,8 +48,29 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
+    
+    // ✅ Name
+    cookieStore.set("name", String(result.name), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+      // ✅ Email
+    cookieStore.set("email", String(result.email), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
     console.log("Cookies set:", {
       id: result.id,
+      name: result.name,
+      email: result.email,
       hasRefresh: !!result.refresh_token,
     });
 

@@ -1,21 +1,29 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const getUserApi = "https://isidro-webapi.onrender.com/users/"
-
 export async function GET() {
   const cookieStore = await cookies();
-  const access_token = cookieStore.get("access_token")?.value ?? null;
-  const userCookie = cookieStore.get("user_id")?.value;
+  console.log("Cookie Store", cookieStore);
 
-  let user = null;
-  if (userCookie) {
-    try {
-      user = JSON.parse(userCookie);
-    } catch {
-      user = null;
-    }
+  const access_token = cookieStore.get("access_token")?.value ?? null;
+  const refresh_token = cookieStore.get("refresh_token")?.value ?? null;
+  const userIdStr = cookieStore.get("user_id")?.value;
+  const name = cookieStore.get("name")?.value ?? null;
+  const email = cookieStore.get("email")?.value ?? null;
+
+  // ✅ Convert user_id string to number safely
+  const user = userIdStr ? parseInt(userIdStr, 10) : null;
+
+  // Optional: handle NaN
+  if (userIdStr && isNaN(user)) {
+    console.warn("Invalid user_id cookie value:", userIdStr);
   }
 
-  return NextResponse.json({ access_token, user });
+  return NextResponse.json({
+    access_token,
+    refresh_token,
+    user, // now an integer or null
+    name,
+    email,
+  });
 }

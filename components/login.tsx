@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { authLogin } from '@/app/api/fetchdata';
 import React, { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import FacebookLogin, {SuccessResponse} from '@greatsumini/react-facebook-login';
@@ -38,6 +37,7 @@ export default function LoginPage() {
         accessToken: response.accessToken // only used for this call
       }),
     });
+    
 
     const fbData = await res.json();
 
@@ -99,10 +99,16 @@ const onSubmit = async (e: FormEvent) => {
     setSubmitting(true);
     setMessage("Logging in...");
 
-    const result = await authLogin(email, password);
+    // api/fetchdata.ts
+  const result = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+    credentials: "include",
+  });
 
     // your route returns { success: true }
-    if (!result?.success) {
+    if (!result) {
       throw new Error("Invalid email or password");
     }
 

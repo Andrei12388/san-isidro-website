@@ -40,7 +40,7 @@ interface UserType {
   name: string
   email: string
   avatar: string
-  id: string
+  id: number
 }
 
 export function NavUser({ item }: { item: UserType | null }) {
