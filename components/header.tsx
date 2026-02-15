@@ -24,7 +24,7 @@ export const HeroHeader = ({
     name: string
     email: string
     avatar: string
-    id: string
+    id: number
   }
 }) => {
     const [menuState, setMenuState] = React.useState(false)
