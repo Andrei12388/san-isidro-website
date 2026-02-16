@@ -8,6 +8,7 @@ import { HeroHeader } from '@/components/header';
 import HeroSection from "@/components/hero-section";
 import IntegrationsSection from "@/components/integrations-3";
 import { useRouter } from "next/navigation";
+import { fetchWithTimeout, startHealthPolling } from "@/lib/fetchWithTimeout";
 import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
@@ -18,11 +19,18 @@ export default function Home() {
     const fetchOnce = useRef(false) // ✅ track fetch status
     const router = useRouter();
     
-    
+   useEffect(() => {
+  const id = startHealthPolling("/api/health");
+
+  return () => clearInterval(id);
+}, []);
+
+
   
    useEffect(() => {
+    
      const fetchGet = async() => {
-      
+   
       const res = await fetch('/api/api')
       const data = await res.json();
      console.log(data.message);

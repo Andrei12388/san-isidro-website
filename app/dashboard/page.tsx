@@ -13,6 +13,7 @@ import PostsSection from "@/components/dashboard/sections/posts"
 import AnalyticsSection from "@/components/dashboard/sections/analytics"
 import MembersSection from "@/components/dashboard/sections/members"
 import { Spinner } from "@/components/ui/loadingSpinner"
+import { startHealthPolling } from "@/lib/fetchWithTimeout"
 
 
 export default function Page() {
@@ -21,6 +22,13 @@ export default function Page() {
   const [user, setUser] = useState<any>(null)
   const fetchOnce = useRef(false) // ✅ track fetch status
   const router = useRouter();
+
+  //for calling postgre api
+    useEffect(() => {
+    const id = startHealthPolling("/api/health");
+  
+    return () => clearInterval(id);
+  }, []);
 
  useEffect(() => {
   if (fetchOnce.current) return // already fetched

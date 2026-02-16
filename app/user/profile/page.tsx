@@ -27,6 +27,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import styles from "./PassModalCard.module.css"
 import { Spinner } from '@/components/ui/loadingSpinner'
+import { startHealthPolling } from '@/lib/fetchWithTimeout'
 
 interface UserType {
   name: string
@@ -206,13 +207,19 @@ export default function ProfilePage() {
 
   const [user, setUser] = useState<UserType | null>(null)
   const [personalProfileFetched, setPersonalProfileFetched] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: boolean }>({});
+
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const fetchOnce = useRef(false)
   const [accessToken, setAccessToken] = useState('')
   const [passModal, setPassModal] = useState(false)
   
+  useEffect(() => {
+  const id = startHealthPolling("/api/health");
 
+  return () => clearInterval(id);
+}, []);
 
   //form inputs
   const [form, setForm] = useState({
@@ -225,6 +232,10 @@ export default function ProfilePage() {
   fName: "",
   lName: "",
   photo_image: "",
+
+  //contacts
+  phoneNumber: "",
+  email: "",
 })
 
 
@@ -262,13 +273,26 @@ const [savingForm, setSavingForm] = useState(false);
 
 //save form personal data
 const saveForm = async () => {
-            setSavingForm(true)
-            if (!form.fName || !form.lName || !form.birthday || !form.age || !form.gender ||
-                !form.level || !form.ministry || !form.group) {
-              setFormError("Please fill out all required fields before saving.");
-              setSavingForm(false)
-              return;
-            }
+             setSavingForm(true);
+
+             //validations
+              const errors: { [key: string]: boolean } = {};
+              const requiredFields = ["fName", "lName", "birthday", "age", "gender", "level", "ministry", "group", "phoneNumber", "email"];
+
+              requiredFields.forEach(field => {
+                if (!form[field as keyof typeof form]) {
+                  errors[field] = true; // mark missing field
+                }
+              });
+
+              setFieldErrors(errors);
+
+              if (Object.keys(errors).length > 0) {
+                setFormError("Please fill out all required fields before saving.");
+                setSavingForm(false);
+                return;
+              }
+              //end of validations
 
             //upload image to cloudinary
             
@@ -325,6 +349,8 @@ const saveForm = async () => {
                     country: "string",
                     bio: "string",
                     profile_image: uploadedPhotoUrl, // ← include Cloudinary URL
+                    phoneNumber: "string",
+                    email: "string",
                   }),
                 }
               )
@@ -352,6 +378,7 @@ const saveForm = async () => {
                               },
                                   body: JSON.stringify({
                                     name: `${form.fName} ${form.lName}`,
+                                    email: form.email,
                                   }),
                                 },)
 
@@ -434,7 +461,9 @@ const saveForm = async () => {
                           state: "string",
                           country: "string",
                           bio: "string",
-                          profile_image: "string"
+                          profile_image: "string",
+                          phoneNumber: "string",
+                          email: userData.email,
                         }),
                       }
                     );
@@ -461,7 +490,9 @@ const saveForm = async () => {
           gender: personalInfo.gender ?? "",
           fName: personalInfo.first_name ?? "",
           lName: personalInfo.last_name ?? "",
-          photo_image: personalInfo.profile_image ?? ""
+          photo_image: personalInfo.profile_image ?? "",
+          phoneNumber: personalInfo.phoneNumber ?? "",
+          email: userData.email ?? "",
         }
         console.log("defaults:",defaults)
        
@@ -608,13 +639,20 @@ const saveForm = async () => {
         <div className=' basis-1/2 gap-1 rounded-sm flex flex-col'>
         First Name:
         <div className='rounded-sm'>
-          <input value={form.fName} placeholder='First Name . . . ' onChange={(e) => setForm(f => ({ ...f, fName: e.target.value }))} type='text' className='bg-background rounded-sm mb-1 w-full px-2 py-1'></input>
+          <input value={form.fName} placeholder='First Name . . . ' onChange={(e) => setForm(f => ({ ...f, fName: e.target.value }))} type='text' 
+           className={`bg-background rounded-sm mb-1 w-full px-2 py-1 border ${
+    fieldErrors.fName ? "border-red-500" : "border-gray-300"}`}>
+
+          </input>
         </div>
         </div>
         <div className=' basis-1/2 gap-1 rounded-sm flex flex-col'>
         Last Name:
         <div className='rounded-sm'>
-          <input value={form.lName} placeholder='Last Name . . . ' onChange={(e) => setForm(f => ({ ...f, lName: e.target.value }))} type='text' className='bg-background rounded-sm mb-1 w-full px-2 py-1'></input>
+          <input value={form.lName} placeholder='Last Name . . . ' onChange={(e) => setForm(f => ({ ...f, lName: e.target.value }))} type='text' 
+           className={`bg-background rounded-sm mb-1 w-full px-2 py-1 border ${
+    fieldErrors.lName ? "border-red-500" : "border-gray-300"
+  }`}></input>
         </div>
         </div>
       </div>
@@ -628,7 +666,7 @@ const saveForm = async () => {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant={`${fieldErrors.birthday ? "destructive" : "outline"}`}
           className="justify-between font-normal"
         >
           {form.birthday ? format(form.birthday, "PPP") : "Pick a date"}
@@ -661,7 +699,7 @@ const saveForm = async () => {
     <Select value={form.gender} onValueChange={(value) =>
               setForm((f) => ({ ...f, gender: value }))
             }>
-      <SelectTrigger>
+      <SelectTrigger className={`${fieldErrors.gender ? "border border-red-500" : ""}`}>
         <SelectValue placeholder="Select gender" />
       </SelectTrigger>
       <SelectContent>
@@ -677,7 +715,7 @@ const saveForm = async () => {
     <Select value={form.level} onValueChange={(value) =>
             setForm((f) => ({ ...f, level: value }))
           }>
-      <SelectTrigger>
+      <SelectTrigger className={`${fieldErrors.level ? "border border-red-500" : ""}`}>
         <SelectValue placeholder="Select level" />
       </SelectTrigger>
       <SelectContent>
@@ -695,7 +733,7 @@ const saveForm = async () => {
     <Select value={form.ministry} onValueChange={(value) =>
                   setForm((f) => ({ ...f, ministry: value }))
                 }>
-      <SelectTrigger>
+      <SelectTrigger className={`${fieldErrors.ministry ? "border border-red-500" : ""}`}>
         <SelectValue placeholder="Select ministry" />
       </SelectTrigger>
       <SelectContent>
@@ -713,7 +751,7 @@ const saveForm = async () => {
     <Select value={form.group} onValueChange={(value) =>
               setForm((f) => ({ ...f, group: value }))
             }>
-      <SelectTrigger>
+      <SelectTrigger className={`${fieldErrors.group ? "border border-red-500" : ""}`}>
         <SelectValue placeholder="Select group" />
       </SelectTrigger>
       <SelectContent>
@@ -735,11 +773,52 @@ const saveForm = async () => {
               <div className="rounded-2xl border  bg-muted shadow-lg overflow-hidden">
                       <div className="px-5 py-3 border-b  bg-muted/70">
                         <h2 className="text-lg font-semibold">Contacts</h2>
+                       
                       </div>
-                      <div className="p-5">
+                  
+                      <div className="p-5 flex flex-row gap-5 align-middle items-center content-center">
                         <svg version="1.0" xmlns="http://www.w3.org/2000/svg"  width="30" height="30" viewBox="0 0 600.000000 600.000000"  preserveAspectRatio="xMidYMid meet"> <g transform="translate(0.000000,600.000000) scale(0.100000,-0.100000)" 
                         className='fill-foreground'> <path d="M2670 5830 c-558 -75 -1058 -296 -1490 -658 -116 -98 -312 -297 -403 -412 -516 -647 -731 -1484 -592 -2308 81 -477 293 -946 601 -1332 93 -115 327 -348 449 -445 521 -416 1147 -635 1815 -635 803 0 1536 312 2096 891 440 456 717 1039 796 1679 19 154 16 554 -5 709 -47 337 -137 632 -281 920 -158 314 -325 541 -588 796 -461 449 -1032 721 -1678 800 -176 21 -543 19 -720 -5z m710 -356 c849 -109 1581 -635 1961 -1409 184 -377 268 -764 256 -1185 -4 -107 -11 -229 -17 -270 -83 -574 -327 -1067 -730 -1470 -401 -401 -923 -655 -1490 -725 -161 -20 -459 -20 -620 0 -443 55 -870 228 -1229 498 -125 94 -343 306 -444 432 -657 816 -751 1956 -235 2858 520 908 1512 1403 2548 1271z"/> <path d="M2902 4489 c-690 -66 -1213 -506 -1362 -1144 -42 -182 -55 -451 -30 -635 79 -587 434 -1023 989 -1215 214 -73 508 -112 766 -100 267 13 372 49 411 142 34 79 0 183 -71 218 -37 18 -63 19 -345 20 -278 0 -314 2 -407 23 -487 107 -791 388 -904 835 -30 119 -38 397 -14 539 91 558 504 919 1090 954 184 11 383 -19 545 -83 239 -94 439 -294 534 -536 138 -349 103 -824 -67 -927 -68 -42 -157 -16 -193 56 -18 36 -19 71 -24 464 -6 475 -5 466 -78 532 -95 86 -293 73 -365 -24 -31 -42 -47 -90 -47 -139 0 -34 -3 -39 -23 -39 -16 0 -28 12 -46 45 -32 61 -120 141 -185 170 -149 66 -336 56 -496 -25 -77 -39 -181 -153 -228 -250 -71 -145 -86 -217 -86 -425 0 -194 9 -253 60 -384 98 -247 316 -400 571 -401 180 0 323 81 397 228 35 68 53 67 90 -3 50 -97 149 -166 285 -201 100 -25 310 -16 416 19 299 98 476 361 516 767 40 411 -100 828 -370 1101 -313 315 -801 469 -1329 418z m223 -1238 c83 -38 129 -118 146 -251 19 -153 -18 -297 -91 -364 -86 -78 -197 -73 -280 12 -72 75 -103 216 -81 362 26 165 108 260 226 260 22 0 58 -9 80 -19z"/> </g> </svg>
-                        </div>              
+                        <div className='flex flex-col'>
+                         
+                            <span className="font-medium">(+63) {form.phoneNumber}</span>
+                            <span className="text-sm opacity-70 flex lg:flex-row lg:gap-2 gap-1 flex-col">{form.email} <IconCopy className='cursor-pointer' onClick={(e) => copyToClipboard(`${user?.email}`,() => handleClickNotify(e))}/> </span>
+                        </div>
+                       
+                    </div> 
+
+                <div className='flex lg:flex-row flex-col px-5 gap-3 justify-between'>
+        <div className=' basis-1/2 gap-1 rounded-sm flex flex-col'>
+        Phone
+       <div className="rounded-sm mb-3">
+  <input
+    type="tel"
+    inputMode="numeric"
+    maxLength={10}
+    value={form.phoneNumber}
+    placeholder="Phone Number . . ."
+    onChange={(e) => {
+      const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 11)
+      setForm(f => ({ ...f, phoneNumber: onlyDigits }))
+    }}
+    className={`bg-background rounded-sm w-full px-2 py-2 border ${
+    fieldErrors.phoneNumber ? "border-red-500" : "border-gray-300"}`}
+  />
+</div>
+        </div>
+        <div className=' basis-1/2 gap-1 rounded-sm flex flex-col'>
+        Email
+        <div className='rounded-sm'>
+          <input value={form.email} 
+          placeholder='Email . . . ' 
+          onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))} 
+          type='email' 
+          className={`bg-background rounded-sm w-full px-2 py-2 border ${
+    fieldErrors.email ? "border-red-500" : "border-gray-300"}`}></input>
+        </div>
+        </div>
+      </div>
+
                         </div>
               {/*Address section */}
                <div className="rounded-2xl border bg-muted shadow-lg overflow-hidden">
