@@ -558,8 +558,8 @@ const saveForm = async () => {
           </div>
 
           {!personalProfileFetched ?
-          <div className='w-full flex items-center  justify-center'>
-          <span className='text-center '> Loading Personal Information...</span>
+          <div className='w-full flex items-center justify-center'>
+          <span className='text-center '> Loading Personal Information </span> 
           <Spinner size={16} />
           </div> : 
           <div>

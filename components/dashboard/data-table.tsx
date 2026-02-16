@@ -154,15 +154,15 @@ const levelColors: Record<string, string> = {
 }
 
 const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
-  // Drag
+ 
+    // Drag
   {
     id: "drag",
     header: () => null,
     cell: ({ row }) => <DragHandle id={row.original.id} />,
   },
-
   // ✅ PHOTO (ADD HERE)
- {
+ {id:'image',
   accessorKey: "image",
   header: "Photo",
   cell: ({ row }) => {
@@ -181,30 +181,35 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
 
   // Name
   {
+    id:'name',
     accessorKey: "name",
-    header: "Name",
+    header: "Full Name",
   },
 
   // Email
   {
+    id:'email',
     accessorKey: "email",
     header: "Email",
   },
 
   // Gender
   {
+    id:'gender',
     accessorKey: "gender",
     header: "Gender",
   },
 
   // Age
   {
+    id:'age',
     accessorKey: "age",
     header: "Age",
   },
 
   // ✅ Level badge with colors
   {
+    id:'level',
     accessorKey: "level",
     header: "Level",
     cell: ({ row }) => (
@@ -218,21 +223,26 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
 
   // Group
   {
+    id:'group',
     accessorKey: "group_name",
     header: "Group",
   },
 
   // Phone
   {
+    id:'phone',
     accessorKey: "phone",
     header: "Phone",
   },
 
   // Address
   {
+    id:'address',
     accessorKey: "address",
     header: "Address",
   },
+ 
+
 
   // ✅ ACTION BUTTONS
   {
@@ -307,7 +317,12 @@ export function DataTable({
  data: z.infer<typeof memberSchema>[]
 }) {
   const [data, setData] = React.useState(() => initialData)
+  const [refreshKey, setRefreshKey] = React.useState(0)
   const [rowSelection, setRowSelection] = React.useState({})
+  const [columnOrder, setColumnOrder] = React.useState(
+  () => columns.map(col => col.id!)
+)
+
   
  const [columnVisibility, setColumnVisibility] =
   React.useState<VisibilityState>(() => {
@@ -365,12 +380,22 @@ export function DataTable({
       columnVisibility,
       rowSelection,
       pagination,
+      columnOrder,
     },
     getRowId: (row) => row.id.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
+    onColumnVisibilityChange: (updater) => {
+  setColumnVisibility(updater)
+  console.log('changed page')
+  setRefreshKey(k => k + 1) // force remount
+   setPagination((prev) => ({
+    ...prev,
+    pageIndex: prev.pageIndex, // same page → still forces rebuild
+  }))
+},
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -402,6 +427,7 @@ export function DataTable({
       }
       return newData
     })
+     table.setPageIndex(table.getState().pagination.pageIndex)
   }
 }
 
@@ -506,7 +532,7 @@ export function DataTable({
             sensors={sensors}
             id={sortableId}
           >
-            <Table>
+            <Table  key={refreshKey}>
               <TableHeader className="bg-muted sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>

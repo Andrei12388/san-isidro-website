@@ -36,6 +36,7 @@ import { Logo } from "../logo"
 import Link from "next/link"
 import Image from "next/image"
 import { useSidebar } from "@/components/ui/sidebar"
+import { Spinner } from "../ui/loadingSpinner"
 
 const data = {
   user: {
@@ -185,7 +186,7 @@ export function AppSidebar({ isLoading, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         
-       {isLoading ? <span className="text-center">Loading...</span> : <> <NavMain items={data.navMain} />
+       {isLoading ? <span className="text-center flex flex-row justify-center"><Spinner  size={16} /> </span> : <> <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
                 </>}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
