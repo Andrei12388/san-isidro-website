@@ -11,6 +11,7 @@ export async function GET() {
   const userIdStr = cookieStore.get("user_id")?.value;
   const name = cookieStore.get("name")?.value ?? null;
   const email = cookieStore.get("email")?.value ?? null;
+  const profile_image = cookieStore.get("profile_image")?.value ?? null;
   
 
   // ✅ Convert user_id string to number safely
@@ -27,5 +28,6 @@ export async function GET() {
     user, // now an integer or null
     name,
     email,
+    profile_image,
   });
 }

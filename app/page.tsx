@@ -54,7 +54,12 @@ export default function Home() {
           console.log("Session does not contain access_token or user ID")
         }
   
-        setUser(userData || null)
+          setUser({
+          id: userData.user, // 
+          name: userData.name,
+          email: userData.email,
+          avatar: userData.profile_image, // optional
+        });
         fetchOnce.current = true // ✅ mark fetch as done
   
       } catch (err: any) {

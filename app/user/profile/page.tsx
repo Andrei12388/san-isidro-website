@@ -391,6 +391,27 @@ const saveForm = async () => {
               showFloatingMessage("Profile Saved!✅", window.innerWidth / 2, 100); // optional floating confirmation
               setPhoto(uploadedPhotoUrl) // update preview in case it changed
               setPhotoFile(null) // reset file
+                   //Save to cookies
+              await fetch("/api/auth/update-user-cookies", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          name:`${form.fName} ${form.lName}`,
+                          email: form.email,
+                          profile_image: uploadedPhotoUrl
+                        })
+                      });
+              //refetch session cookie
+               const sessionRes = await fetch('/api/auth/getSession')
+                const userData = await sessionRes.json()
+                setAccessToken(userData.access_token)
+
+                      setUser({
+                id: userData.user, // 
+                name: userData.name,
+                email: userData.email,
+                avatar: userData.profile_image, // optional
+              });
             } catch (err: any) {
               console.log(`Error save profile: ${err.message || err}`);
               setSavingForm(false)
@@ -422,8 +443,9 @@ const saveForm = async () => {
           id: userData.user, // 
           name: userData.name,
           email: userData.email,
-          avatar: "", // optional
+          avatar: userData.profile_image, // optional
         });
+        console.log("Userdata cookie",userData)
         fetchOnce.current = true
 
         //fetch personal Info from api
@@ -501,6 +523,7 @@ const saveForm = async () => {
         console.log("Profile image",personalInfo.profile_image)
         setPhoto(personalInfo.profile_image)
         setPersonalProfileFetched(true);
+
       } catch {
         router.push('/login')
       } finally {

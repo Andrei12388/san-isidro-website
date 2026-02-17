@@ -1,3 +1,4 @@
+import { id } from "date-fns/locale";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -67,12 +68,40 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
+    //Fetch image from personal user info api
+                  const personalInfoRes = await fetch(
+                  `https://isidro-webapi.onrender.com/api/personal-info/${result.id}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${result.access_token}`,
+                    },
+                  }
+                )
+
+                          if (!personalInfoRes.ok) {
+                            console.log("Error fetching image")
+                          }
+                const imageRes = await personalInfoRes.json()
+                console.log("Image Fetch:",imageRes.profile_image)
+
+     // ✅ Image
+    cookieStore.set("profile_image", String(imageRes.profile_image), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
     console.log("Cookies set:", {
       id: result.id,
       name: result.name,
       email: result.email,
+      profile_image: imageRes.profile_image,
       hasRefresh: !!result.refresh_token,
     });
+
+                        
 
     return NextResponse.json({ success: true });
 
