@@ -14,6 +14,7 @@ import AnalyticsSection from "@/components/dashboard/sections/analytics"
 import MembersSection from "@/components/dashboard/sections/members"
 import { Spinner } from "@/components/ui/loadingSpinner"
 import { startHealthPolling } from "@/lib/fetchWithTimeout"
+import DevotionsSection from "@/components/dashboard/sections/devotions"
 
 
 export default function Page() {
@@ -111,6 +112,7 @@ export default function Page() {
         {activeItem === 'Posts' && <PostsSection />}
         {activeItem === 'Analytics' && <AnalyticsSection />}
         {activeItem === 'Members' && <MembersSection />}
+         {activeItem === 'Devotions' && <DevotionsSection />}
       </SidebarInset>
     </>
   )

@@ -139,8 +139,8 @@ const data = {
   ],
   documents: [
     {
-      name: "Devotion",
-      url: "#devotion",
+      name: "Devotions",
+      url: "#",
       icon: IconDatabase,
     },
     {
