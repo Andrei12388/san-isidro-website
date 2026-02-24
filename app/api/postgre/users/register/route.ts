@@ -2,7 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/utils/password";
 
+// Helper to create default personal info for a new user
+async function createDefaultPersonalInfo(userId: number) {
+  return prisma.personalInformation.create({
+    data: {
+      userId,
+      firstName: null,
+      middleName: null,
+      lastName: null,
+      phone: null,
+      birthday: null,
+      gender: null,
+      address: null,
+      city: null,
+      state: null,
+      country: null,
+      bio: null,
+      profileImage: null,
+    },
+  });
+}
+
 export async function POST(request: NextRequest) {
+  
   try {
     const body = await request.json();
     const { name, email, password } = body;
@@ -15,10 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
         { error: "User with this email already exists" },
@@ -31,21 +50,15 @@ export async function POST(request: NextRequest) {
 
     // Create user
     const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-      },
+      data: { name, email, password: hashedPassword },
+      select: { id: true, name: true, email: true, createdAt: true },
     });
 
+    // Automatically create personal info for the new user
+    await createDefaultPersonalInfo(user.id);
+
     return NextResponse.json(
-      { data: user, message: "User created successfully" },
+      { data: user, message: "User created successfully with personal info" },
       { status: 201 }
     );
   } catch (error) {

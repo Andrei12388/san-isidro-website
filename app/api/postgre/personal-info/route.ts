@@ -8,7 +8,7 @@ type FlattenedPersonalInfo = PersonalInformation & {
   user: User & {
     discipleInformation: DiscipleInformation | null;
   };
-  level: string | null;
+  level: string | undefined;
   groupName: string | null;
 };
 
@@ -20,10 +20,11 @@ const formatPersonalInfo = (
   return {
     ...personalInfo,
     user: personalInfo.user,
-    level: discipleInfo?.level ?? null,
+    level: discipleInfo?.level ?? undefined,
     groupName: discipleInfo?.groupName ?? null,
   };
 };
+
 
 // ------------------- GET -------------------
 export async function GET(request: NextRequest) {
@@ -100,15 +101,19 @@ export async function POST(request: NextRequest) {
 }
 
 // ------------------- PUT -------------------
+
 export async function PUT(request: NextRequest) {
   try {
     const currentUserId = verifyAuth(request);
     if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const body: Partial<PersonalInformation> & { birthday?: string } = await request.json();
+    const body: Partial<PersonalInformation> & { birthday?: string; level?: string; groupName?: string } =
+      await request.json();
+
     const birthdayDate = body.birthday ? new Date(body.birthday) : null;
 
-    const personalInfo = await prisma.personalInformation.update({
+    // 1️⃣ Update personal information
+    const updatedPersonalInfo = await prisma.personalInformation.update({
       where: { userId: currentUserId },
       data: {
         firstName: body.firstName ?? null,
@@ -124,11 +129,33 @@ export async function PUT(request: NextRequest) {
         bio: body.bio ?? null,
         profileImage: body.profileImage ?? null,
       },
+    });
+
+    // 2️⃣ Upsert disciple information (level & groupName)
+    const discipleInfo = await prisma.discipleInformation.upsert({
+      where: { userId: currentUserId },
+      create: {
+        userId: currentUserId,
+        level: body.level ?? undefined,
+        groupName: body.groupName ?? null,
+      },
+      update: {
+        level: body.level ?? undefined,
+        groupName: body.groupName ?? undefined,
+      },
+    });
+
+    // 3️⃣ Fetch and return full flattened info with included relations
+    const personalInfoWithRelations = await prisma.personalInformation.findUnique({
+      where: { userId: currentUserId },
       include: { user: { include: { discipleInformation: true } } },
     });
 
+    if (!personalInfoWithRelations)
+      return NextResponse.json({ error: "Failed to fetch updated personal info" }, { status: 500 });
+
     return NextResponse.json(
-      { data: formatPersonalInfo(personalInfo), message: "Personal information updated" },
+      { data: formatPersonalInfo(personalInfoWithRelations), message: "Personal information updated" },
       { status: 200 }
     );
   } catch (error) {
