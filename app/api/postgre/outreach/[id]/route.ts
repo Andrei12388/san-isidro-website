@@ -2,73 +2,59 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
 
+// ------------------ GET ------------------
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const currentUserId = verifyAuth(request);
-    const outreachId = parseInt(params.id);
+    const outreachId = parseInt(id);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const outreach = await prisma.outreach.findUnique({
       where: { id: outreachId },
       include: {
-        pastor: {
-          select: { id: true, name: true, email: true },
-        },
+        pastor: { select: { id: true, name: true, email: true } },
         disciples: {
           select: {
             id: true,
             userId: true,
             level: true,
-            user: {
-              select: { id: true, name: true, email: true },
-            },
+            user: { select: { id: true, name: true, email: true } },
           },
         },
-        activities: {
-          select: { id: true, title: true, date: true },
-        },
+        activities: { select: { id: true, title: true, date: true } },
       },
     });
 
     if (!outreach) {
-      return NextResponse.json(
-        { error: "Outreach not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Outreach not found" }, { status: 404 });
     }
 
     return NextResponse.json({ data: outreach }, { status: 200 });
   } catch (error) {
     console.error("Get outreach error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
+// ------------------ PUT ------------------
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const currentUserId = verifyAuth(request);
-    const outreachId = parseInt(params.id);
+    const outreachId = parseInt(id);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const outreach = await prisma.outreach.findUnique({
@@ -87,39 +73,28 @@ export async function PUT(
     const updated = await prisma.outreach.update({
       where: { id: outreachId },
       data: body,
-      include: {
-        pastor: {
-          select: { id: true, name: true, email: true },
-        },
-      },
+      include: { pastor: { select: { id: true, name: true, email: true } } },
     });
 
-    return NextResponse.json(
-      { data: updated, message: "Outreach updated" },
-      { status: 200 }
-    );
+    return NextResponse.json({ data: updated, message: "Outreach updated" }, { status: 200 });
   } catch (error) {
     console.error("Update outreach error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
+// ------------------ DELETE ------------------
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const currentUserId = verifyAuth(request);
-    const outreachId = parseInt(params.id);
+    const outreachId = parseInt(id);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const outreach = await prisma.outreach.findUnique({
@@ -133,19 +108,12 @@ export async function DELETE(
       );
     }
 
-    await prisma.outreach.delete({
-      where: { id: outreachId },
-    });
+    await prisma.outreach.delete({ where: { id: outreachId } });
 
-    return NextResponse.json(
-      { message: "Outreach deleted" },
-      { status: 204 }
-    );
+    // 204 No Content responses should not have a body
+    return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error("Delete outreach error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
