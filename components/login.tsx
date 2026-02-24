@@ -8,6 +8,11 @@ import React, { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import FacebookLogin, {SuccessResponse} from '@greatsumini/react-facebook-login';
 
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : "http://localhost:3000";
+
 export default function LoginPage() {
 
      const [isSumitted, setSubmitted] = useState(false)
@@ -51,7 +56,7 @@ export default function LoginPage() {
     const { id, name, email } = fbData.user;
 
     // Call your signup backend (random password if needed)
-    const signupRes = await fetch("/api/postgre/auth/signUp", {
+    const signupRes = await fetch(`${API_BASE}/api/postgre/auth/signUp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -102,7 +107,7 @@ const onSubmit = async (e: FormEvent) => {
     setMessage("Logging in...");
 
     // api/fetchdata.ts
-  const result = await fetch("/api/postgre/auth/login", {
+  const result = await fetch(`${API_BASE}/api/postgre/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),

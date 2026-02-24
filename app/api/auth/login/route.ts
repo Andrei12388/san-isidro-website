@@ -2,8 +2,13 @@ import { id } from "date-fns/locale";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : "http://localhost:3000";
+
  const uri = process.env.NEXT_PUBLIC_APP_URL
-const authLoginApi = `/api/postgre/auth/login`;
+const authLoginApi = `${API_BASE}/api/postgre/auth/login`;
 
 export async function POST(req: Request) {
   try {
@@ -71,7 +76,7 @@ export async function POST(req: Request) {
 
     //Fetch image from personal user info api
                   const personalInfoRes = await fetch(
-                  `https://isidro-webapi.onrender.com/api/postgre/personal-info/${result.id}`,
+                  `${API_BASE}/api/postgre/personal-info/${result.id}`,
                   {
                     headers: {
                       Authorization: `Bearer ${result.access_token}`,

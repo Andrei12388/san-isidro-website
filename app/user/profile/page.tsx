@@ -36,6 +36,12 @@ interface UserType {
   id: number
 }
 
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : "http://localhost:3000";
+
+
 function PassModalCard({
   open,
   onClose,
@@ -66,7 +72,7 @@ const handleChangePassword = async () => {
 
   try {
     const res = await fetch(
-      `/api/postgre/users/${user.id}`, // 🔥 FIXED
+      `${API_BASE}/api/postgre/users/${user.id}`, // 🔥 FIXED
       {
         method: "PUT",
          headers: {
@@ -331,7 +337,7 @@ const saveForm = async () => {
                       //PUT update data
                     try {
               const res = await fetch(
-                `/api/postgre/personal-info/`,
+                `${API_BASE}/api/postgre/personal-info/`,
                 {
                   method: "PUT",
                   headers: {
@@ -369,7 +375,7 @@ const saveForm = async () => {
 
               setFormError(""); 
             const updateUsername =  await fetch(
-                                `/api/postgre/users/${user?.id}`, 
+                                `${API_BASE}/api/postgre/users/${user?.id}`, 
                                 {
                                   method: "PUT",
                                   headers: {
@@ -392,7 +398,7 @@ const saveForm = async () => {
               setPhoto(uploadedPhotoUrl) // update preview in case it changed
               setPhotoFile(null) // reset file
                    //Save to cookies
-              await fetch("/api/auth/update-user-cookies", {
+              await fetch(`${API_BASE}/api/auth/update-user-cookies`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -402,7 +408,7 @@ const saveForm = async () => {
                         })
                       });
               //refetch session cookie
-               const sessionRes = await fetch('/api/auth/getSession')
+               const sessionRes = await fetch(`${API_BASE}/api/auth/getSession`)
                 const userData = await sessionRes.json()
                 setAccessToken(userData.access_token)
 
@@ -434,7 +440,7 @@ const saveForm = async () => {
   const fetchUser = async () => {
     try {
       // 1️⃣ Get session
-      const sessionRes = await fetch('/api/auth/getSession');
+      const sessionRes = await fetch(`${API_BASE}/api/auth/getSession`);
       const userData = await sessionRes.json();
       setAccessToken(userData.access_token);
 
@@ -448,7 +454,7 @@ const saveForm = async () => {
       fetchOnce.current = true;
 
       // 2️⃣ Fetch personal info
-      let personalInfoRes = await fetch(`/api/postgre/personal-info/`, {
+      let personalInfoRes = await fetch(`${API_BASE}/api/postgre/personal-info/`, {
         headers: { Authorization: `Bearer ${userData.access_token}` },
       });
 
@@ -457,39 +463,6 @@ const saveForm = async () => {
       if (personalInfoRes.ok) {
         personalInfo = await personalInfoRes.json();
         console.log("Pesonal Info:",personalInfo)
-      } else if (personalInfoRes.status === 404) {
-        // 3️⃣ Create default personal info if it doesn't exist
-        const createRes = await fetch(`/api/postgre/personal-info/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userData.access_token}`,
-          },
-          body: JSON.stringify({
-            userId: userData.user,
-            firstName: "string",
-            middleName: "string",
-            lastName: "string",
-            phone: "string",
-            birthday: "2000-01-01T00:00:00.000Z",
-            gender: "string",
-            address: "string",
-            city: "string",
-            state: "string",
-            country: "string",
-            bio: "string",
-            profileImage: "string",
-          }),
-        });
-
-        if (!createRes.ok) {
-          console.error("Error creating default personal info");
-            personalInfo = await createRes.json();
-          setFormError("Failed to create personal info");
-          return;
-        }
-
-      
       } else {
         console.error("Error fetching personal info", personalInfoRes.status);
         setFormError("Failed to fetch personal info");

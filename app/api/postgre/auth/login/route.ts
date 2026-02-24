@@ -95,13 +95,17 @@ export async function POST(request: NextRequest) {
     
         //Fetch image from personal user info api
                      
-                    const personalInfoRes = await fetch(`/api/postgre/personal-info/`,
-                      {
-                        headers: {
-                          Authorization: `Bearer ${result.accessToken}`,
-                        },
-                      }
-                    )
+                   const API_BASE =
+                      process.env.NODE_ENV === "production"
+                        ? process.env.NEXT_PUBLIC_APP_URL
+                        : "http://localhost:3000";
+
+                    const personalInfoRes = await fetch(`${API_BASE}/api/postgre/personal-info/`, {
+                      headers: {
+                        Authorization: `Bearer ${result.accessToken}`,
+                      },
+                    });
+          
     
                               if (!personalInfoRes.ok) {
                                 console.log("Error fetching image")

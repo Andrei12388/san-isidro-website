@@ -1,7 +1,10 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
- const uri = process.env.NEXT_PUBLIC_APP_URL
+ const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : "http://localhost:3000";
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +22,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await fetch(`${uri}/api/postgre/users/register`, {
+    const response = await fetch(`${API_BASE}/api/postgre/users/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
