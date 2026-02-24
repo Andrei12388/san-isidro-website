@@ -94,8 +94,8 @@ export async function POST(request: NextRequest) {
         });
     
         //Fetch image from personal user info api
-                     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-                    const personalInfoRes = await fetch(`${baseUrl}/api/postgre/personal-info/`,
+                     
+                    const personalInfoRes = await fetch(`/api/postgre/personal-info/`,
                       {
                         headers: {
                           Authorization: `Bearer ${result.accessToken}`,
