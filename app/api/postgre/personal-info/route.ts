@@ -1,127 +1,159 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
+import type { PersonalInformation, User, DiscipleInformation } from "@prisma/client";
 
+// Flattened response type
+type FlattenedPersonalInfo = PersonalInformation & {
+  user: User & {
+    discipleInformation: DiscipleInformation | null;
+  };
+  level: string | null;
+  groupName: string | null;
+};
+
+// Helper to flatten disciple info
+const formatPersonalInfo = (
+  personalInfo: PersonalInformation & { user: User & { discipleInformation: DiscipleInformation | null } }
+): FlattenedPersonalInfo => {
+  const discipleInfo = personalInfo.user.discipleInformation;
+  return {
+    ...personalInfo,
+    user: personalInfo.user,
+    level: discipleInfo?.level ?? null,
+    groupName: discipleInfo?.groupName ?? null,
+  };
+};
+
+// ------------------- GET -------------------
+export async function GET(request: NextRequest) {
+  try {
+    const currentUserId = verifyAuth(request);
+    if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const personalInfo = await prisma.personalInformation.findUnique({
+      where: { userId: currentUserId },
+      include: { user: { include: { discipleInformation: true } } },
+    });
+
+    if (!personalInfo)
+      return NextResponse.json({ error: "Personal information not found" }, { status: 404 });
+
+    return NextResponse.json({ data: formatPersonalInfo(personalInfo) }, { status: 200 });
+  } catch (error) {
+    console.error("Get personal info error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+// ------------------- POST -------------------
 export async function POST(request: NextRequest) {
   try {
     const currentUserId = verifyAuth(request);
+    if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const body: Partial<PersonalInformation> & { birthday?: string } = await request.json();
+    const birthdayDate = body.birthday ? new Date(body.birthday) : null;
 
-    const body = await request.json();
-
-    const personalInfo = await prisma.personalInformation.create({
-      data: {
-        userId: currentUserId,
-        ...body,
+    const personalInfo = await prisma.personalInformation.upsert({
+      where: { userId: currentUserId },
+      update: {
+        firstName: body.firstName ?? null,
+        middleName: body.middleName ?? null,
+        lastName: body.lastName ?? null,
+        phone: body.phone ?? null,
+        birthday: birthdayDate,
+        gender: body.gender ?? null,
+        address: body.address ?? null,
+        city: body.city ?? null,
+        state: body.state ?? null,
+        country: body.country ?? null,
+        bio: body.bio ?? null,
+        profileImage: body.profileImage ?? null,
       },
+      create: {
+        userId: currentUserId,
+        firstName: body.firstName ?? null,
+        middleName: body.middleName ?? null,
+        lastName: body.lastName ?? null,
+        phone: body.phone ?? null,
+        birthday: birthdayDate,
+        gender: body.gender ?? null,
+        address: body.address ?? null,
+        city: body.city ?? null,
+        state: body.state ?? null,
+        country: body.country ?? null,
+        bio: body.bio ?? null,
+        profileImage: body.profileImage ?? null,
+      },
+      include: { user: { include: { discipleInformation: true } } },
     });
 
     return NextResponse.json(
-      { data: personalInfo, message: "Personal information created" },
+      { data: formatPersonalInfo(personalInfo), message: "Personal information created" },
       { status: 201 }
     );
   } catch (error) {
     console.error("Create personal info error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
-export async function GET(request: NextRequest) {
-  try {
-    const currentUserId = verifyAuth(request);
-
-    if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const personalInfo = await prisma.personalInformation.findUnique({
-      where: { userId: currentUserId },
-    });
-
-    if (!personalInfo) {
-      return NextResponse.json(
-        { error: "Personal information not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ data: personalInfo }, { status: 200 });
-  } catch (error) {
-    console.error("Get personal info error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
-}
-
+// ------------------- PUT -------------------
 export async function PUT(request: NextRequest) {
   try {
     const currentUserId = verifyAuth(request);
+    if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const body = await request.json();
+    const body: Partial<PersonalInformation> & { birthday?: string } = await request.json();
+    const birthdayDate = body.birthday ? new Date(body.birthday) : null;
 
     const personalInfo = await prisma.personalInformation.update({
       where: { userId: currentUserId },
-      data: body,
+      data: {
+        firstName: body.firstName ?? null,
+        middleName: body.middleName ?? null,
+        lastName: body.lastName ?? null,
+        phone: body.phone ?? null,
+        birthday: birthdayDate,
+        gender: body.gender ?? null,
+        address: body.address ?? null,
+        city: body.city ?? null,
+        state: body.state ?? null,
+        country: body.country ?? null,
+        bio: body.bio ?? null,
+        profileImage: body.profileImage ?? null,
+      },
+      include: { user: { include: { discipleInformation: true } } },
     });
 
     return NextResponse.json(
-      { data: personalInfo, message: "Personal information updated" },
+      { data: formatPersonalInfo(personalInfo), message: "Personal information updated" },
       { status: 200 }
     );
   } catch (error) {
     console.error("Update personal info error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
+// ------------------- DELETE -------------------
 export async function DELETE(request: NextRequest) {
   try {
     const currentUserId = verifyAuth(request);
+    if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    await prisma.personalInformation.delete({
+    const deleted = await prisma.personalInformation.delete({
       where: { userId: currentUserId },
+      include: { user: { include: { discipleInformation: true } } },
     });
 
     return NextResponse.json(
-      { message: "Personal information deleted" },
-      { status: 204 }
+      { data: formatPersonalInfo(deleted), message: "Personal information deleted" },
+      { status: 200 } // 204 can't have a body
     );
   } catch (error) {
     console.error("Delete personal info error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -58,7 +58,7 @@ export default function Home() {
           id: userData.user, // 
           name: userData.name,
           email: userData.email,
-          avatar: userData.profile_image, // optional
+          avatar: userData.profileImage, // optional
         });
         fetchOnce.current = true // ✅ mark fetch as done
   

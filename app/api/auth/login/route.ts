@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
  const uri = process.env.NEXT_PUBLIC_APP_URL
-const authLoginApi = `${uri}/api/postgre/auth/login`;
+const authLoginApi = `/api/postgre/auth/login`;
 
 export async function POST(req: Request) {
   try {
@@ -83,10 +83,10 @@ export async function POST(req: Request) {
                             console.log("Error fetching image")
                           }
                 const imageRes = await personalInfoRes.json()
-                console.log("Image Fetch:",imageRes.profile_image)
+                console.log("Image Fetch:",imageRes.profileImage)
 
      // ✅ Image
-    cookieStore.set("profile_image", String(imageRes.profile_image), {
+    cookieStore.set("profileImage", String(imageRes.profileImage), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -98,7 +98,7 @@ export async function POST(req: Request) {
       id: result.id,
       name: result.name,
       email: result.email,
-      profile_image: imageRes.profile_image,
+      profileImage: imageRes.profileImage,
       hasRefresh: !!result.refresh_token,
     });
 

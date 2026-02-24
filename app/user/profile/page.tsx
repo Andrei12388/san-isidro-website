@@ -66,7 +66,7 @@ const handleChangePassword = async () => {
 
   try {
     const res = await fetch(
-      `https://isidro-webapi.onrender.com/users/${user.id}`, // 🔥 FIXED
+      `/api/postgre/users/${user.id}`, // 🔥 FIXED
       {
         method: "PUT",
          headers: {
@@ -234,7 +234,7 @@ export default function ProfilePage() {
   photo_image: "",
 
   //contacts
-  phoneNumber: "",
+  phone: "",
   email: "",
 })
 
@@ -277,7 +277,7 @@ const saveForm = async () => {
 
              //validations
               const errors: { [key: string]: boolean } = {};
-              const requiredFields = ["fName", "lName", "birthday", "age", "gender", "level", "ministry", "group", "phoneNumber", "email"];
+              const requiredFields = ["fName", "lName", "birthday", "age", "gender", "level", "ministry", "group", "phone", "email"];
 
               requiredFields.forEach(field => {
                 if (!form[field as keyof typeof form]) {
@@ -316,6 +316,8 @@ const saveForm = async () => {
                 const data = await res.json()
                 uploadedPhotoUrl = data.secure_url
                 console.log("Cloudinary upload success:", uploadedPhotoUrl)
+                
+                
               } catch (err) {
                 console.error("Cloudinary upload failed:", err)
                 setFormError("Failed to upload profile photo")
@@ -329,7 +331,7 @@ const saveForm = async () => {
                       //PUT update data
                     try {
               const res = await fetch(
-                `https://isidro-webapi.onrender.com/api/personal-info/${user?.id}`,
+                `/api/postgre/personal-info/`,
                 {
                   method: "PUT",
                   headers: {
@@ -337,9 +339,9 @@ const saveForm = async () => {
                     Authorization: `Bearer ${accessToken}`,
                   },
                   body: JSON.stringify({
-                    first_name: form.fName,
-                    middle_name: "string",
-                    last_name: form.lName,
+                    firstName: form.fName,
+                    middleName: "string",
+                    lastName: form.lName,
                     phone: "string",
                     birthday: form.birthday?.toISOString().split("T")[0],
                     gender: form.gender,
@@ -348,9 +350,7 @@ const saveForm = async () => {
                     state: "string",
                     country: "string",
                     bio: "string",
-                    profile_image: uploadedPhotoUrl, // ← include Cloudinary URL
-                    phoneNumber: "string",
-                    email: "string",
+                    profileImage: uploadedPhotoUrl, // ← include Cloudinary URL
                   }),
                 }
               )
@@ -369,7 +369,7 @@ const saveForm = async () => {
 
               setFormError(""); 
             const updateUsername =  await fetch(
-                                `https://isidro-webapi.onrender.com/users/${user?.id}`, 
+                                `/api/postgre/users/${user?.id}`, 
                                 {
                                   method: "PUT",
                                   headers: {
@@ -398,7 +398,7 @@ const saveForm = async () => {
                         body: JSON.stringify({
                           name:`${form.fName} ${form.lName}`,
                           email: form.email,
-                          profile_image: uploadedPhotoUrl
+                          profileImage: uploadedPhotoUrl
                         })
                       });
               //refetch session cookie
@@ -410,7 +410,7 @@ const saveForm = async () => {
                 id: userData.user, // 
                 name: userData.name,
                 email: userData.email,
-                avatar: userData.profile_image, // optional
+                avatar: userData.profileImage, // optional
               });
             } catch (err: any) {
               console.log(`Error save profile: ${err.message || err}`);
@@ -428,112 +428,104 @@ const saveForm = async () => {
     document.title = `${user.name} - Profile Page`
   }
 
-  useEffect(() => {
-    if (fetchOnce.current) return
-   
+ useEffect(() => {
+  if (fetchOnce.current) return;
 
+  const fetchUser = async () => {
+    try {
+      // 1️⃣ Get session
+      const sessionRes = await fetch('/api/auth/getSession');
+      const userData = await sessionRes.json();
+      setAccessToken(userData.access_token);
 
-    const fetchUser = async () => {
-              try {
-                const sessionRes = await fetch('/api/auth/getSession')
-                const userData = await sessionRes.json()
-                setAccessToken(userData.access_token)
+      setUser({
+        id: userData.user,
+        name: userData.name,
+        email: userData.email,
+        avatar: userData.profileImage,
+      });
 
-                setUser({
-          id: userData.user, // 
-          name: userData.name,
-          email: userData.email,
-          avatar: userData.profile_image, // optional
+      fetchOnce.current = true;
+
+      // 2️⃣ Fetch personal info
+      let personalInfoRes = await fetch(`/api/postgre/personal-info/`, {
+        headers: { Authorization: `Bearer ${userData.access_token}` },
+      });
+
+      let personalInfo;
+
+      if (personalInfoRes.ok) {
+        personalInfo = await personalInfoRes.json();
+        console.log("Pesonal Info:",personalInfo)
+      } else if (personalInfoRes.status === 404) {
+        // 3️⃣ Create default personal info if it doesn't exist
+        const createRes = await fetch(`/api/postgre/personal-info/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userData.access_token}`,
+          },
+          body: JSON.stringify({
+            userId: userData.user,
+            firstName: "string",
+            middleName: "string",
+            lastName: "string",
+            phone: "string",
+            birthday: "2000-01-01T00:00:00.000Z",
+            gender: "string",
+            address: "string",
+            city: "string",
+            state: "string",
+            country: "string",
+            bio: "string",
+            profileImage: "string",
+          }),
         });
-        console.log("Userdata cookie",userData)
-        fetchOnce.current = true
 
-        //fetch personal Info from api
-        const personalInfoRes = await fetch(
-          `https://isidro-webapi.onrender.com/api/personal-info/${userData.user}`,
-          {
-            headers: {
-              Authorization: `Bearer ${userData.access_token}`,
-            },
-          }
-        )
-
-          if (!personalInfoRes.ok) {
-            if (personalInfoRes.status === 400 || personalInfoRes.status === 404) {
-              console.log("Personal info not found");
-               setFormError("Personal info not found");
-
-                    const res = await fetch(
-                       `https://isidro-webapi.onrender.com/api/personal-info/${userData.user}`, 
-                      {
-                        method: "POST",
-                        headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${userData.access_token}`,
-                    },
-                        body: JSON.stringify({
-                          first_name: "string",
-                          middle_name: "string",
-                          last_name: "string",
-                          phone: "string",
-                          birthday: "2000-01-01",
-                          gender: "string",
-                          address: "string",
-                          city: "string",
-                          state: "string",
-                          country: "string",
-                          bio: "string",
-                          profile_image: "string",
-                          phoneNumber: "string",
-                          email: userData.email,
-                        }),
-                      }
-                    );
-
-                  if (!res.ok) {
-                    console.log("error posting personal data")
-                    return;
-                  }
-                }
-              }
-            
-
-        const personalInfo = await personalInfoRes.json()
-        console.log("personal info fetch:",personalInfo)
-        
-
-        // attach personal info to form
-        const defaults = {
-          birthday: personalInfo.birthday ? new Date(personalInfo.birthday) : undefined,
-          level: personalInfo.level ?? "",
-          ministry: personalInfo.ministry ?? "",
-          group: personalInfo.group ?? "",
-          age: personalInfo.age ?? "0",
-          gender: personalInfo.gender ?? "",
-          fName: personalInfo.first_name ?? "",
-          lName: personalInfo.last_name ?? "",
-          photo_image: personalInfo.profile_image ?? "",
-          phoneNumber: personalInfo.phoneNumber ?? "",
-          email: userData.email ?? "",
+        if (!createRes.ok) {
+          console.error("Error creating default personal info");
+            personalInfo = await createRes.json();
+          setFormError("Failed to create personal info");
+          return;
         }
-        console.log("defaults:",defaults)
-       
-        setForm(defaults)
-        setInitialForm(defaults)
-        console.log("Profile image",personalInfo.profile_image)
-        setPhoto(personalInfo.profile_image)
-        setPersonalProfileFetched(true);
 
-      } catch {
-        router.push('/login')
-      } finally {
-        setPersonalProfileFetched(true);
-        setIsLoading(false)
+      
+      } else {
+        console.error("Error fetching personal info", personalInfoRes.status);
+        setFormError("Failed to fetch personal info");
+        return;
       }
-    }
 
-    fetchUser()
-  }, [])
+      // 4️⃣ Prefill form
+      const defaults = {
+        birthday: personalInfo.data.birthday ? new Date(personalInfo.data.birthday) : undefined,
+        level: personalInfo.data.level ?? "",
+        ministry: personalInfo.data.ministry ?? "",
+        group: personalInfo.data.group ?? "",
+        age: personalInfo.data.age ?? "0",
+        gender: personalInfo.data.gender ?? "",
+        fName: personalInfo.data.firstName ?? "",
+        lName: personalInfo.data.lastName ?? "",
+        photo_image: personalInfo.data.profileImage ?? "",
+        phone: personalInfo.data.phone ?? "",
+        email: userData.email ?? "",
+      };
+
+      setForm(defaults);
+      setInitialForm(defaults);
+      setPhoto(personalInfo.data.profileImage ?? "");
+      setPersonalProfileFetched(true);
+
+    } catch (err) {
+      console.error("Error fetching/creating personal info:", err);
+      router.push('/login');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchUser();
+}, []);
 
   
 
@@ -692,7 +684,9 @@ const saveForm = async () => {
           variant={`${fieldErrors.birthday ? "destructive" : "outline"}`}
           className="justify-between font-normal"
         >
-          {form.birthday ? format(form.birthday, "PPP") : "Pick a date"}
+          {form.birthday && !isNaN(new Date(form.birthday).getTime())
+  ? format(new Date(form.birthday), "PPP")
+  : "Pick a date"}
           <CalendarIcon className="ml-2 h-4 w-4 text-foreground" />
         </Button>
       </PopoverTrigger>
@@ -805,7 +799,7 @@ const saveForm = async () => {
                         className='fill-foreground'> <path d="M2670 5830 c-558 -75 -1058 -296 -1490 -658 -116 -98 -312 -297 -403 -412 -516 -647 -731 -1484 -592 -2308 81 -477 293 -946 601 -1332 93 -115 327 -348 449 -445 521 -416 1147 -635 1815 -635 803 0 1536 312 2096 891 440 456 717 1039 796 1679 19 154 16 554 -5 709 -47 337 -137 632 -281 920 -158 314 -325 541 -588 796 -461 449 -1032 721 -1678 800 -176 21 -543 19 -720 -5z m710 -356 c849 -109 1581 -635 1961 -1409 184 -377 268 -764 256 -1185 -4 -107 -11 -229 -17 -270 -83 -574 -327 -1067 -730 -1470 -401 -401 -923 -655 -1490 -725 -161 -20 -459 -20 -620 0 -443 55 -870 228 -1229 498 -125 94 -343 306 -444 432 -657 816 -751 1956 -235 2858 520 908 1512 1403 2548 1271z"/> <path d="M2902 4489 c-690 -66 -1213 -506 -1362 -1144 -42 -182 -55 -451 -30 -635 79 -587 434 -1023 989 -1215 214 -73 508 -112 766 -100 267 13 372 49 411 142 34 79 0 183 -71 218 -37 18 -63 19 -345 20 -278 0 -314 2 -407 23 -487 107 -791 388 -904 835 -30 119 -38 397 -14 539 91 558 504 919 1090 954 184 11 383 -19 545 -83 239 -94 439 -294 534 -536 138 -349 103 -824 -67 -927 -68 -42 -157 -16 -193 56 -18 36 -19 71 -24 464 -6 475 -5 466 -78 532 -95 86 -293 73 -365 -24 -31 -42 -47 -90 -47 -139 0 -34 -3 -39 -23 -39 -16 0 -28 12 -46 45 -32 61 -120 141 -185 170 -149 66 -336 56 -496 -25 -77 -39 -181 -153 -228 -250 -71 -145 -86 -217 -86 -425 0 -194 9 -253 60 -384 98 -247 316 -400 571 -401 180 0 323 81 397 228 35 68 53 67 90 -3 50 -97 149 -166 285 -201 100 -25 310 -16 416 19 299 98 476 361 516 767 40 411 -100 828 -370 1101 -313 315 -801 469 -1329 418z m223 -1238 c83 -38 129 -118 146 -251 19 -153 -18 -297 -91 -364 -86 -78 -197 -73 -280 12 -72 75 -103 216 -81 362 26 165 108 260 226 260 22 0 58 -9 80 -19z"/> </g> </svg>
                         <div className='flex flex-col'>
                          
-                            <span className="font-medium">(+63) {form.phoneNumber}</span>
+                            <span className="font-medium">(+63) {form.phone}</span>
                             <span className="text-sm opacity-70 flex lg:flex-row lg:gap-2 gap-1 flex-col">{form.email} <IconCopy className='cursor-pointer' onClick={(e) => copyToClipboard(`${user?.email}`,() => handleClickNotify(e))}/> </span>
                         </div>
                        
@@ -819,14 +813,14 @@ const saveForm = async () => {
                                           type="tel"
                                           inputMode="numeric"
                                           maxLength={10}
-                                          value={form.phoneNumber}
+                                          value={form.phone}
                                           placeholder="Phone Number . . ."
                                           onChange={(e) => {
                                             const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 11)
-                                            setForm(f => ({ ...f, phoneNumber: onlyDigits }))
+                                            setForm(f => ({ ...f, phone: onlyDigits }))
                                           }}
                                           className={`bg-background rounded-sm w-full px-2 py-2 border ${
-                                          fieldErrors.phoneNumber ? "border-red-500" : ""}`}
+                                          fieldErrors.phone ? "border-red-500" : ""}`}
                                         />
                                       </div>
                                               </div>
@@ -870,14 +864,14 @@ const saveForm = async () => {
                                           type="tel"
                                           inputMode="numeric"
                                           maxLength={10}
-                                          value={form.phoneNumber}
+                                          value={form.phone}
                                           placeholder="City . . ."
                                           onChange={(e) => {
                                             const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 11)
-                                            setForm(f => ({ ...f, phoneNumber: onlyDigits }))
+                                            setForm(f => ({ ...f, phone: onlyDigits }))
                                           }}
                                           className={`bg-background rounded-sm w-full px-2 py-2 border ${
-                                          fieldErrors.phoneNumber ? "border-red-500" : ""}`}
+                                          fieldErrors.phone ? "border-red-500" : ""}`}
                                         />
                                       </div>
                                               </div>
@@ -901,14 +895,14 @@ const saveForm = async () => {
                                           type="tel"
                                           inputMode="numeric"
                                           maxLength={10}
-                                          value={form.phoneNumber}
+                                          value={form.phone}
                                           placeholder="City . . ."
                                           onChange={(e) => {
                                             const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 11)
-                                            setForm(f => ({ ...f, phoneNumber: onlyDigits }))
+                                            setForm(f => ({ ...f, phone: onlyDigits }))
                                           }}
                                           className={`bg-background rounded-sm w-full px-2 py-2 border ${
-                                          fieldErrors.phoneNumber ? "border-red-500" : ""}`}
+                                          fieldErrors.phone ? "border-red-500" : ""}`}
                                         />
                                       </div>
                                               </div>
@@ -922,14 +916,14 @@ const saveForm = async () => {
                                           type="tel"
                                           inputMode="numeric"
                                           maxLength={10}
-                                          value={form.phoneNumber}
+                                          value={form.phone}
                                           placeholder="City . . ."
                                           onChange={(e) => {
                                             const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 11)
-                                            setForm(f => ({ ...f, phoneNumber: onlyDigits }))
+                                            setForm(f => ({ ...f, phone: onlyDigits }))
                                           }}
                                           className={`bg-background rounded-sm w-full px-2 py-2 border ${
-                                          fieldErrors.phoneNumber ? "border-red-500" : ""}`}
+                                          fieldErrors.phone ? "border-red-500" : ""}`}
                                         />
                                       </div>
                                               </div>

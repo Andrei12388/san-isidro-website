@@ -5,7 +5,7 @@ export interface ResultType {
   id?: number;
   name?: string;
   email?: string;
-  profile_image?: string;
+  profileImage?: string;
 }
 
 export async function POST(req: Request) {
@@ -45,8 +45,8 @@ export async function POST(req: Request) {
       });
     }
 
-    if (result.profile_image !== undefined) {
-      cookieStore.set("profile_image", String(result.profile_image), {
+    if (result.profileImage !== undefined) {
+      cookieStore.set("profileImage", String(result.profileImage), {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",

@@ -8,9 +8,6 @@ import React, { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import FacebookLogin, {SuccessResponse} from '@greatsumini/react-facebook-login';
 
-
-const authLoginApi = "https://isidro-webapi.onrender.com/api/auth/login"
-
 export default function LoginPage() {
 
      const [isSumitted, setSubmitted] = useState(false)
@@ -54,7 +51,7 @@ export default function LoginPage() {
     const { id, name, email } = fbData.user;
 
     // Call your signup backend (random password if needed)
-    const signupRes = await fetch("/api/auth/signUp", {
+    const signupRes = await fetch("/api/postgre/auth/signUp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -105,7 +102,7 @@ const onSubmit = async (e: FormEvent) => {
     setMessage("Logging in...");
 
     // api/fetchdata.ts
-  const result = await fetch("/api/auth/login", {
+  const result = await fetch("/api/postgre/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),

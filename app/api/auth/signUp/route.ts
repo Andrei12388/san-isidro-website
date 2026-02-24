@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const authSignupApi = "https://isidro-webapi.onrender.com/users/";
+ const uri = process.env.NEXT_PUBLIC_APP_URL
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await fetch("https://isidro-webapi.onrender.com/users/", {
+    const response = await fetch(`${uri}/api/postgre/users/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
