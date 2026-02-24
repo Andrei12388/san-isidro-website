@@ -198,14 +198,7 @@ React.useEffect(() => {
                                         <span>Login</span>
                                     </Link>
                                 </Button>
-                                <Button
-                                    asChild
-                                    size="sm"
-                                    className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link href="#">
-                                        <span>Sign Up</span>
-                                    </Link>
-                                </Button>
+                             
                                 <Button
                                     asChild
                                     size="sm"

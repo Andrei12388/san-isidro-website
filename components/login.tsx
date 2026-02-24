@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import FacebookLogin, {SuccessResponse} from '@greatsumini/react-facebook-login';
 
@@ -20,8 +20,13 @@ export default function LoginPage() {
         const [email, setEmail] = useState('')
         const [message, setMessage] = useState('')
         const [isSubmitting, setSubmitting] = useState(false)
+        const [accessToken, setAccessToken] = useState('');
+
 
         const router = useRouter();
+
+        //Check if there's a logged in acc
+        
 
     const [messageFB, setMessageFB] = useState<{text:string, severity: "error" | "success"}>();
     
@@ -107,19 +112,25 @@ const onSubmit = async (e: FormEvent) => {
     credentials: "include",
   });
 
+    if(result.ok){
+           router.push("/");
+       //  setMessage("Login Failed!");
+         setErrorEnable(false);
+    } else {
+          setMessage("Login Failed!");
+       setErrorEnable(true);
+    }
+
     // your route returns { success: true }
     if (!result) {
       throw new Error("Invalid email or password");
-    }
-
-    setMessage("Login successful!");
-
-    router.push("/");
+   
+    } 
+     
 
   } catch (err: any) {
     console.error(err);
-
-    setErrorEnable(true);
+  
     setErrMsg(err.message || "Login failed");
     setMessage("Login Failed!");
 
@@ -264,17 +275,7 @@ const onSubmit = async (e: FormEvent) => {
                     </div>
                 </div>
 
-                <div className="p-3">
-                    <p className="text-accent-foreground text-center text-sm">
-                        Don't have an account ?
-                        <Button
-                            asChild
-                            variant="link"
-                            className="px-2">
-                            <Link href="signup">Create account</Link>
-                        </Button>
-                    </p>
-                </div>
+              
             </form>
             
         </section>

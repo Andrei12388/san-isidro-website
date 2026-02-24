@@ -1,0 +1,179 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  email                 String                  @unique
+  password              String
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+
+  // Relations
+  personalInformation   PersonalInformation?
+  discipleInformation   DiscipleInformation?
+  devotions             Devotion[]
+  trainings             Training[]
+  attendances           AttendanceInformation[]
+  organizedActivities   MinistryActivities[]    @relation("Organizer")
+  assignedOutreaches    Outreach[]              @relation("AssignedPastor")
+  mentees               DiscipleInformation[]   @relation("Mentor")
+
+  @@map("users")
+}
+
+model PersonalInformation {
+  id                Int       @id @default(autoincrement())
+  userId            Int       @unique
+  firstName         String?
+  middleName        String?
+  lastName          String?
+  phone             String?
+  birthday          DateTime? @db.Date
+  gender            String?   // Male, Female, Other
+  address           String?
+  city              String?
+  state             String?
+  country           String?
+  bio               String?   @db.Text
+  profileImage      String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("personal_information")
+}
+
+model DiscipleInformation {
+  id                Int       @id @default(autoincrement())
+  userId            Int       @unique
+  level             String    @default("disciple") // pastor, vine, cluster, care_lead, disciple
+  mentorId          Int?
+  groupName         String?
+  joinedDate        DateTime?
+  outreachId        Int?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mentor            User?     @relation("Mentor", fields: [mentorId], references: [id], onDelete: SetNull)
+  outreach          Outreach? @relation(fields: [outreachId], references: [id], onDelete: SetNull)
+
+  @@map("disciple_information")
+}
+
+model Devotion {
+  id                    Int       @id @default(autoincrement())
+  userId                Int
+  title                 String
+  content               String    @db.Text
+  scriptureReference    String?
+  devotionDate          DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("devotions")
+}
+
+model TrainingCategory {
+  id                Int       @id @default(autoincrement())
+  name              String    @unique
+  type              String    // discipleship, seminar
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  trainings         Training[]
+
+  @@map("training_category")
+}
+
+model Training {
+  id                    Int       @id @default(autoincrement())
+  userId                Int
+  title                 String
+  description           String    @db.Text
+  trainerName           String?
+  trainingDate          DateTime
+  completionStatus      String    @default("pending") // pending, completed, cancelled
+  categoryId            Int?
+  notes                 String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category              TrainingCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  attendances           AttendanceInformation[]
+
+  @@map("trainings")
+}
+
+model MinistryActivities {
+  id                    Int       @id @default(autoincrement())
+  title                 String
+  date                  DateTime
+  isRegular             Boolean   @default(false)
+  organizerId           Int
+  place                 String?
+  outreachId            Int?
+  scheduleType          String    @default("daily") // daily, weekly, monthly, yearly
+  weekdays              String?   // "SUN,WED,TUE" or "0,3,2"
+  monthlyDates          String?   // "1,15"
+  yearlyDates           String?   // "01-01,12-25"
+  startTime             DateTime?
+  endTime               DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  organizer             User      @relation("Organizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  outreach              Outreach? @relation(fields: [outreachId], references: [id], onDelete: SetNull)
+  attendances           AttendanceInformation[]
+
+  @@map("ministry_activities")
+}
+
+model AttendanceInformation {
+  id                    Int       @id @default(autoincrement())
+  userId                Int
+  date                  DateTime  @db.Date
+  timeIn                DateTime
+  isPresent             Boolean   @default(true)
+  ministryActivityId    Int
+  ministryType          String    // discipleship, training, celebration, evangelism
+  trainingId            Int?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ministryActivity      MinistryActivities @relation(fields: [ministryActivityId], references: [id], onDelete: Cascade)
+  training              Training? @relation(fields: [trainingId], references: [id], onDelete: SetNull)
+
+  @@map("attendance_information")
+}
+
+model Outreach {
+  id                    Int       @id @default(autoincrement())
+  name                  String
+  assignedPastor        Int
+  location              String
+  yearStart             Int
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  pastor                User      @relation("AssignedPastor", fields: [assignedPastor], references: [id], onDelete: Cascade)
+  disciples             DiscipleInformation[]
+  activities            MinistryActivities[]
+
+  @@map("outreach")
+}
