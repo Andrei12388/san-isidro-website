@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./devotions.module.css";
 import { DEVOTIONS_DATA } from "./devotions.data";
 import { Input } from "@/components/ui/input";
-import { IconHeart } from "@tabler/icons-react";
+import { IconHeart, IconPlus } from "@tabler/icons-react";
+import BibleVersePickerNoAPI from "@/components/bible/BibleVersePicker";
+import { Button } from "@/components/ui/button";
 
 export interface DevotionItem {
   id: number;
@@ -23,6 +25,28 @@ export default function DevotionsSection() {
   const [selected, setSelected] = useState<DevotionItem | null>(null);
   const [comment, setComment] = useState("");
   const [closing, setClosing] = useState(false);
+
+
+   const [book, setBook] = useState<string>("John");
+  const [chapter, setChapter] = useState<number>(3);
+  const [verse, setVerse] = useState<number>(16);
+  const [verseData, setVerseData] = useState<any>(null);
+
+  useEffect(() => {
+    const searchVerse = async () => {
+      try {
+        const response = await fetch(`https://bible-api.com/${book}+${chapter}:${verse}`);
+        if (!response.ok) throw new Error("Network response was not ok");
+        const data = await response.json();
+        console.log(data.reference, data.verses);
+        setVerseData(data); // store it in state if needed
+      } catch (error) {
+        console.error("Error fetching verse:", error);
+      }
+    };
+
+    searchVerse();
+  }, [book, chapter, verse]); // re-run when book, chapter, or verse changes
 
   const handleHeartReact = (id: number) => {
     setDevotions((prev) =>
@@ -49,6 +73,7 @@ export default function DevotionsSection() {
       );
     }
   };
+
   const handleClose = () => {
     setClosing(true);
     setTimeout(() => {
@@ -57,10 +82,29 @@ export default function DevotionsSection() {
     }, 300);
   };
 
+  const handleAddDevotion = () => {
+    const newDevotion: DevotionItem = {
+      id: devotions.length + 1,
+      title: `New Devotion ${devotions.length + 1}`,
+      image: "images/devotion3.jpeg",
+      message: "This is a new devotion message.",
+      verse: "Psalm 23:1 — The Lord is my shepherd; I shall not want.",
+      heart: 0,
+      heartActive: false,
+      comments: "",
+    };
+    setDevotions((prev) => [newDevotion, ...prev]);
+  };
+
    return (
+    
     <div className="flex flex-1 flex-col">
+      <div className="fixed bottom-10 z-90 right-10">  <Button onClick={handleAddDevotion}><IconPlus /> Add Devotion</Button></div>
+      
       <div className="@container/main flex flex-1 flex-col gap-2">
         <span className="text-center text-xl font-bold mt-3">Devotion Wall</span>
+       
+        <BibleVersePickerNoAPI />
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           <section
             className="grid gap-2 lg:gap-4 justify-center grid-cols-[repeat(auto-fit,minmax(60px,120px))] lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]"
@@ -168,6 +212,7 @@ export default function DevotionsSection() {
               </div>
             )}
           </section>
+          
         </div>
       </div>
     </div>

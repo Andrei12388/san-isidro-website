@@ -7,7 +7,7 @@
 .devotionCard:hover {
   transform: scale(1.08);
   cursor: pointer;
-  z-index: 100;
+  z-index: 70;
 }
 
 /* OVERLAY BACKDROP FADE */
