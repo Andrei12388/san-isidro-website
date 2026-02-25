@@ -72,7 +72,7 @@ export default function DevotionsSection() {
                 onClick={() => setSelected(item)}
                 className={`${styles.devotionCard} border rounded-lg p-4 shadow bg-white flex flex-col gap-3`}
               >
-                <div >
+                <div>
                   <h2 className="font-semibold text-black text-lg">{item.title}</h2>
                   <span className="text-gray-700 text-sm line-clamp-1">@AndreiBardoquillo</span>
                 </div>
