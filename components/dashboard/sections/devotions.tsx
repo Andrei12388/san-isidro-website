@@ -332,17 +332,17 @@ export default function DevotionsSection() {
               </div>
             )}
             {addDevotion && (
-               <form onSubmit={onSubmit} className={`fixed inset-0 bg-black/40 flex justify-center items-center z-100 ${
+               <form onSubmit={onSubmit} className={`fixed inset-0 bg-black/40 flex justify-center items-start overflow-y-auto z-100 ${
                   closing ? styles.backdropOut : styles.backdropIn
                 }`}>
-              <div className={`fixed inset-0 bg-black/40 flex justify-end items-start z-100 ${
+              <div className={`lg:fixed overflow-y-auto inset-0 bg-black/40 flex lg:flex-row flex-col lg:justify-end justify-center items-center lg:items-start z-100 ${
                       closing ? styles.modalOut : styles.modalIn
                     }`}>
-                      <div className="bg-white rounded-lg p-6 w-full h-full max-w-md mr-2 overflow-y-auto">
+                      <div className="bg-white lg:rounded-lg p-6 w-full lg:h-full lg:max-w-md lg:mr-2 flex flex-col lg:overflow-y-auto border-b">
                         <h2 className="text-lg font-semibold text-center mb-5 border-b">Bible Verse</h2>
                         <BibleVersePickerNoAPI/>
                         </div>
-                <div className="bg-white rounded-lg p-6 w-full h-full max-w-3xl flex flex-col justify-between">
+                <div className="bg-white lg:rounded-lg p-6 w-full lg:h-full max-w-3xl flex flex-col justify-between">
                   <div className="overflow-y-auto">
                   <h2 className="text-lg font-semibold mb-4">Add New Devotion</h2>
                  
