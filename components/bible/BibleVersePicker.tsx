@@ -79,7 +79,6 @@ const BibleVersePickerNoAPI: React.FC = () => {
 
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h2>Bible Verse Picker</h2>
 
       <label>
         Book:
