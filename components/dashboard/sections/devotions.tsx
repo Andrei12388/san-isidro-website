@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { IconHeart, IconPlus } from "@tabler/icons-react";
 import BibleVersePickerNoAPI from "@/components/bible/BibleVersePicker";
 import { Button } from "@/components/ui/button";
+import { add } from "date-fns";
 
 export interface DevotionItem {
   id: number;
@@ -26,6 +27,12 @@ export default function DevotionsSection() {
   const [comment, setComment] = useState("");
   const [closing, setClosing] = useState(false);
 
+  const [addDevotion, setAddDevotion] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+  const [image, setImage] = useState("");
+  const [verseInput, setVerseInput] = useState("");
 
    const [book, setBook] = useState<string>("John");
   const [chapter, setChapter] = useState<number>(3);
@@ -82,29 +89,36 @@ export default function DevotionsSection() {
     }, 300);
   };
 
-  const handleAddDevotion = () => {
+  const openAddDevotion = () => {
+    setAddDevotion(true);
+  }
+
+  const onSubmit = () => {
+  setIsSubmitting(true);
     const newDevotion: DevotionItem = {
       id: devotions.length + 1,
-      title: `New Devotion ${devotions.length + 1}`,
-      image: "images/devotion3.jpeg",
-      message: "This is a new devotion message.",
-      verse: "Psalm 23:1 — The Lord is my shepherd; I shall not want.",
+      title: `${title}`,
+      image: `images/devotion3.jpeg`,
+      message: `${message}`,
+      verse: `${verseInput}`,
       heart: 0,
       heartActive: false,
       comments: "",
     };
     setDevotions((prev) => [newDevotion, ...prev]);
+    setIsSubmitting(false);
+     setAddDevotion(false);
   };
 
    return (
     
     <div className="flex flex-1 flex-col">
-      <div className="fixed bottom-10 z-90 right-10">  <Button onClick={handleAddDevotion}><IconPlus /> Add Devotion</Button></div>
+      <div className="fixed bottom-10 z-90 right-10">  <Button onClick={openAddDevotion}><IconPlus /> Add Devotion</Button></div>
       
       <div className="@container/main flex flex-1 flex-col gap-2">
         <span className="text-center text-xl font-bold mt-3">Devotion Wall</span>
        
-        <BibleVersePickerNoAPI />
+      
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           <section
             className="grid gap-2 lg:gap-4 justify-center grid-cols-[repeat(auto-fit,minmax(60px,120px))] lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]"
@@ -182,6 +196,7 @@ export default function DevotionsSection() {
                       closing ? styles.modalOut : styles.modalIn
                     }`}
                   >
+                    <div>
                     <div className="flex flex-row items-center justify-between mb-5">
                       <h3 className="font-semibold text-lg text-black">Comments</h3>
                       <button className="px-4 py-2 bg-black text-white rounded cursor-pointer" onClick={handleClose}>
@@ -190,10 +205,11 @@ export default function DevotionsSection() {
                     </div>
                     <div className="overflow-y-auto">
                       <div className="flex flex-col gap-3">
-                        <div className="p-2 bg-gray-100 text-black rounded">User1: Awesome post!</div>
-                        <div className="p-2 bg-gray-100 text-black rounded">User2: Loved this!</div>
-                        <div className="p-2 bg-gray-100 text-black rounded">User3: Thanks for sharing.</div>
+                        <div className="p-2 bg-gray-100 text-black rounded">Andrew: Awesome post!</div>
+                        <div className="p-2 bg-gray-100 text-black rounded">David: Loved this!</div>
+                        <div className="p-2 bg-gray-100 text-black rounded">Goliath: Thanks for sharing.</div>
                       </div>
+                    </div>
                     </div>
                     <div className="mt-5">
                       <Input
@@ -211,6 +227,49 @@ export default function DevotionsSection() {
                 </div>
               </div>
             )}
+            {addDevotion && (
+               <form onSubmit={onSubmit} className={`fixed inset-0 bg-black/40 flex justify-center items-center z-100 ${
+                  closing ? styles.backdropOut : styles.backdropIn
+                }`}>
+              <div className={`fixed inset-0 bg-black/40 flex justify-center items-center z-100 ${
+                      closing ? styles.modalOut : styles.modalIn
+                    }`}>
+                <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                  <h2 className="text-lg font-semibold mb-4">Add New Devotion</h2>
+                  <BibleVersePickerNoAPI/>
+
+                  <Input type="text" placeholder="Title"  
+                  value={title}
+                  required
+                  onChange={(e) => setTitle(e.target.value)} 
+                  className="mb-3" />
+
+                  <Input type="text" 
+                  placeholder="Verse (e.g. John 3:16)" 
+                  value={verseInput}
+                  required
+                  onChange={(e) => setVerseInput(e.target.value)}
+                  className="mb-3" />
+                  <Input type="text" placeholder="Message" 
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  className="mb-3" />
+                  <Input type="text" placeholder="Image URL" 
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  className="mb-3" />
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => setAddDevotion(false)}>
+                      Cancel
+                    </Button>
+                     <Button  disabled={isSubmitting} type='submit'>{isSubmitting ? "Adding Devotion..." : "Add Devotion"}</Button>
+                  </div>
+                </div>
+              </div>
+              </form>
+             )
+                  }
           </section>
           
         </div>

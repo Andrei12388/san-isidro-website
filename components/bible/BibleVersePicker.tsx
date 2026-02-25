@@ -50,7 +50,7 @@ const BibleVersePickerNoAPI: React.FC = () => {
         if (data.verses && data.verses.length) {
           setMaxVerses(data.verses.length);
           setVerseStart(1);
-          setVerseEnd(Math.min(5, data.verses.length)); // default range 1–5
+          setVerseEnd(Math.min(1, data.verses.length)); // default range 1–5
         }
       } catch (error) {
         console.error(error);
