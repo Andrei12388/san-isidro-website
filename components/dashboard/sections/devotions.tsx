@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import styles from "./devotions.module.css";
-import { DEVOTIONS_DATA } from "./devotions.data.ts";
+import { DEVOTIONS_DATA } from "./devotions.data";
 import { Input } from "@/components/ui/input";
 import { IconHeart } from "@tabler/icons-react";
 
