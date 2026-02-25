@@ -24,8 +24,8 @@ const bibleBooks = [
 const BibleVersePickerNoAPI: React.FC = () => {
   const [book, setBook] = useState("John");
   const [chapter, setChapter] = useState(1);
-  const [verseStart, setVerseStart] = useState(1);
-  const [verseEnd, setVerseEnd] = useState(1);
+  const [verseStart, setVerseStart] = useState<number | null>(1);
+  const [verseEnd, setVerseEnd] = useState<number | null>(1);
   const [maxChapters, setMaxChapters] = useState(21);
   const [maxVerses, setMaxVerses] = useState(25);
   const [verseData, setVerseData] = useState<any[]>([]);
@@ -36,8 +36,9 @@ const BibleVersePickerNoAPI: React.FC = () => {
     const selectedBook = bibleBooks.find(b => b.name === book);
     if (selectedBook) setMaxChapters(selectedBook.chapters);
     setChapter(1);
-    setVerseStart(1);
-    setVerseEnd(1);
+  
+  setVerseStart(1);
+  setVerseEnd(1);
   }, [book]);
 
   // Fetch chapter to determine max verses
@@ -49,8 +50,8 @@ const BibleVersePickerNoAPI: React.FC = () => {
         const data = await response.json();
         if (data.verses && data.verses.length) {
           setMaxVerses(data.verses.length);
-          setVerseStart(1);
-          setVerseEnd(Math.min(1, data.verses.length)); // default range 1–5
+        setVerseStart(1);
+        setVerseEnd(1);
         }
       } catch (error) {
         console.error(error);
@@ -60,28 +61,46 @@ const BibleVersePickerNoAPI: React.FC = () => {
     fetchChapter();
   }, [book, chapter]);
 
-  // Fetch verse range whenever selection changes
   useEffect(() => {
-    const fetchVerseRange = async () => {
-      try {
-        const response = await fetch(`https://bible-api.com/${book}+${chapter}:${verseStart}-${verseEnd}`);
-        if (!response.ok) throw new Error("Failed to fetch verse range");
-        const data = await response.json();
-        setVerseData(data.verses);
-        setReference(data.reference);
-      } catch (error) {
-        console.error(error);
-        setVerseData([]);
-      }
-    };
-    fetchVerseRange();
-  }, [book, chapter, verseStart, verseEnd]);
+  if (!verseStart) return;
+
+  // if end is smaller OR not set → sync it
+  if (!verseEnd || verseEnd < verseStart) {
+    setVerseEnd(verseStart);
+  }
+}, [verseStart]);
+
+  // Fetch verse range whenever selection changes
+ useEffect(() => {
+ if (!verseStart || !verseEnd || verseStart > verseEnd) return;
+
+  const fetchVerseRange = async () => {
+    try {
+      const response = await fetch(
+        `https://bible-api.com/${book}+${chapter}:${verseStart}-${verseEnd}`
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch verse range");
+
+      const data = await response.json();
+
+      setVerseData(data.verses);
+      setReference(data.reference);
+    } catch (error) {
+      console.error(error);
+      setVerseData([]);
+    }
+  };
+
+  fetchVerseRange();
+}, [book, chapter, verseStart, verseEnd]);
 
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", fontFamily: "sans-serif" }}>
-
+      <div className="flex flex-row justify-between">
+      <div className="flex flex-col gap-2">
       <label>
-        Book:
+       <span className="font-semibold">Book: </span>
         <select value={book} onChange={e => setBook(e.target.value)}>
           {bibleBooks.map(b => (
             <option key={b.name} value={b.name}>{b.name}</option>
@@ -90,17 +109,18 @@ const BibleVersePickerNoAPI: React.FC = () => {
       </label>
 
       <label>
-        Chapter:
+        <span className="font-semibold">Chapter: </span>
         <select value={chapter} onChange={e => setChapter(Number(e.target.value))}>
           {Array.from({ length: maxChapters }, (_, i) => i + 1).map(ch => (
             <option key={ch} value={ch}>{ch}</option>
           ))}
         </select>
       </label>
-
+      </div>
+          <div className="flex flex-col gap-2">
       <label>
-        Verse Start:
-        <select value={verseStart} onChange={e => setVerseStart(Number(e.target.value))}>
+       <span className="font-semibold">Verse Start: </span>
+        <select value={verseStart || ""} onChange={e => setVerseStart(Number(e.target.value))}>
           {Array.from({ length: maxVerses }, (_, i) => i + 1).map(v => (
             <option key={v} value={v}>{v}</option>
           ))}
@@ -108,14 +128,15 @@ const BibleVersePickerNoAPI: React.FC = () => {
       </label>
 
       <label>
-        Verse End:
-        <select value={verseEnd} onChange={e => setVerseEnd(Number(e.target.value))}>
-          {Array.from({ length: maxVerses - verseStart + 1 }, (_, i) => i + verseStart).map(v => (
+        <span className="font-semibold">Verse End: </span>
+        <select value={verseEnd || ""} onChange={e => setVerseEnd(Number(e.target.value))}>
+          {Array.from({ length: maxVerses - (verseStart || 0) + 1 }, (_, i) => i + (verseStart || 1)).map(v => (
             <option key={v} value={v}>{v}</option>
           ))}
         </select>
       </label>
-
+      </div>
+          </div>
       <VerseDisplay verseData={verseData} reference={reference} />
     </div>
   );

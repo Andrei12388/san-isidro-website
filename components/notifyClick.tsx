@@ -39,7 +39,7 @@ export const FloatingMessage = () => {
         transform: `translate(-50%, -50%)`,
         padding: "8px 12px",
         background: `var(--background)`,
-        color: `var(--foreground)`,
+        color: `green`,
         borderRadius: "4px",
         pointerEvents: "none",
         whiteSpace: "nowrap",

@@ -88,7 +88,7 @@ export default function DevotionsSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState<File | null>(null);
   const [verseInput, setVerseInput] = useState("");
 
    const [book, setBook] = useState<string>("John");
@@ -138,6 +138,28 @@ export default function DevotionsSection() {
     }
   };
 
+  const handleSetImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; // get the selected file
+    if (file) {
+      setImage(file); // store the File object
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  setVerseInput(e.target.value)
+
+  e.target.style.height = "auto"
+  e.target.style.height = e.target.scrollHeight + "px"
+}
+
+
+  const handleChangeMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  setMessage(e.target.value)
+
+  e.target.style.height = "auto"
+  e.target.style.height = e.target.scrollHeight + "px"
+}
+
   const handleClose = () => {
     setClosing(true);
     setTimeout(() => {
@@ -149,14 +171,19 @@ export default function DevotionsSection() {
 
   const openAddDevotion = () => {
     setAddDevotion(true);
+    setTitle("");
+    setVerseInput("");
+    setMessage("");
+    setImage(null);
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
   setIsSubmitting(true);
     const newDevotion: DevotionItem = {
       id: devotions.length + 1,
       title: `${title}`,
-      image: `images/devotion3.jpeg`,
+      image: `${image ? URL.createObjectURL(image) : "images/defaultDevotion.jpg"}`,
       message: `${message}`,
       verse: `${verseInput}`,
       heart: 0,
@@ -308,34 +335,67 @@ export default function DevotionsSection() {
                <form onSubmit={onSubmit} className={`fixed inset-0 bg-black/40 flex justify-center items-center z-100 ${
                   closing ? styles.backdropOut : styles.backdropIn
                 }`}>
-              <div className={`fixed inset-0 bg-black/40 flex justify-center items-center z-100 ${
+              <div className={`fixed inset-0 bg-black/40 flex justify-end items-start z-100 ${
                       closing ? styles.modalOut : styles.modalIn
                     }`}>
-                <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                      <div className="bg-white rounded-lg p-6 w-full h-full max-w-md mr-2 overflow-y-auto">
+                        <h2 className="text-lg font-semibold text-center mb-5 border-b">Bible Verse</h2>
+                        <BibleVersePickerNoAPI/>
+                        </div>
+                <div className="bg-white rounded-lg p-6 w-full h-full max-w-3xl flex flex-col justify-between">
+                  <div className="overflow-y-auto">
                   <h2 className="text-lg font-semibold mb-4">Add New Devotion</h2>
-                  <BibleVersePickerNoAPI/>
-
+                 
+                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1 w-full">
+                    <span className="text-lg font-semibold">Title</span>
                   <Input type="text" placeholder="Title"  
                   value={title}
                   required
-                  onChange={(e) => setTitle(e.target.value)} 
-                  className="mb-3" />
+                  onChange={(e) => setTitle(e.target.value)}/>
+                  </div>
 
-                  <Input type="text" 
-                  placeholder="Verse (e.g. John 3:16)" 
+                  <div className="flex flex-col gap-1">
+                    <span className="text-lg font-semibold">Verse</span>
+                 <textarea
+                  placeholder="Verse (e.g. John 3:16)"
                   value={verseInput}
                   required
-                  onChange={(e) => setVerseInput(e.target.value)}
-                  className="mb-3" />
-                  <Input type="text" placeholder="Message" 
+                  rows={1}
+                  onChange={handleChange}
+                  className="mb-3 w-full h-20 resize-none overflow-hidden border border-gray-300 rounded px-2"
+                />
+                  </div>
+                  </div>
+                  <div className="flex flex-col gap-2 mt-5">
+                  <span className="text-lg font-semibold">Image</span> 
+                 <input
+                    className="border rounded px-2 py-1"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleSetImage}
+                  />
+
+                  {image && (
+                    <div className="mt-3 flex flex-row justify-center">
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt="preview"
+                        className="max-w-xs max-h-64 mt-2"
+                      />
+                    </div>
+                  )}
+                    </div>
+                  <span className="text-lg font-semibold">Message</span>
+                    <textarea
+                  placeholder="Message"
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
                   required
-                  className="mb-3" />
-                  <Input type="text" placeholder="Image URL" 
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  className="mb-3" />
+                  rows={1}
+                  onChange={handleChangeMessage}
+                  className="mb-3 w-full resize-none overflow-hidden border border-gray-300 rounded px-2"
+                />
+                  </div>
                   <div className="flex justify-end gap-2">
                     <Button variant="outline" type="button" onClick={handleClose}>
                       Cancel
