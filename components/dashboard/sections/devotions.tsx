@@ -413,7 +413,7 @@ export default function DevotionsSection() {
                     }`}
                   >
                     <div className="overflow-y-auto">
-                      <div className="mb-2 flex flex-row justify-between border-b">
+                      <div className="mb-2 flex flex-row justify-between">
                         <div className="flex flex-col">
                       <h2 className="font-semibold text-foreground text-lg">{selected.title}</h2>
                       <span className="text-muted-foreground text-sm">@AndreiBardoquillo</span>
@@ -434,7 +434,7 @@ export default function DevotionsSection() {
                     <span className="flex flex-row justify-center items-center gap-1 text-muted-foreground"><FaCommentDots size={22}/>{commentsById[selected.id] ? commentsById[selected.id].length : 0}</span>
                     </div>
                       <h3 className="font-semibold text-lg text-foreground">Comments</h3>
-                    <div className="overflow-y-auto mt-2">
+                    <div className="overflow-y-auto mt-2 pb-15">
                       <div className="flex flex-col gap-3">
                        {/* <CommentsCard name="Robert Andrei L. Bardoquillo" image="images/userIcon.jpg" comment="Awesome post!" time="41 Minutes ago" />
                         <CommentsCard name="Granger Gusion" image="images/userIcon.jpg" comment="Great insights!" time="1 Hour ago" />
