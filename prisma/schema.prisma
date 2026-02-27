@@ -35,9 +35,9 @@ model PersonalInformation {
   phone        String?
   birthday     DateTime? @db.Date
   gender       String?
-  address      String?
+  houseNumber  String? 
   city         String?
-  state        String?
+  barangay     String? 
   country      String?
   bio          String?
   profileImage String?  @map("profileImage")  
@@ -70,6 +70,7 @@ model Devotion {
   userId             Int
   title              String
   content            String
+  image              String 
   scriptureReference String?
   devotionDate       DateTime
   createdAt          DateTime @default(now())
