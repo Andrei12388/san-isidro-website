@@ -30,15 +30,19 @@ const transitionVariants = {
 }
 
 export default function HeroSection({
-  user, isLoading,
+  user,
+  isLoading,
 }: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-    id: number
-  }
-  isLoading:boolean
+  user:
+    | {
+        name: string | null
+        email: string | null
+        avatar: string | null
+        id: number | null
+      }
+    | null
+    | undefined
+  isLoading: boolean
 }) {
     
     return (

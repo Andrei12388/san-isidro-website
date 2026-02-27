@@ -20,12 +20,12 @@ const menuItems = [
 export const HeroHeader = ({
   item,
 }: {
-  item: {
-    name: string
-    email: string
-    avatar: string
-    id: number
-  }
+  item?: {
+    name: string | null
+    email: string | null
+    avatar: string | null
+    id: number | null
+  } | null
 }) => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
@@ -135,7 +135,7 @@ React.useEffect(() => {
                             
                            {user &&  <SidebarProvider className='lg:top-5 absolute right-5 top-4.5 m-auto w-50 h-20'
     >
-                             <NavUser item={item}/>
+                             <NavUser item={item ?? null}/>
                              </SidebarProvider>
                              }
                         </div>

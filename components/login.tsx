@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext';
 import FacebookLogin, {SuccessResponse} from '@greatsumini/react-facebook-login';
 
 const API_BASE =
@@ -26,9 +27,10 @@ export default function LoginPage() {
 
 
         const router = useRouter();
+    const { setSession } = useAuth();
 
-        //Check if there's a logged in acc
-        
+    //Check if there's a logged in acc
+    
 
     const [messageFB, setMessageFB] = useState<{text:string, severity: "error" | "success"}>();
     
@@ -115,9 +117,25 @@ const onSubmit = async (e: FormEvent) => {
   });
 
     if(result.ok){
-           router.push("/");
-       //  setMessage("Login Failed!");
-         setErrorEnable(false);
+          // retrieve session info from cookies and update context
+          try {
+            const sessionRes = await fetch('/api/auth/getSession');
+            if (sessionRes.ok) {
+              const sessionData = await sessionRes.json();
+              setSession({
+                access_token: sessionData.access_token ?? null,
+                refresh_token: sessionData.refresh_token ?? null,
+                id: sessionData.user ?? null,
+                name: sessionData.name ?? null,
+                email: sessionData.email ?? null,
+                profileImage: sessionData.profileImage ?? null,
+              });
+            }
+          } catch (e) {
+            console.warn('could not refresh session after login', e);
+          }
+          router.push("/");
+          setErrorEnable(false);
     } else {
           setMessage("Login Failed!");
        setErrorEnable(true);

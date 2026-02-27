@@ -14,22 +14,34 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    console.log("Devotion POST body:", body);
+
+    // build create data without spreading to avoid mismatched client types
+    const createData: any = {
+      title: body.title,
+      content: body.content,
+      image: body.image,
+      scriptureReference: body.scriptureReference,
+      devotionDate: body.devotionDate,
+    };
+
+    // connect the authenticated user explicitly
+    createData.user = { connect: { id: currentUserId } };
 
     const devotion = await prisma.devotion.create({
-      data: {
-        userId: currentUserId,
-        ...body,
-      },
+      data: createData,
     });
 
     return NextResponse.json(
       { data: devotion, message: "Devotion created" },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    // log full error stack and message
     console.error("Create devotion error:", error);
+    const msg = error?.message || "Internal server error";
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: msg },
       { status: 500 }
     );
   }

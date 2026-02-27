@@ -25,11 +25,11 @@ export default function Page() {
   const router = useRouter();
 
   //for calling postgre api
-    useEffect(() => {
-    const id = startHealthPolling("/api/health");
+   // useEffect(() => {
+   // const id = startHealthPolling("/api/health");
   
-    return () => clearInterval(id);
-  }, []);
+//    return () => clearInterval(id);
+ // }, []);
 
  useEffect(() => {
   if (fetchOnce.current) return // already fetched

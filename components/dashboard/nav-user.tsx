@@ -37,10 +37,10 @@ import { useEffect } from "react"
 import ThemeToggleButton from "../toggleThemeButton"
 
 interface UserType {
-  name: string
-  email: string
-  avatar: string
-  id: number
+  name: string | null
+  email: string | null
+  avatar: string | null
+  id: number | null
 }
 
 export function NavUser({ item }: { item: UserType | null }) {
