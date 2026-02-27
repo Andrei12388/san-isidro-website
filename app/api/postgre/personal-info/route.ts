@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
-import type { PersonalInformation, User, DiscipleInformation } from "@prisma/client";
+import type { PersonalInformation, User, DiscipleInformation, Prisma } from "@prisma/client";
 
 // Flattened response type
 type FlattenedPersonalInfo = PersonalInformation & {
@@ -128,7 +128,7 @@ export async function PUT(request: NextRequest) {
         country: body.country ?? null,
         bio: body.bio ?? null,
         profileImage: body.profileImage ?? null,
-      },
+      }as Prisma.PersonalInformationUpdateInput,
     });
 
     // 2️⃣ Upsert disciple information (level & groupName)
