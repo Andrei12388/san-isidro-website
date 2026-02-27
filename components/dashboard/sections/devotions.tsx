@@ -280,60 +280,86 @@ export default function DevotionsSection() {
     setImage(null);
   }
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!access_token) {
-      console.warn("no access token, user probably not authenticated");
-      alert("You must be logged in to add a devotion.");
-      return;
-    }
+ const onSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!access_token) {
+    console.warn("no access token, user probably not authenticated");
+    alert("You must be logged in to add a devotion.");
+    return;
+  }
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
 
+  let uploadedImageUrl = "images/defaultDevotion.jpg"; // default fallback
+
+  // 1️⃣ Upload image to Cloudinary if user selected one
+  if (image) {
     try {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = "unsigned_image"; // make sure this exists in Cloudinary
+
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", uploadPreset);
+
       const res = await fetch(
-        `${API_BASE}/api/postgre/devotions`,
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-          body: JSON.stringify({
-            title,
-            content: message,
-            scriptureReference: verseInput,
-            image: image ? URL.createObjectURL(image) : null,
-            devotionDate: new Date().toISOString(), // required by prisma
-          }),
+          body: formData,
         }
       );
 
-      if (!res.ok) {
-        const errData = await res.json().catch(() => null);
-        const msg = errData?.error || res.statusText || "unknown error";
-        throw new Error(msg);
-      }
-
-      // optionally handle returned data
-    } catch (error: any) {
-      console.error("Error submitting devotion:", error);
-      alert(`Unable to submit devotion: ${error.message}`);
+      const data = await res.json();
+      uploadedImageUrl = data.secure_url;
+      console.log("Cloudinary upload success:", uploadedImageUrl);
+    } catch (err) {
+      console.error("Cloudinary upload failed:", err);
+      alert("Failed to upload image. Using default.");
     }
+  }
 
-    const newDevotion: DevotionItem = {
-      id: devotions.length + 1,
-      title: `${title}`,
-      image: `${image ? URL.createObjectURL(image) : "images/defaultDevotion.jpg"}`,
-      message: `${message}`,
-      verse: `${verseInput}`,
-      heart: 0,
-      heartActive: false,
-    };
-    addDevotionToState(newDevotion);
+  try {
+    const res = await fetch(`${API_BASE}/api/postgre/devotions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
+      body: JSON.stringify({
+        title,
+        content: message,
+        scriptureReference: verseInput,
+        image: uploadedImageUrl, // use Cloudinary URL instead of blob
+        devotionDate: new Date().toISOString(),
+      }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => null);
+      const msg = errData?.error || res.statusText || "unknown error";
+      throw new Error(msg);
+    }
+  } catch (error: any) {
+    console.error("Error submitting devotion:", error);
+    alert(`Unable to submit devotion: ${error.message}`);
     setIsSubmitting(false);
-    handleClose();
+    return;
+  }
+
+  const newDevotion: DevotionItem = {
+    id: devotions.length + 1,
+    title: `${title}`,
+    image: uploadedImageUrl, // use uploaded URL
+    message: `${message}`,
+    verse: `${verseInput}`,
+    heart: 0,
+    heartActive: false,
   };
+  addDevotionToState(newDevotion);
+  setIsSubmitting(false);
+  handleClose();
+};
 
    return (
     
@@ -346,7 +372,7 @@ export default function DevotionsSection() {
       
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           <section
-            className="grid gap-2 lg:gap-4 justify-center grid-cols-[repeat(auto-fit,minmax(60px,120px))] lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]"
+            className="grid gap-2 lg:gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]"
             
           >
             {devotions.map((item) => (
