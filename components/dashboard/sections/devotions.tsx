@@ -4,13 +4,11 @@ import { useEffect, useState } from "react";
 import styles from "./devotions.module.css";
 import { DEVOTIONS_DATA } from "./devotions.data";
 import { Input } from "@/components/ui/input";
-import { IconBalloon, IconHeart, IconPlus } from "@tabler/icons-react";
+import { IconHeart, IconPlus } from "@tabler/icons-react";
 import BibleVersePickerNoAPI from "@/components/bible/BibleVersePicker";
 import { Button } from "@/components/ui/button";
-import { FaComment, FaCommentDots, FaFacebookMessenger } from "react-icons/fa";
-import { add } from "date-fns";
+import { FaCommentDots, FaFacebookMessenger } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
-import { create } from "domain";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -25,7 +23,13 @@ export interface DevotionItem {
   verse: string;
   heart: number;
   heartActive: boolean;
-  comments: string;
+}
+
+type CommentType = {
+  name: string
+  comment: string
+  time: string
+  image: string
 }
 
 type CommentsCardProps = {
@@ -35,7 +39,7 @@ type CommentsCardProps = {
   image: string
 }
 
-function CommentActions() {
+function CommentActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -50,10 +54,22 @@ function CommentActions() {
 
       {open && (
         <div className="absolute right-0 w-28 bg-background border rounded shadow z-50">
-          <button className="block w-full text-left text-foreground px-3 py-2 hover:bg-muted-foreground cursor-pointer">
+          <button 
+            onClick={() => {
+              onEdit();
+              setOpen(false);
+            }}
+            className="block w-full text-left text-foreground px-3 py-2 hover:bg-muted-foreground cursor-pointer"
+          >
             Edit
           </button>
-          <button className="block w-full text-left px-3 py-2 hover:bg-muted-foreground text-red-600 cursor-pointer">
+          <button 
+            onClick={() => {
+              onDelete();
+              setOpen(false);
+            }}
+            className="block w-full text-left px-3 py-2 hover:bg-muted-foreground text-red-600 cursor-pointer"
+          >
             Delete
           </button>
         </div>
@@ -62,19 +78,19 @@ function CommentActions() {
   )
 }
 
-function CommentsCard({ name, comment, time, image }: CommentsCardProps) {
+function CommentsCard({ name, comment, time, image, onEdit, onDelete }: CommentsCardProps & { onEdit: () => void; onDelete: () => void }) {
   return (
     <div className="p-2 bg-background text-muted-foreground rounded flex-col">
       <section className="flex flex-row justify-between gap-2">
-      <div className="flex flex-row gap-5"><img src={image} className="rounded-full w-8 h-8" />
+      <div className="flex flex-row gap-5"><img src={image} className="rounded-full w-8 h-8 cursor-pointer" />
         <div className="flex flex-col">
-        <span className="font-bold text-sm text-foreground">{name}</span>
+        <span className="font-bold text-sm text-foreground cursor-pointer">{name}</span>
         <span className="text-sm mb-1">{time}</span>
          <span className="text-sm text-foreground"> {comment} </span>
         </div>
       </div>
       
-      <div className="self-start"><CommentActions /></div>
+      <div className="self-start"><CommentActions onEdit={onEdit} onDelete={onDelete} /></div>
       </section>
       <section>
     
@@ -86,20 +102,26 @@ function CommentsCard({ name, comment, time, image }: CommentsCardProps) {
 
 export default function DevotionsSection() {
   const [devotions, setDevotions] = useState<DevotionItem[]>(DEVOTIONS_DATA);
-  const [comments, setComments] = useState<string[]>([]);
+  const [commentsById, setCommentsById] = useState<Record<number, CommentType[]>>({});
   const [selected, setSelected] = useState<DevotionItem | null>(null);
   const [comment, setComment] = useState("");
+  const [editingCommentIdx, setEditingCommentIdx] = useState<number | null>(null);
   const [closing, setClosing] = useState(false);
-  const { access_token } = useAuth();
-
+  const { access_token, name } = useAuth();
   const [addDevotion, setAddDevotion] = useState(false);
+
+  const addDevotionToState = (newDev: DevotionItem) => {
+    setDevotions((prev) => [newDev, ...prev]);
+    setCommentsById((prev) => ({ ...prev, [newDev.id]: [] }));
+  };
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [verseInput, setVerseInput] = useState("");
 
-   const [book, setBook] = useState<string>("John");
+  const [book, setBook] = useState<string>("John");
   const [chapter, setChapter] = useState<number>(3);
   const [verse, setVerse] = useState<number>(16);
   const [verseData, setVerseData] = useState<any>(null);
@@ -193,6 +215,63 @@ export default function DevotionsSection() {
     }, 300);
   };
 
+  //add/edit/delete comments
+
+   const handleAddComment = () => {
+    if (!selected || !comment.trim()) return;
+    const newComment: CommentType = {
+      name: `${name}`, 
+      comment: comment.trim(),
+      time: "Just now",
+      image: "images/userIcon.jpg",
+    };
+    setCommentsById((prev) => {
+      const existing = prev[selected.id] || [];
+      return { ...prev, [selected.id]: [...existing, newComment] };
+    });
+    setComment("");
+  };
+
+  const handleEditComment = (devotionId: number, commentIdx: number) => {
+    const currentComment = commentsById[devotionId]?.[commentIdx];
+    if (currentComment) {
+      setComment(currentComment.comment);
+      setEditingCommentIdx(commentIdx);
+    }
+  };
+
+  const handleSaveEditComment = () => {
+    if (!selected || !comment.trim() || editingCommentIdx === null) return;
+    
+    setCommentsById((prev) => {
+      const existing = prev[selected.id] || [];
+      const updated = [...existing];
+      updated[editingCommentIdx] = {
+        ...updated[editingCommentIdx],
+        comment: comment.trim(),
+        time: "Just now (edited)",
+      };
+      return { ...prev, [selected.id]: updated };
+    });
+    setComment("");
+    setEditingCommentIdx(null);
+  };
+
+  const handleDeleteComment = (devotionId: number, commentIdx: number) => {
+    setCommentsById((prev) => {
+      const existing = prev[devotionId] || [];
+      return { ...prev, [devotionId]: existing.filter((_, i) => i !== commentIdx) };
+    });
+  };
+
+  const handleCommentSubmit = () => {
+    if (editingCommentIdx !== null) {
+      handleSaveEditComment();
+    } else {
+      handleAddComment();
+    }
+  };
+
   const openAddDevotion = () => {
     setAddDevotion(true);
     setTitle("");
@@ -250,9 +329,8 @@ export default function DevotionsSection() {
       verse: `${verseInput}`,
       heart: 0,
       heartActive: false,
-      comments: "",
     };
-    setDevotions((prev) => [newDevotion, ...prev]);
+    addDevotionToState(newDevotion);
     setIsSubmitting(false);
     handleClose();
   };
@@ -300,7 +378,7 @@ export default function DevotionsSection() {
                     />{" "}
                     {item.heart}
                   </span>
-                  <span className="flex flex-row gap-1"><FaCommentDots size={18} /> 3</span>
+                  <span className="flex flex-row gap-1"><FaCommentDots size={18} />{commentsById[item.id] ? commentsById[item.id].length : 0}</span>
                  
                 </div>
               </div>
@@ -353,41 +431,59 @@ export default function DevotionsSection() {
                       <IconHeart fill={selected.heartActive ? "red" : "white"} color={selected.heartActive ? "red" : "black"} className={styles.heart} size={22} />
                       {selected.heart}
                     </span>
-                    <span className="flex flex-row justify-center items-center gap-1 text-muted-foreground"><FaCommentDots size={22}/>3</span>
+                    <span className="flex flex-row justify-center items-center gap-1 text-muted-foreground"><FaCommentDots size={22}/>{commentsById[selected.id] ? commentsById[selected.id].length : 0}</span>
                     </div>
                       <h3 className="font-semibold text-lg text-foreground">Comments</h3>
                     <div className="overflow-y-auto mt-2">
                       <div className="flex flex-col gap-3">
-                        <CommentsCard name="Robert Andrei L. Bardoquillo" image="images/userIcon.jpg" comment="Awesome post!" time="41 Minutes ago" />
+                       {/* <CommentsCard name="Robert Andrei L. Bardoquillo" image="images/userIcon.jpg" comment="Awesome post!" time="41 Minutes ago" />
                         <CommentsCard name="Granger Gusion" image="images/userIcon.jpg" comment="Great insights!" time="1 Hour ago" />
                         <CommentsCard name="David Goliath" image="images/userIcon.jpg" comment="Thanks for sharing." time="2 Hours ago" />
-                        {/* Add more comments as needed */}
-                        {comments.map((c, index) => (
-                          <div key={index} className="p-2 bg-background text-foreground rounded">
-                            {c}
-                          </div>
-                        ))}
+                        */}
+                       {(commentsById[selected.id] || []).map((c, idx) => (
+                            <CommentsCard
+                              key={idx}
+                              name={c.name}
+                              comment={c.comment}
+                              time={c.time}
+                              image={c.image}
+                              onEdit={() => handleEditComment(selected.id, idx)}
+                              onDelete={() => handleDeleteComment(selected.id, idx)}
+                            />
+                          ))}
                       </div>
                     </div>
                     </div>
                     <div className="mt-5">
+                      <div className="flex gap-2">
                       <Input
                         type="text"
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          if (comment.trim()) {
-                            setComments((prev) => [...prev, comment]);
-                            setComment("");
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleCommentSubmit();
                           }
                         }}
-                        placeholder="Add Comment..."
+                        placeholder={editingCommentIdx !== null ? "Edit comment..." : "Add Comment..."}
                         name="comment"
-                        minLength={8}
+                        minLength={1}
                         id="comment"
-                        className="input sz-md variant-mixed text-foreground"
+                        className="input sz-md variant-mixed text-foreground flex-1"
                       />
+                      {editingCommentIdx !== null && (
+                        <Button 
+                          variant="outline"
+                          onClick={() => {
+                            setComment("");
+                            setEditingCommentIdx(null);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -407,7 +503,6 @@ export default function DevotionsSection() {
                 <div className="bg-background lg:rounded-lg p-6 w-full lg:h-full max-w-3xl flex flex-col justify-between">
                   <div className="overflow-y-auto">
                   <h2 className="text-lg font-semibold mb-4">Add New Devotion</h2>
-                 
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1 w-full">
                     <span className="text-lg font-semibold">Title</span>
@@ -416,7 +511,6 @@ export default function DevotionsSection() {
                   required
                   onChange={(e) => setTitle(e.target.value)}/>
                   </div>
-
                   <div className="flex flex-col gap-1">
                     <span className="text-lg font-semibold">Verse</span>
                  <textarea
@@ -437,7 +531,6 @@ export default function DevotionsSection() {
                     accept="image/*"
                     onChange={handleSetImage}
                   />
-
                   {image && (
                     <div className="mt-3 flex flex-row justify-center">
                       <img

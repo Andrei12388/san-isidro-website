@@ -13,7 +13,7 @@ export function Posts({ title, image, description }: PostProps){
               <h3 className="absolute font-bold text-white bg-blue-950 dark:bg-blue-700 w-auto max-w-max px-3 py-2 rounded-md top-[-22]">{title}</h3>
               <p className="pt-10 pb-10 font-semibold">{description}</p> 
               <div className="flex flex-row justify-end">
-                <button className="mt-4 px-4 py-2 rounded-lg border border-foreground bg-background-500 text-foreground">Read More</button>
+                <button className="mt-4 px-4 py-2 rounded-lg border border-foreground bg-background-500 text-foreground cursor-pointer">Read More</button>
                  </div>
             </div>
             </div>

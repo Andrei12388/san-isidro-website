@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { NavUser } from "./nav-user"
-import { IconBell, IconMail } from "@tabler/icons-react"
+import { IconBell, IconMail, IconMessage } from "@tabler/icons-react"
 
 const data = {
   user: {
@@ -42,7 +42,7 @@ export function SiteHeader({
               className="size-8 group-data-[collapsible=icon]:opacity-0 cursor-pointer"
               variant="outline"
             >
-              <IconMail />
+              <IconMessage />
               <span className="sr-only">Inbox</span>
             </Button>
             <Button
