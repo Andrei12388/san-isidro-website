@@ -628,6 +628,7 @@ export default function DevotionsSection() {
                        {(commentsById[selected.id] || []).map((c, idx) => (
                             <CommentsCard
                               key={idx}
+                              id={c.id} 
                               name={c.name}
                               comment={c.comment}
                               time={c.time}
