@@ -28,6 +28,7 @@ import { useState, useRef, useEffect } from 'react'
 import styles from "./PassModalCard.module.css"
 import { Spinner } from '@/components/ui/loadingSpinner'
 import { startHealthPolling } from '@/lib/fetchWithTimeout'
+import { useAuth } from '@/context/AuthContext'
 
 interface UserType {
   name: string
@@ -62,6 +63,13 @@ function PassModalCard({
   const [loading, setLoading] = useState(false);
 
   const [show, setShow] = useState(open);
+
+   const router = useRouter();
+      const { access_token } = useAuth();
+      //Check if there's a logged in acc
+      if (access_token === null) {
+          router.push("/");
+      }
 
  //changepass async function
 const handleChangePassword = async () => {

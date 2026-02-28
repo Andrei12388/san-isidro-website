@@ -1,79 +1,148 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
+import type { Prisma } from "@prisma/client";
+
+/* ============================= */
+/* Types */
+/* ============================= */
+
+type DevotionBody = {
+  title: string;
+  content: string;
+  image: string;
+  scriptureReference?: string | null;
+  devotionDate: string | Date;
+};
+
+/* ============================= */
+/* POST — Create devotion */
+/* ============================= */
 
 export async function POST(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
+    const currentUserId: number | null = verifyAuth(request);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
+    const body: DevotionBody = await request.json();
     console.log("Devotion POST body:", body);
 
-    // build create data without spreading to avoid mismatched client types
-    const createData: any = {
+    const createData: Prisma.DevotionCreateInput = {
       title: body.title,
       content: body.content,
       image: body.image,
-      scriptureReference: body.scriptureReference,
-      devotionDate: body.devotionDate,
-    };
+      scriptureReference: body.scriptureReference ?? null,
+      devotionDate: new Date(body.devotionDate),
 
-    // connect the authenticated user explicitly
-    createData.user = { connect: { id: currentUserId } };
+      user: {
+        connect: { id: currentUserId },
+      },
+    };
 
     const devotion = await prisma.devotion.create({
       data: createData,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            personalInformation: { select: { profileImage: true } },
+          },
+        },
+      },
     });
 
     return NextResponse.json(
       { data: devotion, message: "Devotion created" },
       { status: 201 }
     );
-  } catch (error: any) {
-    // log full error stack and message
+  } catch (error: unknown) {
     console.error("Create devotion error:", error);
-    const msg = error?.message || "Internal server error";
-    return NextResponse.json(
-      { error: msg },
-      { status: 500 }
-    );
+
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
+/* ============================= */
+/* GET — Fetch devotions */
+/* ============================= */
+
 export async function GET(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
+    const currentUserId: number | null = verifyAuth(request);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const skip = parseInt(request.nextUrl.searchParams.get("skip") || "0");
-    const take = parseInt(request.nextUrl.searchParams.get("take") || "100");
+    const skip = Number(request.nextUrl.searchParams.get("skip") ?? 0);
+    const take = Number(request.nextUrl.searchParams.get("take") ?? 100);
 
     const devotions = await prisma.devotion.findMany({
       where: { userId: currentUserId },
       skip,
       take,
       orderBy: { devotionDate: "desc" },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            personalInformation: { select: { profileImage: true } },
+          },
+        },
+        comments: {
+          include: {
+            user: {
+              select: { id: true, name: true, personalInformation: { select: { profileImage: true } } },
+            },
+          },
+        },
+        likes: true, // we only need the count and to check if current user liked
+      },
     });
 
-    return NextResponse.json({ data: devotions }, { status: 200 });
-  } catch (error) {
+    // map/augment the result so the client has counts and a flag indicating
+    // whether the currently authenticated user has liked each devotion
+    const mapped = devotions.map((d) => {
+      const likesCount = d.likes.length;
+      const userLiked = d.likes.some((l) => l.userId === currentUserId);
+      return {
+        id: d.id,
+        title: d.title,
+        content: d.content,
+        image: d.image,
+        scriptureReference: d.scriptureReference,
+        devotionDate: d.devotionDate,
+        createdAt: d.createdAt,
+        updatedAt: d.updatedAt,
+        comments: d.comments,
+        likesCount,
+        userLiked,
+        user: d.user
+          ? {
+              id: d.user.id,
+              name: d.user.name,
+              profileImage:
+                d.user.personalInformation?.profileImage || null,
+            }
+          : undefined,
+      };
+    });
+
+    return NextResponse.json({ data: mapped }, { status: 200 });
+  } catch (error: unknown) {
     console.error("Get devotions error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

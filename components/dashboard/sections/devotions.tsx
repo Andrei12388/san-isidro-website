@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import styles from "./devotions.module.css";
-import { DEVOTIONS_DATA } from "./devotions.data";
 import { Input } from "@/components/ui/input";
 import { IconHeart, IconPlus } from "@tabler/icons-react";
 import BibleVersePickerNoAPI from "@/components/bible/BibleVersePicker";
@@ -15,6 +14,22 @@ const API_BASE =
     ? process.env.NEXT_PUBLIC_APP_URL
     : "http://localhost:3000";
 
+export interface DevotionCommentItem {
+  id: number;
+  userId: number;
+  devotionId: number;
+  comment: string;
+
+  createdAt: string;
+  updatedAt: string;
+
+  user?: {
+    id: number;
+    name: string;
+    profileImage?: string | null;
+  };
+}
+
 export interface DevotionItem {
   id: number;
   title: string;
@@ -23,21 +38,23 @@ export interface DevotionItem {
   verse: string;
   heart: number;
   heartActive: boolean;
+  comments: DevotionCommentItem[];
+  user?: {
+    id: number;
+    name: string;
+    profileImage?: string | null;
+  };
 }
 
 type CommentType = {
-  name: string
-  comment: string
-  time: string
-  image: string
-}
+  id: number;
+  name: string;
+  comment: string;
+  time: string;
+  image: string;
+};
 
-type CommentsCardProps = {
-  name: string
-  comment: string
-  time: string
-  image: string
-}
+type CommentsCardProps = CommentType;
 
 function CommentActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
   const [open, setOpen] = useState(false)
@@ -101,7 +118,7 @@ function CommentsCard({ name, comment, time, image, onEdit, onDelete }: Comments
 
 
 export default function DevotionsSection() {
-  const [devotions, setDevotions] = useState<DevotionItem[]>(DEVOTIONS_DATA);
+  const [devotions, setDevotions] = useState<DevotionItem[]>([]);
   const [commentsById, setCommentsById] = useState<Record<number, CommentType[]>>({});
   const [selected, setSelected] = useState<DevotionItem | null>(null);
   const [comment, setComment] = useState("");
@@ -126,21 +143,73 @@ export default function DevotionsSection() {
   const [verse, setVerse] = useState<number>(16);
   const [verseData, setVerseData] = useState<any>(null);
 
-  useEffect(() => {
-    const devotionData = async () => {
-      try {
-          const response = await fetch(`${API_BASE}/api/postgre/devotions`);
-          if (!response.ok) throw new Error("Failed to fetch devotions");
-          const data = await response.json();
-         // setDevotions(data);
-         console.log("Fetched devotions:", data);
-      } catch (error) {
-          console.error("Error fetching devotions:", error);
-      }
-    };
+  // fetch devotions from the backend (includes comments and like info)
+  const fetchDevotions = async () => {
+    if (!access_token) return;
+    try {
+      const response = await fetch(`${API_BASE}/api/postgre/devotions`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to fetch devotions");
+      const json = await response.json();
 
-    devotionData();
-  }, []);
+      const items: DevotionItem[] = json.data.map((d: any) => {
+        const mappedComments: DevotionCommentItem[] = (d.comments || []).map(
+          (c: any) => ({
+            id: c.id,
+            userId: c.userId,
+            devotionId: c.devotionId,
+            comment: c.comment,
+            createdAt: c.createdAt,
+            updatedAt: c.updatedAt,
+            user: {
+              id: c.user.id,
+              name: c.user.name,
+              profileImage: c.user.personalInformation?.profileImage || null,
+            },
+          })
+        );
+
+        return {
+          id: d.id,
+          title: d.title,
+          image: d.image,
+          message: d.content,
+          verse: d.scriptureReference || "",
+          heart: d.likesCount ?? 0,
+          heartActive: d.userLiked ?? false,
+          comments: mappedComments,
+          user: d.user ? {
+            id: d.user.id,
+            name: d.user.name,
+            profileImage: d.user.personalInformation?.profileImage || null,
+          } : undefined,
+        };
+      });
+
+      const byId: Record<number, CommentType[]> = {};
+      items.forEach((it) => {
+        byId[it.id] = it.comments.map((c) => ({
+          id: c.id,
+          name: c.user?.name || "",
+          comment: c.comment,
+          time: new Date(c.createdAt).toLocaleString(),
+          image: c.user?.profileImage || "images/userIcon.jpg",
+        }));
+      });
+
+      setDevotions(items);
+      setCommentsById(byId);
+    } catch (error) {
+      console.error("Error fetching devotions:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDevotions();
+  }, [access_token]);
 
   useEffect(() => {
     const searchVerse = async () => {
@@ -158,29 +227,45 @@ export default function DevotionsSection() {
     searchVerse();
   }, [book, chapter, verse]); // re-run when book, chapter, or verse changes
 
-  const handleHeartReact = (id: number) => {
-    setDevotions((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          const isActive = !item.heartActive;
-          return {
-            ...item,
-            heartActive: isActive,
-            heart: isActive ? item.heart + 1 : item.heart - 1,
-          };
-        }
-        return item;
-      })
-    );
+  const handleHeartReact = async (id: number) => {
+    if (!access_token) return;
 
-    if (selected?.id === id) {
-      setSelected((prev) =>
-        prev && {
-          ...prev,
-          heartActive: !prev.heartActive,
-          heart: !prev.heartActive ? prev.heart + 1 : prev.heart - 1,
-        }
+    try {
+      const res = await fetch(`${API_BASE}/api/postgre/devotions/likes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+        body: JSON.stringify({ devotionId: id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unable to toggle like");
+
+      setDevotions((prev) =>
+        prev.map((item) => {
+          if (item.id === id) {
+            return {
+              ...item,
+              heart: data.likesCount,
+              heartActive: data.userLiked,
+            };
+          }
+          return item;
+        })
       );
+
+      if (selected?.id === id) {
+        setSelected((prev) =>
+          prev && {
+            ...prev,
+            heart: data.likesCount,
+            heartActive: data.userLiked,
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
     }
   };
 
@@ -217,19 +302,39 @@ export default function DevotionsSection() {
 
   //add/edit/delete comments
 
-   const handleAddComment = () => {
-    if (!selected || !comment.trim()) return;
-    const newComment: CommentType = {
-      name: `${name}`, 
-      comment: comment.trim(),
-      time: "Just now",
-      image: "images/userIcon.jpg",
-    };
-    setCommentsById((prev) => {
-      const existing = prev[selected.id] || [];
-      return { ...prev, [selected.id]: [...existing, newComment] };
-    });
-    setComment("");
+   const handleAddComment = async () => {
+    if (!selected || !comment.trim() || !access_token) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/postgre/devotions/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+        body: JSON.stringify({ devotionId: selected.id, comment: comment.trim() }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to add comment");
+
+      const newC = data.data;
+      const newComment: CommentType = {
+        id: newC.id,
+        name: newC.user?.name || "",
+        comment: newC.comment,
+        time: "Just now",
+        image: newC.user?.profileImage || "images/userIcon.jpg",
+      };
+
+      setCommentsById((prev) => {
+        const existing = prev[selected.id] || [];
+        return { ...prev, [selected.id]: [...existing, newComment] };
+      });
+      setComment("");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
   };
 
   const handleEditComment = (devotionId: number, commentIdx: number) => {
@@ -240,28 +345,72 @@ export default function DevotionsSection() {
     }
   };
 
-  const handleSaveEditComment = () => {
-    if (!selected || !comment.trim() || editingCommentIdx === null) return;
-    
-    setCommentsById((prev) => {
-      const existing = prev[selected.id] || [];
-      const updated = [...existing];
-      updated[editingCommentIdx] = {
-        ...updated[editingCommentIdx],
-        comment: comment.trim(),
-        time: "Just now (edited)",
-      };
-      return { ...prev, [selected.id]: updated };
-    });
-    setComment("");
-    setEditingCommentIdx(null);
+  const handleSaveEditComment = async () => {
+    if (!selected || !comment.trim() || editingCommentIdx === null || !access_token) return;
+
+    const current = commentsById[selected.id]?.[editingCommentIdx];
+    if (!current) return;
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/postgre/devotions/comments/${current.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({ comment: comment.trim() }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update comment");
+
+      setCommentsById((prev) => {
+        const existing = prev[selected.id] || [];
+        const updated = [...existing];
+        updated[editingCommentIdx] = {
+          ...updated[editingCommentIdx],
+          comment: comment.trim(),
+          time: "Just now (edited)",
+        };
+        return { ...prev, [selected.id]: updated };
+      });
+      setComment("");
+      setEditingCommentIdx(null);
+    } catch (error) {
+      console.error("Error updating comment:", error);
+    }
   };
 
-  const handleDeleteComment = (devotionId: number, commentIdx: number) => {
-    setCommentsById((prev) => {
-      const existing = prev[devotionId] || [];
-      return { ...prev, [devotionId]: existing.filter((_, i) => i !== commentIdx) };
-    });
+  const handleDeleteComment = async (devotionId: number, commentIdx: number) => {
+    if (!access_token) return;
+
+    const commentToDelete = commentsById[devotionId]?.[commentIdx];
+    if (!commentToDelete) return;
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/postgre/devotions/comments/${commentToDelete.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to delete comment");
+      }
+
+      setCommentsById((prev) => {
+        const existing = prev[devotionId] || [];
+        return { ...prev, [devotionId]: existing.filter((_, i) => i !== commentIdx) };
+      });
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
   };
 
   const handleCommentSubmit = () => {
@@ -335,11 +484,31 @@ export default function DevotionsSection() {
       }),
     });
 
+    const result = await res.json().catch(() => null);
     if (!res.ok) {
-      const errData = await res.json().catch(() => null);
-      const msg = errData?.error || res.statusText || "unknown error";
+      const msg = result?.error || res.statusText || "unknown error";
       throw new Error(msg);
     }
+
+    const created = result.data;
+    const newDevotion: DevotionItem = {
+      id: created.id,
+      title: created.title,
+      image: created.image,
+      message: created.content,
+      verse: created.scriptureReference || "",
+      heart: 0,
+      heartActive: false,
+      comments: [],
+      user: created.user
+        ? {
+            id: created.user.id,
+            name: created.user.name,
+            profileImage: created.user.personalInformation?.profileImage || null,
+          }
+        : undefined,
+    };
+    addDevotionToState(newDevotion);
   } catch (error: any) {
     console.error("Error submitting devotion:", error);
     alert(`Unable to submit devotion: ${error.message}`);
@@ -347,16 +516,6 @@ export default function DevotionsSection() {
     return;
   }
 
-  const newDevotion: DevotionItem = {
-    id: devotions.length + 1,
-    title: `${title}`,
-    image: uploadedImageUrl, // use uploaded URL
-    message: `${message}`,
-    verse: `${verseInput}`,
-    heart: 0,
-    heartActive: false,
-  };
-  addDevotionToState(newDevotion);
   setIsSubmitting(false);
   handleClose();
 };
@@ -383,7 +542,7 @@ export default function DevotionsSection() {
               >
                 <div>
                   <h2 className="font-semibold text-foreground text-lg">{item.title}</h2>
-                  <span className="text-muted-foreground text-sm line-clamp-1">@AndreiBardoquillo</span>
+                  <span className="text-muted-foreground text-sm line-clamp-1">{item.user?.name || "Unknown User"}</span>
                 </div>
                 <img src={item.image} alt={item.title} className="lg:h-40 w-auto rounded" />
                 <span className="text-muted-foreground text-sm line-clamp-1">{item.verse}</span>
@@ -442,7 +601,7 @@ export default function DevotionsSection() {
                       <div className="mb-2 flex flex-row justify-between">
                         <div className="flex flex-col">
                       <h2 className="font-semibold text-foreground text-lg">{selected.title}</h2>
-                      <span className="text-muted-foreground text-sm">@AndreiBardoquillo</span>
+                      <span className="text-muted-foreground text-sm">{selected.user?.name || "Unknown User"}</span>
                       </div>
                       <div className="flex flex-row items-center justify-between mb-5">
                       <button className="px-4 py-2 bg-background text-foreground rounded cursor-pointer" onClick={handleClose}>

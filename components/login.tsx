@@ -27,10 +27,11 @@ export default function LoginPage() {
 
 
         const router = useRouter();
-    const { setSession } = useAuth();
-
+    const { setSession, access_token } = useAuth();
     //Check if there's a logged in acc
-    
+    if (access_token) {
+        router.push("/");
+    }
 
     const [messageFB, setMessageFB] = useState<{text:string, severity: "error" | "success"}>();
     

@@ -22,6 +22,8 @@ model User {
   assignedOutreaches  Outreach[]              @relation("AssignedPastor")
   personalInformation PersonalInformation?
   trainings           Training[]
+  comments            DevotionComment[]
+  likes               DevotionLike[]
 
   @@map("users")
 }
@@ -76,8 +78,45 @@ model Devotion {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments           DevotionComment[]
+  likes              DevotionLike[]
 
   @@map("devotions")
+}
+
+model DevotionComment {
+  id         Int       @id @default(autoincrement())
+
+  userId     Int
+  devotionId Int
+
+  comment    String
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  devotion   Devotion  @relation(fields: [devotionId], references: [id], onDelete: Cascade)
+
+  @@index([devotionId])
+  @@index([userId])
+
+  @@map("devotion_comments")
+}
+
+model DevotionLike {
+  id         Int @id @default(autoincrement())
+
+  userId     Int
+  devotionId Int
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  devotion   Devotion @relation(fields: [devotionId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, devotionId]) // prevents double-like
+  @@map("devotion_likes")
 }
 
 model TrainingCategory {

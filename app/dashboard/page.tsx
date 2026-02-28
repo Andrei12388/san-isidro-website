@@ -15,6 +15,7 @@ import MembersSection from "@/components/dashboard/sections/members"
 import { Spinner } from "@/components/ui/loadingSpinner"
 import { startHealthPolling } from "@/lib/fetchWithTimeout"
 import DevotionsSection from "@/components/dashboard/sections/devotions"
+import { useAuth } from "@/context/AuthContext"
 
 
 export default function Page() {
@@ -30,6 +31,12 @@ export default function Page() {
   
 //    return () => clearInterval(id);
  // }, []);
+
+       const { access_token } = useAuth();
+       //Check if there's a logged in acc
+       if (!access_token) {
+           router.push("/");
+       }
 
  useEffect(() => {
   if (fetchOnce.current) return // already fetched

@@ -35,6 +35,7 @@ import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import ThemeToggleButton from "../toggleThemeButton"
+import { useAuth } from "@/context/AuthContext"
 
 interface UserType {
   name: string | null
@@ -46,7 +47,10 @@ interface UserType {
 export function NavUser({ item }: { item: UserType | null }) {
   const { isMobile } = useSidebar()
  const router = useRouter();
+       const { clearSession } = useAuth();
+       //Check if there's a logged in acc
   const logout = async () => {
+    clearSession(); // Clear client-side session
   await fetch("/api/auth/logout", {
     method: "POST",
     credentials: "include",
