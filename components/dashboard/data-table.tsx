@@ -123,6 +123,8 @@ export const memberSchema = z.object({
   group_name: z.string(),
   mentor_id: z.number(),
   image: z.string(),
+  birthday: z.string().nullable(),
+  ministry: z.string(),
 })
 
 
@@ -241,8 +243,21 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
     accessorKey: "address",
     header: "Address",
   },
- 
 
+  // Birthday
+  {
+    id:'birthday',
+    accessorKey: "birthday",
+    header: "Birthday",
+    cell: ({ row }) => row.original.birthday || "N/A",
+  },
+
+  // Ministry
+  {
+    id:'ministry',
+    accessorKey: "ministry",
+    header: "Ministry",
+  },
 
   // ✅ ACTION BUTTONS
   {
