@@ -105,6 +105,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import HoverCard from "../userCard/hoverCard"
+import { useRouter } from "next/navigation"
 
 type TableMeta = {
   deleteRow: (id: number) => void
@@ -169,12 +171,13 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
   header: "Photo",
   cell: ({ row }) => {
     const [src, setSrc] = React.useState(row.original.image)
-
+    const router = useRouter();
     return (
       <img
         src={src || "/images/userIcon.png"}
         onError={() => setSrc("/images/userIcon.png")} // fallback if broken
-        className="size-9 rounded-full object-cover border"
+        className="size-9 rounded-full object-cover border cursor-pointer hover:brightness-110 transition"
+        onClick={() => router.push(`/user/${row.original.id}`)}
         alt={row.original.name}
       />
     )
@@ -186,7 +189,23 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
     id:'name',
     accessorKey: "name",
     header: "Full Name",
+    cell: ({row}) => {
+      const router = useRouter();
+      return (
+        <>
+      <HoverCard
+        userId={row.original.id}
+        name={row.original.name}
+        title={"Member"}
+        image={row.original.image || "/images/userIcon.png"}
+        onView={() => toast(`Viewing ${row.original.name}`)}
+      >
+        <span className="font-semibold text-foreground cursor-pointer hover:underline" onClick={() => router.push(`/user/${row.original.id}`)}>{row.original.name}</span>
+      </HoverCard>
+        </>
+  )
   },
+},
 
   // Email
   {

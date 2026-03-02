@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from "react";
 import { FaCommentDots } from "react-icons/fa";
 import styles from "@/components/dashboard/sections/devotions.module.css";
 import { Spinner } from "@/components/ui/loadingSpinner";
+import HoverCard from "@/components/userCard/hoverCard";
+import { useRouter } from "next/navigation";
 
 function CommentActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
   const [open, setOpen] = useState(false);
@@ -90,6 +92,8 @@ export default function Page() {
   const [comment, setComment] = useState("");
   const { access_token } = useAuth();
   const fetchOnce = useRef(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (fetchOnce.current) return;
@@ -562,12 +566,21 @@ export default function Page() {
                                   <img
                                     src={c.user?.profileImage || "images/userIcon.png"}
                                     alt={c.user?.name || "User"}
-                                    className="w-8 h-8 rounded-full object-cover"
+                                    onClick={() => router.push(`/user/${c.user?.id}`)}
+                                    className="w-8 h-8 rounded-full object-cover cursor-pointer"
                                   />
                                   <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start gap-2">
                                       <div>
-                                        <p className="font-semibold text-sm">{c.user?.name || "Unknown"}</p>
+                                        <HoverCard
+                                        userId={c.user?.id}
+                                        name={c.user?.name || "Unknown"}
+                                        title={c.user?.title || "Member"}
+                                        image={c.user?.profileImage || "/images/userIcon.png"}
+                                        onView={() => router.push(`/user/${c.user?.id}`)}
+                                        >
+                                        <span className="font-semibold text-sm cursor-pointer hover:underline" onClick={() => router.push(`/user/${c.user?.id}`)}>{c.user?.name || "Unknown"}</span>
+                                        </HoverCard>
                                         <p className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleString()}</p>
                                       </div>
                                       <div className="self-start">

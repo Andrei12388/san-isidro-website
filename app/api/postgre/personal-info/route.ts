@@ -32,8 +32,12 @@ export async function GET(request: NextRequest) {
     const currentUserId = verifyAuth(request);
     if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    // Check if a specific userId is requested (for viewing other users' profiles)
+    const userIdParam = request.nextUrl.searchParams.get("userId");
+    const targetUserId = userIdParam ? parseInt(userIdParam) : currentUserId;
+
     const personalInfo = await prisma.personalInformation.findUnique({
-      where: { userId: currentUserId },
+      where: { userId: targetUserId },
       include: { user: { include: { discipleInformation: true } } },
     });
 

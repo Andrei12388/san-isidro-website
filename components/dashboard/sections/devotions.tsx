@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { FaCommentDots, FaFacebookMessenger } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
 import { Spinner } from "@/components/ui/loadingSpinner";
+import HoverCard from "@/components/userCard/hoverCard";
+import { useRouter } from "next/navigation";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -48,6 +50,7 @@ export interface DevotionItem {
 }
 
 type CommentType = {
+  userId: number;
   id: number;
   name: string;
   comment: string;
@@ -96,13 +99,22 @@ function CommentActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: ()
   )
 }
 
-function CommentsCard({ name, comment, time, image, onEdit, onDelete }: CommentsCardProps & { onEdit: () => void; onDelete: () => void }) {
+function CommentsCard({userId, name, comment, time, image, onEdit, onDelete }: CommentsCardProps & { onEdit: () => void; onDelete: () => void }) {
+  const router = useRouter();
   return (
     <div className="p-2 bg-background text-muted-foreground rounded flex-col">
       <section className="flex flex-row justify-between gap-2">
       <div className="flex flex-row gap-5"><img src={image} className="rounded-full w-8 h-8 cursor-pointer" />
         <div className="flex flex-col">
-        <span className="font-bold text-sm text-foreground cursor-pointer">{name}</span>
+        <HoverCard
+                                                userId={userId}
+                                                name={name || "Unknown"}
+                                                title={"Member"}
+                                                image={image || "/images/userIcon.png"}
+                                                onView={() => router.push(`/user/${userId}`)}
+                                                >
+                                                <span className="font-semibold text-sm text-foreground cursor-pointer hover:underline" onClick={() => router.push(`/user/${userId}`)}>{name || "Unknown"}</span>
+                                                </HoverCard>
         <span className="text-sm mb-1">{time}</span>
          <span className="text-sm text-foreground"> {comment} </span>
         </div>
@@ -173,6 +185,7 @@ export default function DevotionsSection() {
       items.forEach((d: any) => {
         byId[d.id] = (d.comments || []).map((c: any) => ({
           id: c.id,
+          userId: c.user?.id || 0,
           name: c.user?.name || "",
           comment: c.comment,
           time: new Date(c.createdAt).toLocaleString(),
@@ -303,6 +316,7 @@ export default function DevotionsSection() {
       const newC = data.data;
       const newComment: CommentType = {
         id: newC.id,
+        userId: newC.user?.id || 0,
         name: newC.user?.name || "",
         comment: newC.comment,
         time: "Just now",
@@ -624,6 +638,7 @@ if (loadingDevotion) {
                             <CommentsCard
                               key={idx}
                               id={c.id} 
+                              userId={c.userId}
                               name={c.name}
                               comment={c.comment}
                               time={c.time}
