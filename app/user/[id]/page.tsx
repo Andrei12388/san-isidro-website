@@ -3,13 +3,14 @@
 import { NavUser } from "@/components/dashboard/nav-user"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/context/AuthContext"
-import { IconBell, IconMail } from "@tabler/icons-react"
+import { IconBell, IconCake, IconGenderBigender, IconMail, IconUser, IconUsersGroup } from "@tabler/icons-react"
 import Head from "next/head"
 import Image from "next/image"
 import { useEffect, useState, use } from "react"
 import { useRouter } from "next/navigation"
 import { Spinner } from "@/components/ui/loadingSpinner"
 import styles from "@/components/dashboard/sections/devotions.module.css";
+import { FaPrayingHands } from "react-icons/fa"
 
 interface UserType {
   name: string
@@ -291,8 +292,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             <div className="w-full px-5 gap-y-2 gap-x-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5 mt-2 pb-5">
               {/* Birthday */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Birthday</label>
-                <div className="bg-background rounded-sm px-3 py-2 border">
+                <label className="text-medium font-medium opacity-70 flex flex-row items-center gap-2"><IconCake size={16} /> Birthday</label>
+                <div className="rounded-sm px-3 py-2">
                   {personalInfo?.birthday
                     ? new Date(personalInfo.birthday).toLocaleDateString()
                     : "N/A"}
@@ -301,32 +302,32 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
               {/* Gender */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Gender</label>
-                <div className="bg-background rounded-sm px-3 py-2 border">
+                <label className="text-medium font-medium opacity-70 flex flex-row items-center gap-2"><IconGenderBigender size={16} /> Gender</label>
+                <div className="rounded-sm px-3 py-2">
                   {personalInfo?.gender ? personalInfo.gender.charAt(0).toUpperCase() + personalInfo.gender.slice(1) : "N/A"}
                 </div>
               </div>
 
               {/* Level */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Level</label>
-                <div className="bg-background rounded-sm px-3 py-2 border">
+                <label className="text-medium font-medium opacity-70 flex flex-row items-center gap-2"><IconUser size={16} /> Level</label>
+                <div className="rounded-sm px-3 py-2">
                   {personalInfo?.level ? personalInfo.level.charAt(0).toUpperCase() + personalInfo.level.slice(1) : "N/A"}
                 </div>
               </div>
 
               {/* Ministry */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Ministry</label>
-                <div className="bg-background rounded-sm px-3 py-2 border">
+                <label className="text-medium font-medium opacity-70 flex flex-row items-center gap-2"><FaPrayingHands size={16} /> Ministry</label>
+                <div className="rounded-sm px-3 py-2">
                   {personalInfo?.ministry ? personalInfo.ministry.charAt(0).toUpperCase() + personalInfo.ministry.slice(1) : "N/A"}
                 </div>
               </div>
 
               {/* Group */}
               <div className="flex flex-col gap-2 mb-5">
-                <label className="text-sm font-medium">Group</label>
-                <div className="bg-background rounded-sm px-3 py-2 border">
+                <label className="text-medium font-medium opacity-70 flex flex-row items-center gap-2"><IconUsersGroup size={16} /> Group</label>
+                <div className="rounded-sm px-3 py-2">
                   {personalInfo?.groupName ? personalInfo.groupName.charAt(0).toUpperCase() + personalInfo.groupName.slice(1) : "N/A"}
                 </div>
               </div>

@@ -8,9 +8,11 @@ import BibleVersePickerNoAPI from "@/components/bible/BibleVersePicker";
 import { Button } from "@/components/ui/button";
 import { FaCommentDots, FaFacebookMessenger } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
+import DOMPurify from "dompurify";
 import { Spinner } from "@/components/ui/loadingSpinner";
 import HoverCard from "@/components/userCard/hoverCard";
 import { useRouter } from "next/navigation";
+import MessageEditor from "@/components/ui/editors/textField";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -156,6 +158,14 @@ export default function DevotionsSection() {
   const [chapter, setChapter] = useState<number>(3);
   const [verse, setVerse] = useState<number>(16);
   const [verseData, setVerseData] = useState<any>(null);
+
+  // Alternatively, use a hook:
+DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+  if (node.tagName === 'A') {
+    node.setAttribute('target', '_blank'); // open in new tab
+    node.setAttribute('rel', 'noopener noreferrer'); // security best practice
+  }
+});
 
   // fetch devotions from the backend (includes comments and like info)
   const fetchDevotions = async () => {
@@ -555,7 +565,17 @@ if (loadingDevotion) {
                 />
                 </div>
                 <span className="text-muted-foreground text-sm line-clamp-1">{item.verse}</span>
-                <p className="text-sm text-muted-foreground line-clamp-1">{item.message}</p>
+                <div
+                  className="
+                  mt-3 max-w-none
+                  [&_a]:text-blue-600
+                  [&_a]:underline
+                  [&_a]:font-medium
+                  [&_a:hover]:text-blue-800
+                  line-clamp-1
+                "
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.message) }}
+                />
                 <div className="flex justify-between text-sm text-foreground-500">
                   <span
                     className="text-md flex items-center cursor-pointer"
@@ -597,7 +617,16 @@ if (loadingDevotion) {
                         <img src={selected.image} className="mb-3 rounded w-full max-w-lg" />
                         <span className="text-muted-foreground text-sm mb-5">{selected.verse}</span>
                       </div>
-                      <p className="text-foreground whitespace-pre-line mt-3">{selected.message}</p>
+                    <div
+                  className="
+                  mt-3 max-w-none
+                  [&_a]:text-blue-600
+                  [&_a]:underline
+                  [&_a]:font-medium
+                  [&_a:hover]:text-blue-800
+                "
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selected.message) }}
+                />
                     </div>
                   </div>
 
@@ -745,14 +774,7 @@ if (loadingDevotion) {
                   )}
                     </div>
                   <span className="text-lg font-semibold">Message</span>
-                    <textarea
-                  placeholder="Message"
-                  value={message}
-                  required
-                  rows={10}
-                  onChange={handleChangeMessage}
-                  className="mb-3 w-full overflow-hidden border border-muted-foreground rounded px-2"
-                />
+                    <MessageEditor message={message} setMessage={setMessage} />
                   </div>
                   <div className="flex justify-end gap-2">
                     <Button variant="outline" type="button" onClick={handleClose}>

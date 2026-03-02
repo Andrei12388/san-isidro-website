@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaCommentDots } from "react-icons/fa";
 import styles from "@/components/dashboard/sections/devotions.module.css";
 import { Spinner } from "@/components/ui/loadingSpinner";
+import DOMPurify from "dompurify";
 import HoverCard from "@/components/userCard/hoverCard";
 import { useRouter } from "next/navigation";
 
@@ -92,6 +93,14 @@ export default function Page() {
   const [comment, setComment] = useState("");
   const { access_token } = useAuth();
   const fetchOnce = useRef(false);
+
+// Alternatively, use a hook:
+DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+  if (node.tagName === 'A') {
+    node.setAttribute('target', '_blank'); // open in new tab
+    node.setAttribute('rel', 'noopener noreferrer'); // security best practice
+  }
+});
 
   const router = useRouter();
 
@@ -446,7 +455,16 @@ export default function Page() {
                       {devotion.scriptureReference || "No scripture reference"}
                     </span>
                     <p className="text-sm text-muted-foreground line-clamp-1">
-                      {devotion.content}
+                      <div
+                  className="
+                  mt-3 max-w-none
+                  [&_a]:text-blue-600
+                  [&_a]:underline
+                  [&_a]:font-medium
+                  [&_a:hover]:text-blue-800
+                "
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(devotion.content) }}
+                />
                     </p>
                     <div className="flex justify-between text-sm text-foreground-500">
                       <span 
@@ -503,7 +521,16 @@ export default function Page() {
                         </span>
                       </div>
                       <p className="text-foreground whitespace-pre-line mt-3">
-                        {selected.content}
+                        <div
+                  className="
+                  mt-3 max-w-none
+                  [&_a]:text-blue-600
+                  [&_a]:underline
+                  [&_a]:font-medium
+                  [&_a:hover]:text-blue-800
+                "
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selected.content) }}
+                />
                       </p>
                     </div>
                   </div>
