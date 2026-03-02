@@ -126,6 +126,7 @@ export default function DevotionsSection() {
   const [closing, setClosing] = useState(false);
   const { access_token, name } = useAuth();
   const [addDevotion, setAddDevotion] = useState(false);
+  const [loadingDevotion, setLoadingDevotion] = useState(false);
 
   const addDevotionToState = (newDev: DevotionItem) => {
     setDevotions((prev) => [newDev, ...prev]);
@@ -145,6 +146,7 @@ export default function DevotionsSection() {
 
   // fetch devotions from the backend (includes comments and like info)
   const fetchDevotions = async () => {
+    setLoadingDevotion(true);
     if (!access_token) return;
     try {
       const response = await fetch(`${API_BASE}/api/postgre/devotions`, {
@@ -199,7 +201,8 @@ export default function DevotionsSection() {
           image: c.user?.profileImage || "images/userIcon.jpg",
         }));
       });
-
+      
+      setLoadingDevotion(false);
       setDevotions(items);
       setCommentsById(byId);
     } catch (error) {
@@ -520,6 +523,10 @@ export default function DevotionsSection() {
   handleClose();
 };
 
+if (loadingDevotion) {
+    return <div className="flex flex-1 flex-col text-center">Loading Devotions...</div>;
+  }
+
    return (
     
     <div className="flex flex-1 flex-col">
@@ -541,10 +548,16 @@ export default function DevotionsSection() {
                 className={`${styles.devotionCard} border rounded-lg p-4 shadow bg-background flex flex-col gap-3`}
               >
                 <div>
-                  <h2 className="font-semibold text-foreground text-lg">{item.title}</h2>
+                  <h2 className="font-semibold text-foreground text-lg line-clamp-1">{item.title}</h2>
                   <span className="text-muted-foreground text-sm line-clamp-1">{item.user?.name || "Unknown User"}</span>
                 </div>
-                <img src={item.image} alt={item.title} className="lg:h-40 w-auto rounded" />
+                <div className="flex flex-row justify-center items-center gap-2">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-40 object-cover rounded"
+                />
+                </div>
                 <span className="text-muted-foreground text-sm line-clamp-1">{item.verse}</span>
                 <p className="text-sm text-muted-foreground line-clamp-1">{item.message}</p>
                 <div className="flex justify-between text-sm text-foreground-500">

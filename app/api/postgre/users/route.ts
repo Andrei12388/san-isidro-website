@@ -56,11 +56,28 @@ export async function GET(request: NextRequest) {
       ].filter(Boolean);
       const address = addressParts.length > 0 ? addressParts.join(", ") : "N/A";
       
+      function getAge(birthday: Date | null | undefined): number {
+          if (!birthday) return 0;
+
+          const today = new Date();
+
+          let age = today.getFullYear() - birthday.getFullYear();
+
+          const hasHadBirthdayThisYear =
+            today.getMonth() > birthday.getMonth() ||
+            (today.getMonth() === birthday.getMonth() &&
+              today.getDate() >= birthday.getDate());
+
+          if (!hasHadBirthdayThisYear) age--;
+
+          return age;
+        }
+
       return {
         id: u.id,
         name: u.name,
         email: u.email,
-        age: 0, // placeholder - can be derived from birthday later
+        age: getAge(u.personalInformation?.birthday), // ✅ derived
         gender: u.personalInformation?.gender || "N/A",
         phone: u.personalInformation?.phone || "N/A",
         address: address,
