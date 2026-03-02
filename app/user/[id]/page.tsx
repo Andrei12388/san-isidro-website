@@ -9,7 +9,7 @@ import Image from "next/image"
 import { useEffect, useState, use } from "react"
 import { useRouter } from "next/navigation"
 import { Spinner } from "@/components/ui/loadingSpinner"
-import styles from "@/app/user/profile/profile.module.css"
+import styles from "@/components/dashboard/sections/devotions.module.css";
 
 interface UserType {
   name: string
@@ -52,10 +52,21 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const [user, setUser] = useState<UserType | null>(null)
   const [personalInfo, setPersonalInfo] = useState<PersonalInfoType | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+    const [closing, setClosing] = useState(false);
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const [isImageOpen, setIsImageOpen] = useState(false)
   const { access_token } = useAuth()
   const userId = id
+
+  const handleClose = () => {
+    setClosing(true)
+    setIsImageOpen(true);
+    setTimeout(() => {
+        setClosing(false);
+      setIsImageOpen(false);
+    }, 300);
+  };
 
   // Set document title when personalInfo is loaded
   useEffect(() => {
@@ -255,7 +266,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                 <img
                   src={personalInfo?.profileImage || user?.avatar || "images/userIcon.png"}
                   alt={user?.name}
-                  className="rounded-full w-24 h-24 object-cover border-2 border-foreground"
+                  onClick={() => setIsImageOpen(true)}
+                  className={`rounded-full w-24 h-24 object-cover border-2 border-foreground cursor-pointer ${styles.imageHover}`}
                 />
               </div>
 
@@ -405,6 +417,36 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             </div>
           </div>
         </div>
+                                    {isImageOpen && (
+                            <div
+                                className={`${
+                  closing ? styles.backdropOut : styles.backdropIn
+                } fixed inset-0 z-[999] bg-black/80 flex items-center justify-center p-4`}
+                                onClick={handleClose}
+                            >
+                                {/* Stop closing when clicking the image */}
+                                <div
+                                className={`relative max-w-4xl w-full flex justify-center ${
+                                                  closing ? styles.modalOut : styles.modalIn
+                                                }`}
+                                onClick={(e) => e.stopPropagation()}
+                                >
+                                <img
+                                    src={personalInfo?.profileImage || user?.avatar || "images/userIcon.png"}
+                                    alt="Profile Large"
+                                    className="max-h-[90vh] rounded-xl shadow-2xl"
+                                />
+
+                                {/* Close button */}
+                                <button
+                                    onClick={handleClose}
+                                    className="absolute -top-3 -right-3 bg-foreground text-background rounded-full w-8 h-8 font-bold shadow cursor-pointer"
+                                >
+                                    ✕
+                                </button>
+                                </div>
+                            </div>
+                            )}
       </main>
     </>
   )

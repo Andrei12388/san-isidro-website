@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
+import styles from "@/components/dashboard/sections/devotions.module.css";
 
 type HoverCardProps = {
   children: ReactNode;
@@ -30,9 +31,19 @@ export default function HoverCard({
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   const triggerRef = useRef<HTMLSpanElement>(null);
+
+  const handleClose = () => {
+    setClosing(true)
+    setOpen(true);
+    setTimeout(() => {
+        setClosing(false);
+      setOpen(false);
+    }, 300);
+  };
 
   // calculate position
   useEffect(() => {
@@ -62,13 +73,13 @@ export default function HoverCard({
       {open &&
         createPortal(
           <div
-            className="fixed z-[2147483647] w-64"
+            className={`fixed z-[2147483647] w-64 ${closing ? styles.backdropOut : styles.backdropIn} ${cardClassName ?? ""}`}
             style={{
               top: position.top,
               left: position.left,
             }}
             onMouseEnter={() => setOpen(true)}
-            onMouseLeave={() => setOpen(false)}
+            onMouseLeave={handleClose}
           >
             <div
               className={`p-4 bg-background rounded-xl shadow-xl border ${cardClassName ?? ""}`}

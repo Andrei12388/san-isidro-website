@@ -15,6 +15,15 @@
   animation: backdropFadeIn 0.25s ease forwards;
 }
 
+.imageHover {
+  opacity: 1;
+  transition: all 0.1s ease-in-out;
+}
+.imageHover:hover {
+  opacity: 0.6;
+  transition: all 0.1s ease-in-out;
+}
+
 .backdropOut {
   animation: backdropFadeOut 0.25s ease forwards;
 }
