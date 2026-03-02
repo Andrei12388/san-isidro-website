@@ -37,7 +37,7 @@ const INITIAL_POSTS: PostProps[] = [
 
 export function Posts({ title, image, description }: PostProps) {
   return (
-    <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col">
+    <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
 
       {/* Image */}
       <div className="h-48 w-full overflow-hidden">
@@ -50,10 +50,11 @@ export function Posts({ title, image, description }: PostProps) {
 
       {/* Content */}
       <div className="p-5 flex flex-col gap-3">
-        <h3 className="text-lg font-bold text-foreground line-clamp-2">
+        
+        <h3 className="absolute font-bold text-white bg-blue-950 dark:bg-blue-700 w-auto max-w-max px-2 py-1 rounded-md top-45">
           {title}
         </h3>
-
+       
         <p className="text-sm text-muted-foreground line-clamp-3">
           {description}
         </p>
