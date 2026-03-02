@@ -8,6 +8,7 @@ import BibleVersePickerNoAPI from "@/components/bible/BibleVersePicker";
 import { Button } from "@/components/ui/button";
 import { FaCommentDots, FaFacebookMessenger } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
+import { Spinner } from "@/components/ui/loadingSpinner";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -157,48 +158,25 @@ export default function DevotionsSection() {
       if (!response.ok) throw new Error("Failed to fetch devotions");
       const json = await response.json();
 
-      const items: DevotionItem[] = json.data.map((d: any) => {
-        const mappedComments: DevotionCommentItem[] = (d.comments || []).map(
-          (c: any) => ({
-            id: c.id,
-            userId: c.userId,
-            devotionId: c.devotionId,
-            comment: c.comment,
-            createdAt: c.createdAt,
-            updatedAt: c.updatedAt,
-            user: {
-              id: c.user.id,
-              name: c.user.name,
-              profileImage: c.user.personalInformation?.profileImage || null,
-            },
-          })
-        );
-
-        return {
-          id: d.id,
-          title: d.title,
-          image: d.image,
-          message: d.content,
-          verse: d.scriptureReference || "",
-          heart: d.likesCount ?? 0,
-          heartActive: d.userLiked ?? false,
-          comments: mappedComments,
-          user: d.user ? {
-            id: d.user.id,
-            name: d.user.name,
-            profileImage: d.user.personalInformation?.profileImage || null,
-          } : undefined,
-        };
-      });
+      // API already returns flattened comment/user objects, but we need to
+      // rename `likesCount`/`userLiked` to the local fields `heart`/`heartActive`
+      const items: DevotionItem[] = json.data.map((d: any) => ({
+        ...d,
+        message: d.content,
+        title: d.title,
+        verse: d.scriptureReference,
+        heart: d.likesCount ?? 0,
+        heartActive: d.userLiked ?? false,
+      }));
 
       const byId: Record<number, CommentType[]> = {};
-      items.forEach((it) => {
-        byId[it.id] = it.comments.map((c) => ({
+      items.forEach((d: any) => {
+        byId[d.id] = (d.comments || []).map((c: any) => ({
           id: c.id,
           name: c.user?.name || "",
           comment: c.comment,
           time: new Date(c.createdAt).toLocaleString(),
-          image: c.user?.profileImage || "images/userIcon.jpg",
+          image: c.user?.profileImage || "images/userIcon.png",
         }));
       });
       
@@ -245,6 +223,7 @@ export default function DevotionsSection() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Unable to toggle like");
 
+      // update both list and selected item in one pass
       setDevotions((prev) =>
         prev.map((item) => {
           if (item.id === id) {
@@ -327,7 +306,10 @@ export default function DevotionsSection() {
         name: newC.user?.name || "",
         comment: newC.comment,
         time: "Just now",
-        image: newC.user?.profileImage || "images/userIcon.jpg",
+        image:
+          newC.user?.profileImage ||
+          newC.user?.personalInformation?.profileImage ||
+          "images/userIcon.png",
       };
 
       setCommentsById((prev) => {
@@ -524,7 +506,7 @@ export default function DevotionsSection() {
 };
 
 if (loadingDevotion) {
-    return <div className="flex flex-1 flex-col text-center">Loading Devotions...</div>;
+    return <div className="flex flex-1 flex-row justify-center items-center text-center">Loading Devotions... <Spinner size={16} /></div>;
   }
 
    return (
@@ -671,8 +653,15 @@ if (loadingDevotion) {
                         id="comment"
                         className="input sz-md variant-mixed text-foreground flex-1"
                       />
+                      <Button
+                        onClick={handleCommentSubmit}
+                        disabled={!comment.trim()}
+                      >
+                        {editingCommentIdx === null ? "Post" : "Save"}
+                      </Button>
+
                       {editingCommentIdx !== null && (
-                        <Button 
+                        <Button
                           variant="outline"
                           onClick={() => {
                             setComment("");

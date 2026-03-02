@@ -11,6 +11,7 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp,
+  IconBook,
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
@@ -141,7 +142,7 @@ const data = {
     {
       name: "Devotions",
       url: "#",
-      icon: IconDatabase,
+      icon: IconBook,
     },
     {
       name: "Reports",

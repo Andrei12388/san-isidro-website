@@ -8,6 +8,7 @@ import {
   IconBell,
   IconLighter,
   IconDashboard,
+  IconBook,
 } from "@tabler/icons-react"
 
 import {
@@ -73,6 +74,10 @@ export function NavUser({ item }: { item: UserType | null }) {
   const dashboard = async () => {
     router.push("/dashboard"); 
   };
+
+  const devotions = async () => {
+    router.push("/devotions"); 
+  };
   
   const profile = async () => {
     router.push(`/user/profile`); 
@@ -128,9 +133,9 @@ useEffect(() => {
                 Dashboard
               </DropdownMenuItem>
              
-              <DropdownMenuItem>
-                <IconBell />
-                Notifications
+              <DropdownMenuItem onClick={devotions}>
+                <IconBook />
+                Devotions
               </DropdownMenuItem>
             </DropdownMenuGroup>
             

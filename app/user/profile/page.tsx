@@ -853,7 +853,7 @@ const saveForm = async () => {
               <div className='flex flex-col'>
                          
                             <span className="font-medium">{form.houseNumber} {form.barangay} </span>
-                            <span className="text-sm opacity-70 flex lg:flex-row lg:gap-2 gap-1 flex-col">{form.city} {form.country}</span>
+                            <span className="text-sm opacity-70 flex lg:flex-row lg:gap-2 gap-1 flex-col">{form.city} {form.country} <IconCopy className='cursor-pointer' onClick={(e) => copyToClipboard(`${form?.houseNumber} ${form?.barangay} ${form?.city} ${form?.country}`,() => handleClickNotify(e))}/></span>
                         </div>
                        
                     </div> 

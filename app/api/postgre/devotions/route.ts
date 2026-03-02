@@ -83,9 +83,10 @@ export async function GET(request: NextRequest) {
 
     const skip = Number(request.nextUrl.searchParams.get("skip") ?? 0);
     const take = Number(request.nextUrl.searchParams.get("take") ?? 100);
+    const fetchAll = request.nextUrl.searchParams.get("all") === "true";
 
     const devotions = await prisma.devotion.findMany({
-      where: { userId: currentUserId },
+      where: fetchAll ? {} : { userId: currentUserId },
       skip,
       take,
       orderBy: { devotionDate: "desc" },
@@ -122,7 +123,21 @@ export async function GET(request: NextRequest) {
         devotionDate: d.devotionDate,
         createdAt: d.createdAt,
         updatedAt: d.updatedAt,
-        comments: d.comments,
+        comments: d.comments.map((c) => ({
+          id: c.id,
+          userId: c.userId,
+          devotionId: c.devotionId,
+          comment: c.comment,
+          createdAt: c.createdAt,
+          updatedAt: c.updatedAt,
+          user: c.user
+            ? {
+                id: c.user.id,
+                name: c.user.name,
+                profileImage: c.user.personalInformation?.profileImage || null,
+              }
+            : undefined,
+        })),
         likesCount,
         userLiked,
         user: d.user

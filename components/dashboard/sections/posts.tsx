@@ -37,23 +37,32 @@ const INITIAL_POSTS: PostProps[] = [
 
 export function Posts({ title, image, description }: PostProps) {
   return (
-    <div className="border rounded-lg w-full dark:border-foreground bg-background shadow">
-      <img
-        src={image}
-        alt={title}
-        className="w-full h-50 object-cover rounded-t-md"
-      />
-      <div className="p-4 relative">
-        <h3 className="absolute font-bold text-white bg-blue-950 dark:bg-blue-700 w-auto max-w-max px-3 py-2 rounded-md top-[-22]">
+    <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col">
+
+      {/* Image */}
+      <div className="h-48 w-full overflow-hidden">
+        <img
+          src={image}
+          alt={title}
+          className="h-full w-full object-cover group-hover:scale-105 transition duration-300"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="p-5 flex flex-col gap-3">
+        <h3 className="text-lg font-bold text-foreground line-clamp-2">
           {title}
         </h3>
-        <p className="pt-10 pb-10 font-semibold">{description}</p>
-        <div className="flex flex-row justify-end">
-          <button className="mt-4 px-4 py-2 rounded-lg border border-foreground bg-background-500 text-foreground cursor-pointer hover:bg-muted">
-            Read More
-          </button>
-        </div>
+
+        <p className="text-sm text-muted-foreground line-clamp-3">
+          {description}
+        </p>
       </div>
+      <div className="flex flex-row justify-end px-2 mb-2">
+        <button className="mt-auto self-end px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition cursor-pointer">
+          Read More
+        </button>
+        </div>
     </div>
   );
 }
