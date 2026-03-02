@@ -156,7 +156,7 @@ const PostsSection = () => {
     <div className="flex flex-1 flex-col">
       <div className="fixed bottom-10 z-90 right-10">
         <Button onClick={() => setAddingPost(true)}>
-          <IconPlus /> Add Event
+          <IconPlus /> Add Events
         </Button>
       </div>
 
