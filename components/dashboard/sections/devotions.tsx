@@ -160,12 +160,14 @@ export default function DevotionsSection() {
   const [verseData, setVerseData] = useState<any>(null);
 
   // Alternatively, use a hook:
-DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-  if (node.tagName === 'A') {
-    node.setAttribute('target', '_blank'); // open in new tab
-    node.setAttribute('rel', 'noopener noreferrer'); // security best practice
-  }
-});
+useEffect(() => {
+  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+    if (node.tagName === 'A') {
+      node.setAttribute('target', '_blank');
+      node.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+}, []);
 
   // fetch devotions from the backend (includes comments and like info)
   const fetchDevotions = async () => {

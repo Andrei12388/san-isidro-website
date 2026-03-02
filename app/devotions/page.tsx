@@ -95,12 +95,14 @@ export default function Page() {
   const fetchOnce = useRef(false);
 
 // Alternatively, use a hook:
-DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-  if (node.tagName === 'A') {
-    node.setAttribute('target', '_blank'); // open in new tab
-    node.setAttribute('rel', 'noopener noreferrer'); // security best practice
-  }
-});
+useEffect(() => {
+  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+    if (node.tagName === 'A') {
+      node.setAttribute('target', '_blank');
+      node.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+}, []);
 
   const router = useRouter();
 
