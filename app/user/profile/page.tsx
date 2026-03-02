@@ -228,12 +228,6 @@ export default function ProfilePage() {
   const fetchOnce = useRef(false)
   const [accessToken, setAccessToken] = useState('')
   const [passModal, setPassModal] = useState(false)
-  
-  useEffect(() => {
-  const id = startHealthPolling("/api/health");
-
-  return () => clearInterval(id);
-}, []);
 
   //form inputs
   const [form, setForm] = useState({

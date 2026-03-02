@@ -156,12 +156,12 @@ const PostsSection = () => {
     <div className="flex flex-1 flex-col">
       <div className="fixed bottom-10 z-90 right-10">
         <Button onClick={() => setAddingPost(true)}>
-          <IconPlus /> Add Post
+          <IconPlus /> Add Event
         </Button>
       </div>
 
       <div className="@container/main flex flex-1 flex-col gap-2">
-        <span className="text-center text-xl font-bold mt-3">Posts</span>
+        <span className="text-center text-xl font-bold mt-3">Events</span>
 
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           <section className="grid gap-2 lg:gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]">
