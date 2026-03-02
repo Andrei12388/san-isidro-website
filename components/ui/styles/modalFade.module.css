@@ -1,0 +1,62 @@
+/* CARD */
+.Card {
+  transform: scale(1);
+  transition: all 0.2s ease-in-out;
+}
+
+.Card:hover {
+  transform: scale(1.08);
+  cursor: pointer;
+  z-index: 70;
+}
+
+/* OVERLAY BACKDROP FADE */
+.backdropIn {
+  animation: backdropFadeIn 0.25s ease forwards;
+}
+
+.backdropOut {
+  animation: backdropFadeOut 0.25s ease forwards;
+}
+
+/* KEYFRAMES */
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes backdropFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* MODAL SLIDE */
+.modalIn {
+  animation: slideUp 0.3s ease forwards;
+}
+
+.modalOut {
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+  }
+}

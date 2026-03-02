@@ -245,12 +245,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
         <div className="min-h-full w-full hide-scrollbar-arrows overflow-y-auto flex-1 pt-15 max-w-6xl mx-auto px-4 pb-10 space-y-6">
           {/* Header Section */}
-          <div className="sticky top-0 z-40 bg-muted flex flex-wrap justify-between align-middle items-center rounded-2xl border shadow-lg p-5 gap-4">
+         {/* <div className="sticky top-0 z-40 bg-muted flex flex-wrap justify-between align-middle items-center rounded-2xl border shadow-lg p-5 gap-4">
             <span className="text-2xl font-semibold">{personalInfo?.firstName} {personalInfo?.middleName} {personalInfo?.lastName} - Profile</span>
             <Button variant="outline" onClick={() => router.back()}>
               Back
             </Button>
           </div>
+          */} 
 
           {/* Basic Info Section */}
           <section className="top-4 bg-muted rounded-2xl shadow-lg">
