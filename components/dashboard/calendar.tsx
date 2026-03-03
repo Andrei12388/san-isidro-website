@@ -33,7 +33,7 @@ export default function Scheduler() {
 
   const handleSelectEvent = (event: CalendarEvent) => {
     setSelectedEvent(event);
-    setNewTitle(event.title); // show event title for editing
+    setNewTitle((event.title as string) ?? "");  // show event title for editing
     setModalOpen(true);
   };
 
