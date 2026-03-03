@@ -85,6 +85,7 @@ html {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --calendar-today: oklch(72.479% 0.24007 141.713);
   --button-blue-background: oklch(0.488 0.243 264.376);
 }
 
@@ -120,6 +121,7 @@ html {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --calendar-today: oklch(94.228% 0.2214 119.065);
   --button-blue-background:oklch(61.742% 0.17788 267.307);
   
 }
@@ -146,6 +148,51 @@ html {
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(0,0,0,.3) transparent;
+}
+
+/* calendar design */
+/* Basic event styling */
+.rbc-event {
+  border-radius: 4px;
+  padding: 0px 2px !important;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: row;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.rbc-event:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Different color for editing */
+.rbc-event.editing {
+  background-color: #ff9800; /* orange */
+}
+/* Change current date background */
+.rbc-today {
+  background-color: #f7ff0800 !important;
+  border: 3px solid var(--calendar-today) !important;
+}
+
+/* Optional: keep number bold */
+.rbc-today .rbc-date-cell {
+  font-weight: bold;
+}
+
+.rbc-day-bg {
+  background-color: var(--background);
+}
+
+/* Optional: add a little rounded effect */
+.rbc-today .rbc-date-cell {
+  border-radius: 6px;
 }
 
 

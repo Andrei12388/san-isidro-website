@@ -93,6 +93,10 @@ export default function Page() {
   const [comment, setComment] = useState("");
   const { access_token } = useAuth();
   const fetchOnce = useRef(false);
+  const handleUserClick = (userId: number | undefined) => {
+  if (!userId) return;
+  router.push(`/user/${userId}`);
+};
 
 // Alternatively, use a hook:
 useEffect(() => {
@@ -595,7 +599,7 @@ useEffect(() => {
                                   <img
                                     src={c.user?.profileImage || "images/userIcon.png"}
                                     alt={c.user?.name || "User"}
-                                    onClick={() => router.push(`/user/${c.user?.id}`)}
+                                    onClick={() => handleUserClick(c.user?.id)}
                                     className="w-8 h-8 rounded-full object-cover cursor-pointer"
                                   />
                                   <div className="flex-1 min-w-0">
@@ -606,9 +610,11 @@ useEffect(() => {
                                         name={c.user?.name || "Unknown"}
                                         title={c.user?.title || "Member"}
                                         image={c.user?.profileImage || "/images/userIcon.png"}
-                                        onView={() => router.push(`/user/${c.user?.id}`)}
+                                        onView={() => handleUserClick(c.user?.id)}
                                         >
-                                        <span className="font-semibold text-sm cursor-pointer hover:underline" onClick={() => router.push(`/user/${c.user?.id}`)}>{c.user?.name || "Unknown"}</span>
+                                        <span className="font-semibold text-sm cursor-pointer hover:underline" onClick={() => handleUserClick(c.user?.id)}>
+                                          {c.user?.name || "Unknown"}
+                                        </span>
                                         </HoverCard>
                                         <p className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleString()}</p>
                                       </div>

@@ -34,9 +34,6 @@ export default function Page() {
 
        const { access_token } = useAuth();
        //Check if there's a logged in acc
-       if (!access_token) {
-           router.push("/");
-       }
 
  useEffect(() => {
   if (fetchOnce.current) return // already fetched
@@ -71,6 +68,8 @@ export default function Page() {
       setError(err.message || "Unknown error")
       router.push('/login');
       setUser(null)
+       // safely navigate in effect
+      setTimeout(() => router.push("/login"), 0);
     } finally {
       if(!user)
       setIsLoading(false)

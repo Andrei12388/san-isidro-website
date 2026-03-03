@@ -172,12 +172,16 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
   cell: ({ row }) => {
     const [src, setSrc] = React.useState(row.original.image)
     const router = useRouter();
+      const handleUserClick = (userId: number | undefined) => {
+    if (!userId) return;
+    router.push(`/user/${userId}`);
+  };
     return (
       <img
         src={src || "/images/userIcon.png"}
         onError={() => setSrc("/images/userIcon.png")} // fallback if broken
         className="size-9 rounded-full object-cover border cursor-pointer hover:brightness-110 transition"
-        onClick={() => router.push(`/user/${row.original.id}`)}
+        onClick={() => handleUserClick(row.original.id)}
         alt={row.original.name}
       />
     )
@@ -191,6 +195,10 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
     header: "Full Name",
     cell: ({row}) => {
       const router = useRouter();
+      const handleUserClick = (userId: number | undefined) => {
+          if (!userId) return;
+          router.push(`/user/${userId}`);
+        };
       return (
         <>
       <HoverCard
@@ -200,7 +208,9 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
         image={row.original.image || "/images/userIcon.png"}
         onView={() => toast(`Viewing ${row.original.name}`)}
       >
-        <span className="font-semibold text-foreground cursor-pointer hover:underline" onClick={() => router.push(`/user/${row.original.id}`)}>{row.original.name}</span>
+        <span className="font-semibold text-foreground cursor-pointer hover:underline" onClick={() => handleUserClick(row.original.id)}>
+          {row.original.name}
+        </span>
       </HoverCard>
         </>
   )

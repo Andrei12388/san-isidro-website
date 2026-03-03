@@ -103,6 +103,10 @@ function CommentActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: ()
 
 function CommentsCard({userId, name, comment, time, image, onEdit, onDelete }: CommentsCardProps & { onEdit: () => void; onDelete: () => void }) {
   const router = useRouter();
+  const handleUserClick = (userId: number | undefined) => {
+  if (!userId) return;
+  router.push(`/user/${userId}`);
+};
   return (
     <div className="p-2 bg-background text-muted-foreground rounded flex-col">
       <section className="flex flex-row justify-between gap-2">
@@ -113,9 +117,11 @@ function CommentsCard({userId, name, comment, time, image, onEdit, onDelete }: C
                                                 name={name || "Unknown"}
                                                 title={"Member"}
                                                 image={image || "/images/userIcon.png"}
-                                                onView={() => router.push(`/user/${userId}`)}
+                                                onView={() => handleUserClick(userId)}
                                                 >
-                                                <span className="font-semibold text-sm text-foreground cursor-pointer hover:underline" onClick={() => router.push(`/user/${userId}`)}>{name || "Unknown"}</span>
+                                                <span className="font-semibold text-sm text-foreground cursor-pointer hover:underline" onClick={() => handleUserClick(userId)}>
+                                                  {name || "Unknown"}
+                                                </span>
                                                 </HoverCard>
         <span className="text-sm mb-1">{time}</span>
          <span className="text-sm text-foreground"> {comment} </span>
