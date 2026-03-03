@@ -7,10 +7,7 @@ interface RouteContext {
 }
 
 /* ===================== PUT ===================== */
-export async function PUT(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function PUT(request: NextRequest, { params }: RouteContext) {
   try {
     const currentUserId = verifyAuth(request);
     if (!currentUserId) {
@@ -45,16 +42,14 @@ export async function PUT(
     return NextResponse.json({ data: updated });
   } catch (error: unknown) {
     console.error("Update comment error:", error);
-    const message = error instanceof Error ? error.message : "Internal server error";
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
 /* ===================== DELETE ===================== */
-export async function DELETE(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function DELETE(request: NextRequest, { params }: RouteContext) {
   try {
     const currentUserId = verifyAuth(request);
     if (!currentUserId) {
@@ -83,7 +78,8 @@ export async function DELETE(
     return NextResponse.json({ message: "Comment deleted" });
   } catch (error: unknown) {
     console.error("Delete comment error:", error);
-    const message = error instanceof Error ? error.message : "Internal server error";
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -5,7 +5,13 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 
-export default function MessageEditor({ message, setMessage }: { message: string; setMessage: (message: string) => void }) {
+export default function MessageEditor({
+  message,
+  setMessage,
+}: {
+  message: string;
+  setMessage: (message: string) => void;
+}) {
   const editor = useEditor({
     immediatelyRender: false, // ⭐ FIX FOR SSR
 

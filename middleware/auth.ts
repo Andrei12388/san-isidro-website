@@ -7,7 +7,7 @@ export interface AuthRequest extends NextRequest {
 
 export const verifyAuth = (request: NextRequest): number | null => {
   const authHeader = request.headers.get("authorization");
-  
+
   if (!authHeader) {
     return null;
   }
@@ -19,7 +19,7 @@ export const verifyAuth = (request: NextRequest): number | null => {
 
   const token = parts[1];
   const payload = verifyAccessToken(token);
-  
+
   if (!payload) {
     return null;
   }
@@ -27,10 +27,7 @@ export const verifyAuth = (request: NextRequest): number | null => {
   return payload.userId;
 };
 
-export const createErrorResponse = (
-  message: string,
-  status: number = 400
-) => {
+export const createErrorResponse = (message: string, status: number = 400) => {
   return NextResponse.json({ error: message }, { status });
 };
 

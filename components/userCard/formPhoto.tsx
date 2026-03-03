@@ -185,7 +185,7 @@ async function getCroppedImg(imageSrc: string, crop: any) {
     0,
     0,
     crop.width,
-    crop.height
+    crop.height,
   );
 
   return canvas.toDataURL("image/png");

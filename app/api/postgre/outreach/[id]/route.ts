@@ -5,7 +5,7 @@ import { verifyAuth } from "@/middleware/auth";
 // ------------------ GET ------------------
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -33,20 +33,26 @@ export async function GET(
     });
 
     if (!outreach) {
-      return NextResponse.json({ error: "Outreach not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Outreach not found" },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json({ data: outreach }, { status: 200 });
   } catch (error) {
     console.error("Get outreach error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 // ------------------ PUT ------------------
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -64,7 +70,7 @@ export async function PUT(
     if (!outreach || outreach.assignedPastor !== currentUserId) {
       return NextResponse.json(
         { error: "Unauthorized to update this outreach" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -76,17 +82,23 @@ export async function PUT(
       include: { pastor: { select: { id: true, name: true, email: true } } },
     });
 
-    return NextResponse.json({ data: updated, message: "Outreach updated" }, { status: 200 });
+    return NextResponse.json(
+      { data: updated, message: "Outreach updated" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Update outreach error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 // ------------------ DELETE ------------------
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -104,7 +116,7 @@ export async function DELETE(
     if (!outreach || outreach.assignedPastor !== currentUserId) {
       return NextResponse.json(
         { error: "Unauthorized to delete this outreach" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -114,6 +126,9 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error("Delete outreach error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     if (!refreshToken) {
       return NextResponse.json(
         { error: "Refresh token is required" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (!payload) {
       return NextResponse.json(
         { error: "Invalid or expired refresh token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -36,13 +36,13 @@ export async function POST(request: NextRequest) {
         accessToken: newAccessToken,
         tokenType: "Bearer",
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Refresh token error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

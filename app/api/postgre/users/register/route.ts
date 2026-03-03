@@ -24,7 +24,6 @@ async function createDefaultPersonalInfo(userId: number) {
 }
 
 export async function POST(request: NextRequest) {
-  
   try {
     const body = await request.json();
     const { name, email, password } = body;
@@ -32,7 +31,7 @@ export async function POST(request: NextRequest) {
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Name, email, and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -41,7 +40,7 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       return NextResponse.json(
         { error: "User with this email already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -59,13 +58,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { data: user, message: "User created successfully with personal info" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Register error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

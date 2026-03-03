@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useEffect } from "react";
 import {
   Item,
@@ -23,10 +23,9 @@ export default function UserCard() {
 
   const userCard = async () => {
     try {
-      const res = await fetch(
-        "https://jsonplaceholder.typicode.com/users",
-        { cache: "no-store" }
-      );
+      const res = await fetch("https://jsonplaceholder.typicode.com/users", {
+        cache: "no-store",
+      });
 
       const userss: User[] = await res.json();
       setUser(userss);
@@ -47,10 +46,11 @@ export default function UserCard() {
     <div className="flex flex-col  w-max">
       <ul>
         {users.map((user) => (
-          <Item key={user.id} className="border border-solid border-black gap-5 my-5">
-            <ItemMedia variant="icon">
-            
-            </ItemMedia>
+          <Item
+            key={user.id}
+            className="border border-solid border-black gap-5 my-5"
+          >
+            <ItemMedia variant="icon"></ItemMedia>
             <ItemContent>
               <ItemTitle>{user.name}</ItemTitle>
               <ItemDescription>{user.email}</ItemDescription>

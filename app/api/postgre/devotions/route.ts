@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { data: devotion, message: "Devotion created" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error: unknown) {
     console.error("Create devotion error:", error);
@@ -101,7 +101,11 @@ export async function GET(request: NextRequest) {
         comments: {
           include: {
             user: {
-              select: { id: true, name: true, personalInformation: { select: { profileImage: true } } },
+              select: {
+                id: true,
+                name: true,
+                personalInformation: { select: { profileImage: true } },
+              },
             },
           },
         },
@@ -144,8 +148,7 @@ export async function GET(request: NextRequest) {
           ? {
               id: d.user.id,
               name: d.user.name,
-              profileImage:
-                d.user.personalInformation?.profileImage || null,
+              profileImage: d.user.personalInformation?.profileImage || null,
             }
           : undefined,
       };

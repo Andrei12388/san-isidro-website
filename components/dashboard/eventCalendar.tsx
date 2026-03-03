@@ -8,20 +8,35 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import Modal from "react-modal";
 
 const locales = { "en-US": enUS };
-const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales });
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
 
 type CalendarEvent = Event & { id: string };
 
 export default function Scheduler() {
   const [events, setEvents] = useState<CalendarEvent[]>([
-    { id: "1", title: "Church Meeting", start: new Date(2026, 2, 3, 10, 0), end: new Date(2026, 2, 3, 11, 0) },
+    {
+      id: "1",
+      title: "Church Meeting",
+      start: new Date(2026, 2, 3, 10, 0),
+      end: new Date(2026, 2, 3, 11, 0),
+    },
   ]);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null,
+  );
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<View>("month");
-  const [slotData, setSlotData] = useState<{ start: Date; end: Date } | null>(null);
+  const [slotData, setSlotData] = useState<{ start: Date; end: Date } | null>(
+    null,
+  );
   const [newTitle, setNewTitle] = useState("");
   const [mounted, setMounted] = useState(false);
 
@@ -33,7 +48,7 @@ export default function Scheduler() {
 
   const handleSelectEvent = (event: CalendarEvent) => {
     setSelectedEvent(event);
-    setNewTitle((event.title as string) ?? "");  // show event title for editing
+    setNewTitle((event.title as string) ?? ""); // show event title for editing
     setModalOpen(true);
   };
 
@@ -47,7 +62,11 @@ export default function Scheduler() {
   const handleSave = () => {
     if (selectedEvent) {
       // update existing event
-      setEvents(events.map(ev => ev.id === selectedEvent.id ? { ...ev, title: newTitle } : ev));
+      setEvents(
+        events.map((ev) =>
+          ev.id === selectedEvent.id ? { ...ev, title: newTitle } : ev,
+        ),
+      );
     } else if (slotData) {
       // create new event
       const newEvent: CalendarEvent = {
@@ -63,7 +82,7 @@ export default function Scheduler() {
 
   const handleDelete = () => {
     if (selectedEvent) {
-      setEvents(events.filter(ev => ev.id !== selectedEvent.id));
+      setEvents(events.filter((ev) => ev.id !== selectedEvent.id));
       setModalOpen(false);
     }
   };
@@ -72,7 +91,15 @@ export default function Scheduler() {
   if (!mounted) return <div style={{ height: "700px", margin: "20px" }} />;
 
   return (
-    <div style={{ height: "700px", margin: "20px", border: "1px solid", borderRadius: "8px", padding: "10px" }}>
+    <div
+      style={{
+        height: "700px",
+        margin: "20px",
+        border: "1px solid",
+        borderRadius: "8px",
+        padding: "10px",
+      }}
+    >
       <Calendar
         localizer={localizer}
         events={events}
@@ -82,9 +109,9 @@ export default function Scheduler() {
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
         date={currentDate} // controlled date
-        onNavigate={date => setCurrentDate(date)} // update date on prev/next/today
+        onNavigate={(date) => setCurrentDate(date)} // update date on prev/next/today
         view={currentView} // controlled view
-        onView={view => setCurrentView(view)} // update view when switching
+        onView={(view) => setCurrentView(view)} // update view when switching
         defaultView="month"
         views={["month", "week", "day"]}
         popup
@@ -98,23 +125,34 @@ export default function Scheduler() {
         className="bg-background text-foreground p-6 rounded shadow-lg max-w-md mx-auto mt-20 z-900"
         overlayClassName="fixed inset-0 bg-black/50 flex justify-center items-start z-800"
       >
-        <h2 className="text-xl font-bold mb-4">{selectedEvent ? "Edit Event" : "New Event"}</h2>
+        <h2 className="text-xl font-bold mb-4">
+          {selectedEvent ? "Edit Event" : "New Event"}
+        </h2>
         <input
           className="border p-2 w-full mb-4"
           placeholder="Event Title"
           value={newTitle}
-          onChange={e => setNewTitle(e.target.value)}
+          onChange={(e) => setNewTitle(e.target.value)}
         />
         <div className="flex justify-end gap-2">
           {selectedEvent && (
-            <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={handleDelete}>
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded"
+              onClick={handleDelete}
+            >
               Delete
             </button>
           )}
-          <button className="bg-background px-4 py-2 rounded" onClick={() => setModalOpen(false)}>
+          <button
+            className="bg-background px-4 py-2 rounded"
+            onClick={() => setModalOpen(false)}
+          >
             Cancel
           </button>
-          <button className="bg-background text-foreground px-4 py-2 rounded" onClick={handleSave}>
+          <button
+            className="bg-background text-foreground px-4 py-2 rounded"
+            onClick={handleSave}
+          >
             Save
           </button>
         </div>

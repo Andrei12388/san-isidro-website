@@ -6,14 +6,11 @@ export async function GET() {
 
   if (now - lastCheck > 30000) {
     try {
-      const res = await fetch(
-        "https://isidro-webapi.onrender.com/health"
-      );
+      const res = await fetch("https://isidro-webapi.onrender.com/health");
 
       cachedHealth = await res.json();
       lastCheck = now;
-      console.log("Health Stats:", cachedHealth)
-
+      console.log("Health Stats:", cachedHealth);
     } catch {
       cachedHealth = { status: "down" };
     }

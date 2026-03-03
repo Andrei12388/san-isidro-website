@@ -37,10 +37,10 @@ export default function HoverCard({
   const triggerRef = useRef<HTMLSpanElement>(null);
 
   const handleClose = () => {
-    setClosing(true)
+    setClosing(true);
     setOpen(true);
     setTimeout(() => {
-        setClosing(false);
+      setClosing(false);
       setOpen(false);
     }, 300);
   };
@@ -131,7 +131,7 @@ export default function HoverCard({
               )}
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

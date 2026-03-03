@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -12,18 +12,22 @@ export async function POST(req: Request) {
     const { prefix } = body; // e.g., `user_123_`
 
     if (!prefix) {
-      return new Response(JSON.stringify({ error: 'Prefix is required' }), { status: 400 });
+      return new Response(JSON.stringify({ error: "Prefix is required" }), {
+        status: 400,
+      });
     }
 
     // 1️⃣ List all images with the given prefix
     const resources = await cloudinary.api.resources({
-      type: 'upload',
+      type: "upload",
       prefix,
       max_results: 500,
     });
 
     if (resources.resources.length === 0) {
-      return new Response(JSON.stringify({ message: 'No duplicates found' }), { status: 200 });
+      return new Response(JSON.stringify({ message: "No duplicates found" }), {
+        status: 200,
+      });
     }
 
     // 2️⃣ Extract all public_ids
@@ -32,10 +36,15 @@ export async function POST(req: Request) {
     // 3️⃣ Delete all
     const result = await cloudinary.api.delete_resources(publicIds);
 
-    return new Response(JSON.stringify({ deleted: result.deleted, total: publicIds.length }), {
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({ deleted: result.deleted, total: publicIds.length }),
+      {
+        status: 200,
+      },
+    );
   } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+    });
   }
 }

@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-
   const cookieStore = await cookies();
   console.log("Cookie Store", cookieStore);
 
@@ -12,15 +11,14 @@ export async function GET() {
   const name = cookieStore.get("name")?.value ?? null;
   const email = cookieStore.get("email")?.value ?? null;
   const profileImage = cookieStore.get("profileImage")?.value ?? null;
-  
 
   // ✅ Convert user_id string to number safely
- const user = userIdStr ? Number(userIdStr) : null;
+  const user = userIdStr ? Number(userIdStr) : null;
 
   // Optional: handle NaN
- if (user !== null && isNaN(user)) {
-  console.warn("Invalid user_id cookie value:", userIdStr);
-}
+  if (user !== null && isNaN(user)) {
+    console.warn("Invalid user_id cookie value:", userIdStr);
+  }
 
   return NextResponse.json({
     access_token,

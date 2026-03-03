@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IconPlus } from "@tabler/icons-react";
-import styles from "./devotions.module.css"; 
+import styles from "./devotions.module.css";
 import { set } from "nprogress";
 
 interface PostProps {
@@ -38,7 +38,6 @@ const INITIAL_POSTS: PostProps[] = [
 export function Posts({ title, image, description }: PostProps) {
   return (
     <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
-
       {/* Image */}
       <div className="h-48 w-full overflow-hidden">
         <img
@@ -50,11 +49,10 @@ export function Posts({ title, image, description }: PostProps) {
 
       {/* Content */}
       <div className="p-5 flex flex-col gap-3">
-        
         <h3 className="absolute font-bold text-white bg-blue-950 dark:bg-blue-700 w-auto max-w-max px-2 py-1 rounded-md top-45">
           {title}
         </h3>
-       
+
         <p className="text-sm text-muted-foreground line-clamp-3">
           {description}
         </p>
@@ -63,7 +61,7 @@ export function Posts({ title, image, description }: PostProps) {
         <button className="mt-auto self-end px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition cursor-pointer">
           Read More
         </button>
-        </div>
+      </div>
     </div>
   );
 }
@@ -112,7 +110,7 @@ const PostsSection = () => {
           {
             method: "POST",
             body: formData,
-          }
+          },
         );
 
         const data = await res.json();
@@ -180,8 +178,12 @@ const PostsSection = () => {
 
       {/* Add Post Modal */}
       {addingPost && (
-        <div className={`fixed inset-0 bg-black/40 flex justify-center items-center z-100 p-4 overflow-y-auto ${closing ? styles.backdropOut : styles.backdropIn}`}>
-          <div className={`bg-background rounded-lg p-6 w-full max-w-md shadow-lg ${closing ? styles.modalOut : styles.modalIn }`}>
+        <div
+          className={`fixed inset-0 bg-black/40 flex justify-center items-center z-100 p-4 overflow-y-auto ${closing ? styles.backdropOut : styles.backdropIn}`}
+        >
+          <div
+            className={`bg-background rounded-lg p-6 w-full max-w-md shadow-lg ${closing ? styles.modalOut : styles.modalIn}`}
+          >
             <h2 className="text-lg font-semibold mb-4">Add New Post</h2>
             <form onSubmit={handleAddPost} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">

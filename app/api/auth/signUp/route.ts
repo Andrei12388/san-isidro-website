@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
- const API_BASE =
+const API_BASE =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_APP_URL
     : "http://localhost:3000";
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     if (!fullname || !email || !password) {
       return NextResponse.json(
         { message: "Full name, email, and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       const errorData = await response.json();
       return NextResponse.json(
         { message: errorData.detail || "Signup failed" },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -76,12 +76,8 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true, user: result });
-
   } catch (err: any) {
     console.error("Signup error:", err);
-    return NextResponse.json(
-      { message: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: err.message }, { status: 500 });
   }
 }

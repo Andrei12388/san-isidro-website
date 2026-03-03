@@ -1,7 +1,7 @@
 import React from "react";
 
 type SpinnerProps = {
-  size?: number;       // px
+  size?: number; // px
   className?: string;
 };
 

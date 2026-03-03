@@ -5,7 +5,6 @@ html {
   scroll-behavior: smooth;
 }
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -122,8 +121,7 @@ html {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
   --calendar-today: oklch(94.228% 0.2214 119.065);
-  --button-blue-background:oklch(61.742% 0.17788 267.307);
-  
+  --button-blue-background: oklch(61.742% 0.17788 267.307);
 }
 
 /* Chrome, Edge, Safari */
@@ -147,7 +145,7 @@ html {
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,.3) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }
 
 /* calendar design */
@@ -195,7 +193,6 @@ html {
   border-radius: 6px;
 }
 
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -204,5 +201,3 @@ html {
     @apply bg-background text-foreground;
   }
 }
-
-

@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import * as React from "react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Card,
   CardAction,
@@ -11,27 +11,24 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/toggle-group"
-import { attendanceData } from "@/lib/data"
+} from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { attendanceData } from "@/lib/data";
 
-export const description = "An interactive area chart"
+export const description = "An interactive area chart";
 
 const chartData = attendanceData;
 
@@ -47,37 +44,35 @@ const chartConfig = {
     label: "Female",
     color: "var(--primary)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function ChartAreaInteractive() {
-  
-  const isMobile = useIsMobile()
-  const [timeRange, setTimeRange] = React.useState("90d")
+  const isMobile = useIsMobile();
+  const [timeRange, setTimeRange] = React.useState("90d");
 
   React.useEffect(() => {
     if (isMobile) {
-      setTimeRange("7d")
+      setTimeRange("7d");
     }
-  }, [isMobile])
+  }, [isMobile]);
 
   const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date("2026-03-01")
-    let daysToSubtract = 90
+    const date = new Date(item.date);
+    const referenceDate = new Date("2026-03-01");
+    let daysToSubtract = 90;
     if (timeRange === "30d") {
-      daysToSubtract = 30
+      daysToSubtract = 30;
     } else if (timeRange === "7d") {
-      daysToSubtract = 7
+      daysToSubtract = 7;
     }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+    const startDate = new Date(referenceDate);
+    startDate.setDate(startDate.getDate() - daysToSubtract);
+    return date >= startDate;
+  });
 
   const maxGenderValue = Math.max(
-  ...filteredData.map(d => Math.max(d.male, d.female))
-)
-
+    ...filteredData.map((d) => Math.max(d.male, d.female)),
+  );
 
   return (
     <Card className="@container/card mt-2">
@@ -130,16 +125,15 @@ export function ChartAreaInteractive() {
         >
           <AreaChart data={filteredData}>
             <defs>
-             <linearGradient id="fillMale" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="5%" stopColor="#3b82f6" stopOpacity={1} />
-  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
-</linearGradient>
+              <linearGradient id="fillMale" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={1} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
+              </linearGradient>
 
-<linearGradient id="fillFemale" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="5%" stopColor="#ec4899" stopOpacity={0.8} />
-  <stop offset="95%" stopColor="#ec4899" stopOpacity={0.1} />
-</linearGradient>
-
+              <linearGradient id="fillFemale" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#ec4899" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#ec4899" stopOpacity={0.1} />
+              </linearGradient>
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
@@ -149,20 +143,19 @@ export function ChartAreaInteractive() {
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                const date = new Date(value)
+                const date = new Date(value);
                 return date.toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
-                })
+                });
               }}
             />
-           <YAxis
-          domain={[0, maxGenderValue + 5]}
-          tickCount={5}
-          tickLine={false}
-          axisLine={false}
-        />
-
+            <YAxis
+              domain={[0, maxGenderValue + 5]}
+              tickCount={5}
+              tickLine={false}
+              axisLine={false}
+            />
 
             <ChartTooltip
               cursor={false}
@@ -172,29 +165,28 @@ export function ChartAreaInteractive() {
                     return new Date(value).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
-                    })
+                    });
                   }}
                   indicator="dot"
                 />
               }
             />
-           <Area
-          dataKey="female"
-          type="linear"
-          fill="url(#fillFemale)"
-          stroke="#ec4899"
-        />
+            <Area
+              dataKey="female"
+              type="linear"
+              fill="url(#fillFemale)"
+              stroke="#ec4899"
+            />
 
-        <Area
-          dataKey="male"
-          type="linear"
-          fill="url(#fillMale)"
-          stroke="#3b82f6"
-        />
-
+            <Area
+              dataKey="male"
+              type="linear"
+              fill="url(#fillMale)"
+              stroke="#3b82f6"
+            />
           </AreaChart>
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

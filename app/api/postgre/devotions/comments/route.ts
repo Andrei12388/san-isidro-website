@@ -22,14 +22,21 @@ export async function POST(request: NextRequest) {
         user: { connect: { id: currentUserId } },
       },
       include: {
-        user: { select: { id: true, name: true, personalInformation: { select: { profileImage: true } } } },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            personalInformation: { select: { profileImage: true } },
+          },
+        },
       },
     });
 
     return NextResponse.json({ data: newComment }, { status: 201 });
   } catch (error: unknown) {
     console.error("Create comment error:", error);
-    const message = error instanceof Error ? error.message : "Internal server error";
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -4,12 +4,7 @@ export type Role = "admin" | "member";
 
 export type Gender = "Male" | "Female";
 
-export type Level =
-  | "pastor"
-  | "head"
-  | "cluster"
-  | "vine"
-  | "disciple";
+export type Level = "pastor" | "head" | "cluster" | "vine" | "disciple";
 
 export interface Member {
   email: string;
@@ -65,6 +60,4 @@ export const attendanceData = [
   { date: "2026-06-14", male: 29, female: 30 },
   { date: "2026-06-21", male: 36, female: 37 },
   { date: "2026-06-28", male: 40, female: 42 },
-]
-
-
+];

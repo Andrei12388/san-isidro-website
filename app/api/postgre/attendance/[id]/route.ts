@@ -5,7 +5,7 @@ import { verifyAuth } from "@/middleware/auth";
 // ------------------ GET ------------------
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -25,20 +25,26 @@ export async function GET(
     });
 
     if (!attendance || attendance.userId !== currentUserId) {
-      return NextResponse.json({ error: "Attendance not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Attendance not found" },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json({ data: attendance }, { status: 200 });
   } catch (error) {
     console.error("Get attendance error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 // ------------------ PUT ------------------
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -54,7 +60,10 @@ export async function PUT(
     });
 
     if (!attendance || attendance.userId !== currentUserId) {
-      return NextResponse.json({ error: "Attendance not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Attendance not found" },
+        { status: 404 },
+      );
     }
 
     const body = await request.json();
@@ -68,17 +77,23 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json({ data: updated, message: "Attendance updated" }, { status: 200 });
+    return NextResponse.json(
+      { data: updated, message: "Attendance updated" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Update attendance error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 // ------------------ DELETE ------------------
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -94,7 +109,10 @@ export async function DELETE(
     });
 
     if (!attendance || attendance.userId !== currentUserId) {
-      return NextResponse.json({ error: "Attendance not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Attendance not found" },
+        { status: 404 },
+      );
     }
 
     await prisma.attendanceInformation.delete({ where: { id: attendanceId } });
@@ -103,6 +121,9 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error("Delete attendance error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

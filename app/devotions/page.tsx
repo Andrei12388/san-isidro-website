@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { NavUser } from "@/components/dashboard/nav-user";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -13,7 +13,13 @@ import DOMPurify from "dompurify";
 import HoverCard from "@/components/userCard/hoverCard";
 import { useRouter } from "next/navigation";
 
-function CommentActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
+function CommentActions({
+  onEdit,
+  onDelete,
+}: {
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -88,25 +94,27 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<DevotionType | null>(null);
-  const [editingCommentIdx, setEditingCommentIdx] = useState<number | null>(null);
+  const [editingCommentIdx, setEditingCommentIdx] = useState<number | null>(
+    null,
+  );
   const [closing, setClosing] = useState(false);
   const [comment, setComment] = useState("");
   const { access_token } = useAuth();
   const fetchOnce = useRef(false);
   const handleUserClick = (userId: number | undefined) => {
-  if (!userId) return;
-  router.push(`/user/${userId}`);
-};
+    if (!userId) return;
+    router.push(`/user/${userId}`);
+  };
 
-// Alternatively, use a hook:
-useEffect(() => {
-  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-    if (node.tagName === 'A') {
-      node.setAttribute('target', '_blank');
-      node.setAttribute('rel', 'noopener noreferrer');
-    }
-  });
-}, []);
+  // Alternatively, use a hook:
+  useEffect(() => {
+    DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+      if (node.tagName === "A") {
+        node.setAttribute("target", "_blank");
+        node.setAttribute("rel", "noopener noreferrer");
+      }
+    });
+  }, []);
 
   const router = useRouter();
 
@@ -147,11 +155,14 @@ useEffect(() => {
           return;
         }
 
-        const response = await fetch(`${API_BASE}/api/postgre/devotions?all=true`, {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
+        const response = await fetch(
+          `${API_BASE}/api/postgre/devotions?all=true`,
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
           },
-        });
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch devotions");
@@ -207,16 +218,17 @@ useEffect(() => {
             };
           }
           return item;
-        })
+        }),
       );
 
       if (selected?.id === id) {
-        setSelected((prev) =>
-          prev && {
-            ...prev,
-            likesCount: data.likesCount,
-            userLiked: data.userLiked,
-          }
+        setSelected(
+          (prev) =>
+            prev && {
+              ...prev,
+              likesCount: data.likesCount,
+              userLiked: data.userLiked,
+            },
         );
       }
     } catch (error) {
@@ -234,7 +246,10 @@ useEffect(() => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${access_token}`,
         },
-        body: JSON.stringify({ devotionId: selected.id, comment: comment.trim() }),
+        body: JSON.stringify({
+          devotionId: selected.id,
+          comment: comment.trim(),
+        }),
       });
 
       const data = await res.json();
@@ -246,8 +261,7 @@ useEffect(() => {
         ...newComment,
         user: {
           ...newComment.user,
-          profileImage:
-            newComment.user?.profileImage || user?.avatar || null,
+          profileImage: newComment.user?.profileImage || user?.avatar || null,
         },
       };
 
@@ -260,14 +274,15 @@ useEffect(() => {
             };
           }
           return item;
-        })
+        }),
       );
 
-      setSelected((prev) =>
-        prev && {
-          ...prev,
-          comments: [...prev.comments, augmentedComment],
-        }
+      setSelected(
+        (prev) =>
+          prev && {
+            ...prev,
+            comments: [...prev.comments, augmentedComment],
+          },
       );
 
       setComment("");
@@ -290,20 +305,29 @@ useEffect(() => {
   };
 
   const handleSaveEditComment = async () => {
-    if (!selected || editingCommentIdx === null || !comment.trim() || !access_token) return;
+    if (
+      !selected ||
+      editingCommentIdx === null ||
+      !comment.trim() ||
+      !access_token
+    )
+      return;
 
     const current = selected.comments?.[editingCommentIdx];
     if (!current) return;
 
     try {
-      const res = await fetch(`${API_BASE}/api/postgre/devotions/comments/${current.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
+      const res = await fetch(
+        `${API_BASE}/api/postgre/devotions/comments/${current.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({ comment: comment.trim() }),
         },
-        body: JSON.stringify({ comment: comment.trim() }),
-      });
+      );
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update comment");
 
@@ -312,18 +336,26 @@ useEffect(() => {
         prev.map((d) => {
           if (d.id === selected.id) {
             const updated = [...d.comments];
-            updated[editingCommentIdx] = { ...updated[editingCommentIdx], comment: comment.trim() };
+            updated[editingCommentIdx] = {
+              ...updated[editingCommentIdx],
+              comment: comment.trim(),
+            };
             return { ...d, comments: updated };
           }
           return d;
-        })
+        }),
       );
 
       // update selected comments
-      setSelected((prev) => prev && {
-        ...prev,
-        comments: prev.comments.map((c, i) => (i === editingCommentIdx ? { ...c, comment: comment.trim() } : c)),
-      });
+      setSelected(
+        (prev) =>
+          prev && {
+            ...prev,
+            comments: prev.comments.map((c, i) =>
+              i === editingCommentIdx ? { ...c, comment: comment.trim() } : c,
+            ),
+          },
+      );
 
       setComment("");
       setEditingCommentIdx(null);
@@ -332,7 +364,10 @@ useEffect(() => {
     }
   };
 
-  const handleDeleteComment = async (devotionId: number, commentIdx: number) => {
+  const handleDeleteComment = async (
+    devotionId: number,
+    commentIdx: number,
+  ) => {
     if (!access_token) return;
 
     const devotion = devotions.find((d) => d.id === devotionId);
@@ -340,20 +375,35 @@ useEffect(() => {
     if (!commentToDelete) return;
 
     try {
-      const res = await fetch(`${API_BASE}/api/postgre/devotions/comments/${commentToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${access_token}`,
+      const res = await fetch(
+        `${API_BASE}/api/postgre/devotions/comments/${commentToDelete.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
         },
-      });
+      );
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || "Failed to delete comment");
       }
 
-      setDevotions((prev) => prev.map((d) => (d.id === devotionId ? { ...d, comments: d.comments.filter((_, i) => i !== commentIdx) } : d)));
+      setDevotions((prev) =>
+        prev.map((d) =>
+          d.id === devotionId
+            ? { ...d, comments: d.comments.filter((_, i) => i !== commentIdx) }
+            : d,
+        ),
+      );
       if (selected?.id === devotionId) {
-        setSelected((prev) => prev && ({ ...prev, comments: prev.comments.filter((_, i) => i !== commentIdx) }));
+        setSelected(
+          (prev) =>
+            prev && {
+              ...prev,
+              comments: prev.comments.filter((_, i) => i !== commentIdx),
+            },
+        );
       }
       // if we were editing this comment, cancel edit
       if (editingCommentIdx === commentIdx) {
@@ -462,18 +512,20 @@ useEffect(() => {
                     </span>
                     <p className="text-sm text-muted-foreground line-clamp-1">
                       <div
-                  className="
+                        className="
                   mt-3 max-w-none
                   [&_a]:text-blue-600
                   [&_a]:underline
                   [&_a]:font-medium
                   [&_a:hover]:text-blue-800
                 "
-                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(devotion.content) }}
-                />
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(devotion.content),
+                        }}
+                      />
                     </p>
                     <div className="flex justify-between text-sm text-foreground-500">
-                      <span 
+                      <span
                         className="text-md flex items-center cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -528,15 +580,17 @@ useEffect(() => {
                       </div>
                       <p className="text-foreground whitespace-pre-line mt-3">
                         <div
-                  className="
+                          className="
                   mt-3 max-w-none
                   [&_a]:text-blue-600
                   [&_a]:underline
                   [&_a]:font-medium
                   [&_a:hover]:text-blue-800
                 "
-                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selected.content) }}
-                />
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(selected.content),
+                          }}
+                        />
                       </p>
                     </div>
                   </div>
@@ -566,7 +620,7 @@ useEffect(() => {
                         </div>
                       </div>
                       <div className="flex flex-row justify-between mb-2">
-                        <span 
+                        <span
                           className="text-lg text-foreground flex items-center cursor-pointer"
                           onClick={() => handleHeartReact(selected.id)}
                         >
@@ -597,7 +651,10 @@ useEffect(() => {
                               <div key={c.id} className="rounded p-3">
                                 <div className="flex items-start gap-2">
                                   <img
-                                    src={c.user?.profileImage || "images/userIcon.png"}
+                                    src={
+                                      c.user?.profileImage ||
+                                      "images/userIcon.png"
+                                    }
                                     alt={c.user?.name || "User"}
                                     onClick={() => handleUserClick(c.user?.id)}
                                     className="w-8 h-8 rounded-full object-cover cursor-pointer"
@@ -606,26 +663,49 @@ useEffect(() => {
                                     <div className="flex justify-between items-start gap-2">
                                       <div>
                                         <HoverCard
-                                        userId={c.user?.id}
-                                        name={c.user?.name || "Unknown"}
-                                        title={c.user?.title || "Member"}
-                                        image={c.user?.profileImage || "/images/userIcon.png"}
-                                        onView={() => handleUserClick(c.user?.id)}
+                                          userId={c.user?.id}
+                                          name={c.user?.name || "Unknown"}
+                                          title={c.user?.title || "Member"}
+                                          image={
+                                            c.user?.profileImage ||
+                                            "/images/userIcon.png"
+                                          }
+                                          onView={() =>
+                                            handleUserClick(c.user?.id)
+                                          }
                                         >
-                                        <span className="font-semibold text-sm cursor-pointer hover:underline" onClick={() => handleUserClick(c.user?.id)}>
-                                          {c.user?.name || "Unknown"}
-                                        </span>
+                                          <span
+                                            className="font-semibold text-sm cursor-pointer hover:underline"
+                                            onClick={() =>
+                                              handleUserClick(c.user?.id)
+                                            }
+                                          >
+                                            {c.user?.name || "Unknown"}
+                                          </span>
                                         </HoverCard>
-                                        <p className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleString()}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                          {new Date(
+                                            c.createdAt,
+                                          ).toLocaleString()}
+                                        </p>
                                       </div>
                                       <div className="self-start">
                                         <CommentActions
-                                          onEdit={() => handleEditComment(selected.id, idx)}
-                                          onDelete={() => handleDeleteComment(selected.id, idx)}
+                                          onEdit={() =>
+                                            handleEditComment(selected.id, idx)
+                                          }
+                                          onDelete={() =>
+                                            handleDeleteComment(
+                                              selected.id,
+                                              idx,
+                                            )
+                                          }
                                         />
                                       </div>
                                     </div>
-                                    <p className="text-sm text-foreground mt-1 break-words">{c.comment}</p>
+                                    <p className="text-sm text-foreground mt-1 break-words">
+                                      {c.comment}
+                                    </p>
                                   </div>
                                 </div>
                               </div>
@@ -646,10 +726,17 @@ useEffect(() => {
                               handleCommentSubmit();
                             }
                           }}
-                          placeholder={editingCommentIdx !== null ? "Edit comment..." : "Add comment..."}
+                          placeholder={
+                            editingCommentIdx !== null
+                              ? "Edit comment..."
+                              : "Add comment..."
+                          }
                           className="input sz-md variant-mixed text-foreground flex-1 border rounded px-2 py-1"
                         />
-                        <Button onClick={handleCommentSubmit} disabled={!comment.trim()}>
+                        <Button
+                          onClick={handleCommentSubmit}
+                          disabled={!comment.trim()}
+                        >
                           {editingCommentIdx === null ? "Post" : "Save"}
                         </Button>
 

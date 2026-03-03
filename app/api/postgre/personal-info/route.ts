@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
-import type { PersonalInformation, User, DiscipleInformation, Prisma } from "@prisma/client";
+import type {
+  PersonalInformation,
+  User,
+  DiscipleInformation,
+  Prisma,
+} from "@prisma/client";
 
 // Flattened response type
 type FlattenedPersonalInfo = PersonalInformation & {
@@ -14,7 +19,9 @@ type FlattenedPersonalInfo = PersonalInformation & {
 
 // Helper to flatten disciple info
 const formatPersonalInfo = (
-  personalInfo: PersonalInformation & { user: User & { discipleInformation: DiscipleInformation | null } }
+  personalInfo: PersonalInformation & {
+    user: User & { discipleInformation: DiscipleInformation | null };
+  },
 ): FlattenedPersonalInfo => {
   const discipleInfo = personalInfo.user.discipleInformation;
   return {
@@ -25,12 +32,12 @@ const formatPersonalInfo = (
   };
 };
 
-
 // ------------------- GET -------------------
 export async function GET(request: NextRequest) {
   try {
     const currentUserId = verifyAuth(request);
-    if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!currentUserId)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Check if a specific userId is requested (for viewing other users' profiles)
     const userIdParam = request.nextUrl.searchParams.get("userId");
@@ -42,12 +49,21 @@ export async function GET(request: NextRequest) {
     });
 
     if (!personalInfo)
-      return NextResponse.json({ error: "Personal information not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Personal information not found" },
+        { status: 404 },
+      );
 
-    return NextResponse.json({ data: formatPersonalInfo(personalInfo) }, { status: 200 });
+    return NextResponse.json(
+      { data: formatPersonalInfo(personalInfo) },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Get personal info error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
@@ -55,9 +71,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const currentUserId = verifyAuth(request);
-    if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!currentUserId)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const body: Partial<PersonalInformation> & { birthday?: string } = await request.json();
+    const body: Partial<PersonalInformation> & { birthday?: string } =
+      await request.json();
     const birthdayDate = body.birthday ? new Date(body.birthday) : null;
 
     const personalInfo = await prisma.personalInformation.upsert({
@@ -95,12 +113,18 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { data: formatPersonalInfo(personalInfo), message: "Personal information created" },
-      { status: 201 }
+      {
+        data: formatPersonalInfo(personalInfo),
+        message: "Personal information created",
+      },
+      { status: 201 },
     );
   } catch (error) {
     console.error("Create personal info error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
@@ -109,10 +133,14 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const currentUserId = verifyAuth(request);
-    if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!currentUserId)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const body: Partial<PersonalInformation> & { birthday?: string; level?: string; groupName?: string } =
-      await request.json();
+    const body: Partial<PersonalInformation> & {
+      birthday?: string;
+      level?: string;
+      groupName?: string;
+    } = await request.json();
 
     const birthdayDate = body.birthday ? new Date(body.birthday) : null;
 
@@ -132,7 +160,7 @@ export async function PUT(request: NextRequest) {
         country: body.country ?? null,
         bio: body.bio ?? null,
         profileImage: body.profileImage ?? null,
-      }as Prisma.PersonalInformationUpdateInput,
+      } as Prisma.PersonalInformationUpdateInput,
     });
 
     // 2️⃣ Upsert disciple information (level & groupName)
@@ -150,21 +178,31 @@ export async function PUT(request: NextRequest) {
     });
 
     // 3️⃣ Fetch and return full flattened info with included relations
-    const personalInfoWithRelations = await prisma.personalInformation.findUnique({
-      where: { userId: currentUserId },
-      include: { user: { include: { discipleInformation: true } } },
-    });
+    const personalInfoWithRelations =
+      await prisma.personalInformation.findUnique({
+        where: { userId: currentUserId },
+        include: { user: { include: { discipleInformation: true } } },
+      });
 
     if (!personalInfoWithRelations)
-      return NextResponse.json({ error: "Failed to fetch updated personal info" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to fetch updated personal info" },
+        { status: 500 },
+      );
 
     return NextResponse.json(
-      { data: formatPersonalInfo(personalInfoWithRelations), message: "Personal information updated" },
-      { status: 200 }
+      {
+        data: formatPersonalInfo(personalInfoWithRelations),
+        message: "Personal information updated",
+      },
+      { status: 200 },
     );
   } catch (error) {
     console.error("Update personal info error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
@@ -172,7 +210,8 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const currentUserId = verifyAuth(request);
-    if (!currentUserId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!currentUserId)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const deleted = await prisma.personalInformation.delete({
       where: { userId: currentUserId },
@@ -180,11 +219,17 @@ export async function DELETE(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { data: formatPersonalInfo(deleted), message: "Personal information deleted" },
-      { status: 200 } // 204 can't have a body
+      {
+        data: formatPersonalInfo(deleted),
+        message: "Personal information deleted",
+      },
+      { status: 200 }, // 204 can't have a body
     );
   } catch (error) {
     console.error("Delete personal info error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

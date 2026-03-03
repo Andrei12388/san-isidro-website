@@ -7,10 +7,7 @@ export async function POST(request: NextRequest) {
     const currentUserId = verifyAuth(request);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -24,13 +21,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { data: discipleInfo, message: "Disciple information created" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Create disciple info error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -40,10 +37,7 @@ export async function GET(request: NextRequest) {
     const currentUserId = verifyAuth(request);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const discipleInfo = await prisma.discipleInformation.findUnique({
@@ -61,7 +55,7 @@ export async function GET(request: NextRequest) {
     if (!discipleInfo) {
       return NextResponse.json(
         { error: "Disciple information not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -70,7 +64,7 @@ export async function GET(request: NextRequest) {
     console.error("Get disciple info error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -80,10 +74,7 @@ export async function PUT(request: NextRequest) {
     const currentUserId = verifyAuth(request);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -103,13 +94,13 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(
       { data: discipleInfo, message: "Disciple information updated" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Update disciple info error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -119,10 +110,7 @@ export async function DELETE(request: NextRequest) {
     const currentUserId = verifyAuth(request);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     await prisma.discipleInformation.delete({
@@ -131,13 +119,13 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json(
       { message: "Disciple information deleted" },
-      { status: 204 }
+      { status: 204 },
     );
   } catch (error) {
     console.error("Delete disciple info error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

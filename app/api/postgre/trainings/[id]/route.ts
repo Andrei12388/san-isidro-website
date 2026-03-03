@@ -5,7 +5,7 @@ import { verifyAuth } from "@/middleware/auth";
 // ------------------ GET ------------------
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -22,20 +22,26 @@ export async function GET(
     });
 
     if (!training || training.userId !== currentUserId) {
-      return NextResponse.json({ error: "Training not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Training not found" },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json({ data: training }, { status: 200 });
   } catch (error) {
     console.error("Get training error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 // ------------------ PUT ------------------
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -46,10 +52,15 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const training = await prisma.training.findUnique({ where: { id: trainingId } });
+    const training = await prisma.training.findUnique({
+      where: { id: trainingId },
+    });
 
     if (!training || training.userId !== currentUserId) {
-      return NextResponse.json({ error: "Training not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Training not found" },
+        { status: 404 },
+      );
     }
 
     const body = await request.json();
@@ -60,17 +71,23 @@ export async function PUT(
       include: { category: { select: { id: true, name: true, type: true } } },
     });
 
-    return NextResponse.json({ data: updated, message: "Training updated" }, { status: 200 });
+    return NextResponse.json(
+      { data: updated, message: "Training updated" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Update training error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 // ------------------ DELETE ------------------
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -81,10 +98,15 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const training = await prisma.training.findUnique({ where: { id: trainingId } });
+    const training = await prisma.training.findUnique({
+      where: { id: trainingId },
+    });
 
     if (!training || training.userId !== currentUserId) {
-      return NextResponse.json({ error: "Training not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Training not found" },
+        { status: 404 },
+      );
     }
 
     await prisma.training.delete({ where: { id: trainingId } });
@@ -93,6 +115,9 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error("Delete training error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

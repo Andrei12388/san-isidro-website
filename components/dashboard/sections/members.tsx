@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { DataTable } from "../data-table"
-import { Member } from "@/lib/data"
+import { DataTable } from "../data-table";
+import { Member } from "@/lib/data";
 import { useAuth } from "@/context/AuthContext";
 import { Spinner } from "@/components/ui/loadingSpinner";
 
@@ -11,10 +11,10 @@ const API_BASE =
 
 const MembersSection = () => {
   const [loading, setLoading] = useState(true);
-  const [ members, setMembers ] = useState<Member[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
   const { access_token } = useAuth();
 
- const fetchMembers = async () => {
+  const fetchMembers = async () => {
     try {
       const response = await fetch(`${API_BASE}/api/postgre/users/`, {
         headers: {
@@ -34,17 +34,22 @@ const MembersSection = () => {
     fetchMembers();
   }, []);
   if (loading) {
-    return <div className="flex flex-1 flex-row justify-center items-center text-center">Loading Users...<Spinner size={16} /></div>;
+    return (
+      <div className="flex flex-1 flex-row justify-center items-center text-center">
+        Loading Users...
+        <Spinner size={16} />
+      </div>
+    );
   }
   return (
     <div className="flex flex-1 flex-col">
-              <div className="@container/main flex flex-1 flex-col gap-2">
-                <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                     <DataTable data={members as any} />
-                </div>
-                </div>
-            </div>
-  )
-}
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <DataTable data={members as any} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default MembersSection
+export default MembersSection;

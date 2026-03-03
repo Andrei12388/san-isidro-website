@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   IconCamera,
   IconChartBar,
@@ -18,12 +18,12 @@ import {
   IconSearch,
   IconSettings,
   IconUsers,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { NavDocuments } from "@/components/dashboard/nav-documents"
-import { NavMain } from "@/components/dashboard/nav-main"
-import { NavSecondary } from "@/components/dashboard/nav-secondary"
-import { NavUser } from "@/components/dashboard/nav-user"
+import { NavDocuments } from "@/components/dashboard/nav-documents";
+import { NavMain } from "@/components/dashboard/nav-main";
+import { NavSecondary } from "@/components/dashboard/nav-secondary";
+import { NavUser } from "@/components/dashboard/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -32,12 +32,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { Logo } from "../logo"
-import Link from "next/link"
-import Image from "next/image"
-import { useSidebar } from "@/components/ui/sidebar"
-import { Spinner } from "../ui/loadingSpinner"
+} from "@/components/ui/sidebar";
+import { Logo } from "../logo";
+import Link from "next/link";
+import Image from "next/image";
+import { useSidebar } from "@/components/ui/sidebar";
+import { Spinner } from "../ui/loadingSpinner";
 
 const data = {
   user: {
@@ -51,7 +51,7 @@ const data = {
       url: "#dashboard",
       icon: IconDashboard,
     },
-     {
+    {
       title: "Members",
       url: "#",
       icon: IconUsers,
@@ -62,8 +62,8 @@ const data = {
       icon: IconListDetails,
     },
     {
-      title: "Analytics",
-      url: "#analytics",
+      title: "Calendar",
+      url: "#calendar",
       icon: IconChartBar,
     },
     {
@@ -71,7 +71,6 @@ const data = {
       url: "#",
       icon: IconFolder,
     },
-   
   ],
   navClouds: [
     {
@@ -155,47 +154,59 @@ const data = {
       icon: IconFileWord,
     },
   ],
-}
+};
 
-type AppSidebarProps =
-  React.ComponentProps<typeof Sidebar> & {
-    isLoading: boolean;
-  };
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  isLoading: boolean;
+};
 
 export function AppSidebar({ isLoading, ...props }: AppSidebarProps) {
-  
-  const { state, open, setOpen, toggleSidebar } = useSidebar()
+  const { state, open, setOpen, toggleSidebar } = useSidebar();
   return (
-    <Sidebar collapsible="icon" {...props} >
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-      
         <SidebarMenu>
           <SidebarMenuItem>
-            
             {/* Logo button of the left side nav */}
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/">
-                <div><Image src="/images/logonotitle.png" alt="San Isidro Logo" width={50} height={50} /></div>
-               {state === "expanded" &&  <span className="text-base font-semibold"> JCSGO: SAN ISIDRO</span>}
+                <div>
+                  <Image
+                    src="/images/logonotitle.png"
+                    alt="San Isidro Logo"
+                    width={50}
+                    height={50}
+                  />
+                </div>
+                {state === "expanded" && (
+                  <span className="text-base font-semibold">
+                    {" "}
+                    JCSGO: SAN ISIDRO
+                  </span>
+                )}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        
-       {isLoading ? <span className="text-center flex flex-row justify-center"><Spinner  size={16} /> </span> : <> <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-                </>}
+        {isLoading ? (
+          <span className="text-center flex flex-row justify-center">
+            <Spinner size={16} />{" "}
+          </span>
+        ) : (
+          <>
+            {" "}
+            <NavMain items={data.navMain} />
+            <NavDocuments items={data.documents} />
+          </>
+        )}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
-        
       </SidebarContent>
-      <SidebarFooter>
-      
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
     </Sidebar>
-  )
+  );
 }

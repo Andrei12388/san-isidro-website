@@ -11,7 +11,11 @@ export interface ResultType {
 export async function POST(req: Request) {
   try {
     const result: ResultType = await req.json();
-    if (!result) return NextResponse.json({ message: "No data provided" }, { status: 400 });
+    if (!result)
+      return NextResponse.json(
+        { message: "No data provided" },
+        { status: 400 },
+      );
 
     const cookieStore = await cookies();
 

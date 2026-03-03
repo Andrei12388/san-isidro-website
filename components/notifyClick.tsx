@@ -58,7 +58,7 @@ export const showFloatingMessage = (
   text: string,
   x: number,
   y: number,
-  duration = 2000
+  duration = 2000,
 ) => {
   if (!showMessageCallback) return;
   showMessageCallback({ text, x, y });

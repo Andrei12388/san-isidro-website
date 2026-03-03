@@ -1,12 +1,12 @@
 .link {
-    color: white;
-    transition: all 0.3s ease-in-out;
-    scale: 1;
+  color: white;
+  transition: all 0.3s ease-in-out;
+  scale: 1;
 }
 
 .link:hover {
-    color: var(--color-accent);
-    scale: 1.5;
+  color: var(--color-accent);
+  scale: 1.5;
 }
 
 .underline {
@@ -33,13 +33,13 @@
   transform: scaleX(1);
 }
 
-.imageTransition{
+.imageTransition {
   transition: all 0.5s ease-in-out;
 }
 
 @keyframes zoomOut {
   from {
-    transform: scale(1.20);
+    transform: scale(1.2);
   }
   to {
     transform: scale(1);

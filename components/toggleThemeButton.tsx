@@ -7,7 +7,10 @@ export default function ThemeToggleButton() {
   useEffect(() => {
     const saved = localStorage.getItem("theme");
 
-    if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    if (
+      saved === "dark" ||
+      (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
       setDark(true);
       document.documentElement.classList.add("dark");
     }
@@ -22,16 +25,15 @@ export default function ThemeToggleButton() {
   };
 
   return (
-   <button
-  onClick={toggleTheme}
-  className="w-10 h-4 flex items-center bg-gray-300 dark:bg-gray-700 rounded-full p-1 transition"
->
-  <div
-    className={`w-2 h-2 bg-white rounded-full shadow-md transform transition ${
-      dark ? "translate-x-6" : ""
-    }`}
-  />
-</button>
-
+    <button
+      onClick={toggleTheme}
+      className="w-10 h-4 flex items-center bg-gray-300 dark:bg-gray-700 rounded-full p-1 transition"
+    >
+      <div
+        className={`w-2 h-2 bg-white rounded-full shadow-md transform transition ${
+          dark ? "translate-x-6" : ""
+        }`}
+      />
+    </button>
   );
 }

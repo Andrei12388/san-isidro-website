@@ -6,7 +6,7 @@ import { hashPassword } from "@/utils/password";
 // ------------------ GET ------------------
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -20,7 +20,13 @@ export async function GET(
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, name: true, email: true, createdAt: true, updatedAt: true },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     if (!user) {
@@ -30,14 +36,17 @@ export async function GET(
     return NextResponse.json({ data: user }, { status: 200 });
   } catch (error) {
     console.error("Get user error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 // ------------------ PUT ------------------
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -66,17 +75,23 @@ export async function PUT(
       select: { id: true, name: true, email: true, updatedAt: true },
     });
 
-    return NextResponse.json({ data: user, message: "User updated successfully" }, { status: 200 });
+    return NextResponse.json(
+      { data: user, message: "User updated successfully" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Update user error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 // ------------------ DELETE ------------------
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -97,6 +112,9 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error("Delete user error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

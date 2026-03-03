@@ -7,7 +7,7 @@ const API_BASE =
     ? process.env.NEXT_PUBLIC_APP_URL
     : "http://localhost:3000";
 
- const uri = process.env.NEXT_PUBLIC_APP_URL
+const uri = process.env.NEXT_PUBLIC_APP_URL;
 const authLoginApi = `${API_BASE}/api/postgre/auth/login`;
 
 export async function POST(req: Request) {
@@ -17,14 +17,14 @@ export async function POST(req: Request) {
     const response = await fetch(authLoginApi, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      
+
       body: JSON.stringify({ email, password }),
     });
 
     if (!response.ok) {
       return NextResponse.json(
         { message: "Invalid credentials" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     const cookieStore = await cookies();
 
-    console.log("cookie fetch data", result, cookieStore)
+    console.log("cookie fetch data", result, cookieStore);
 
     // ✅ access token
     cookieStore.set("access_token", result.access_token, {
@@ -44,7 +44,6 @@ export async function POST(req: Request) {
     });
 
     // ✅ refresh token (NEW)
-    
 
     // ✅ user id (KEEP OLD WORKING VERSION)
     cookieStore.set("user_id", String(result.id), {
@@ -55,7 +54,6 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    
     // ✅ Name
     cookieStore.set("name", String(result.name), {
       httpOnly: true,
@@ -65,7 +63,7 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
-      // ✅ Email
+    // ✅ Email
     cookieStore.set("email", String(result.email), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -75,22 +73,22 @@ export async function POST(req: Request) {
     });
 
     //Fetch image from personal user info api
-                  const personalInfoRes = await fetch(
-                  `${API_BASE}/api/postgre/personal-info/${result.id}`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${result.access_token}`,
-                    },
-                  }
-                )
+    const personalInfoRes = await fetch(
+      `${API_BASE}/api/postgre/personal-info/${result.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${result.access_token}`,
+        },
+      },
+    );
 
-                          if (!personalInfoRes.ok) {
-                            console.log("Error fetching image")
-                          }
-                const imageRes = await personalInfoRes.json()
-                console.log("Image Fetch:",imageRes.profileImage)
+    if (!personalInfoRes.ok) {
+      console.log("Error fetching image");
+    }
+    const imageRes = await personalInfoRes.json();
+    console.log("Image Fetch:", imageRes.profileImage);
 
-     // ✅ Image
+    // ✅ Image
     cookieStore.set("profileImage", String(imageRes.profileImage), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -107,14 +105,8 @@ export async function POST(req: Request) {
       hasRefresh: !!result.refresh_token,
     });
 
-                        
-
     return NextResponse.json({ success: true });
-
   } catch (err) {
-    return NextResponse.json(
-      { message: "Login failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Login failed" }, { status: 500 });
   }
 }

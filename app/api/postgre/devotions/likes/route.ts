@@ -11,7 +11,10 @@ export async function POST(request: NextRequest) {
 
     const { devotionId } = await request.json();
     if (!devotionId) {
-      return NextResponse.json({ error: "Missing devotionId" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing devotionId" },
+        { status: 400 },
+      );
     }
 
     // check if user already liked
@@ -35,12 +38,15 @@ export async function POST(request: NextRequest) {
       userLiked = true;
     }
 
-    const likesCount = await prisma.devotionLike.count({ where: { devotionId } });
+    const likesCount = await prisma.devotionLike.count({
+      where: { devotionId },
+    });
 
     return NextResponse.json({ likesCount, userLiked }, { status: 200 });
   } catch (error: unknown) {
     console.error("Toggle like error:", error);
-    const message = error instanceof Error ? error.message : "Internal server error";
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

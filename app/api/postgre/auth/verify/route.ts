@@ -6,10 +6,7 @@ export async function GET(request: NextRequest) {
     const token = request.nextUrl.searchParams.get("token");
 
     if (!token) {
-      return NextResponse.json(
-        { error: "Token is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Token is required" }, { status: 400 });
     }
 
     const payload = verifyAccessToken(token);
@@ -17,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (!payload) {
       return NextResponse.json(
         { valid: false, error: "Invalid or expired token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -27,13 +24,13 @@ export async function GET(request: NextRequest) {
         userId: payload.userId,
         message: "Token is valid",
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Token verification error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

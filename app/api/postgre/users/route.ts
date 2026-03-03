@@ -55,23 +55,23 @@ export async function GET(request: NextRequest) {
         u.personalInformation?.country,
       ].filter(Boolean);
       const address = addressParts.length > 0 ? addressParts.join(", ") : "N/A";
-      
+
       function getAge(birthday: Date | null | undefined): number {
-          if (!birthday) return 0;
+        if (!birthday) return 0;
 
-          const today = new Date();
+        const today = new Date();
 
-          let age = today.getFullYear() - birthday.getFullYear();
+        let age = today.getFullYear() - birthday.getFullYear();
 
-          const hasHadBirthdayThisYear =
-            today.getMonth() > birthday.getMonth() ||
-            (today.getMonth() === birthday.getMonth() &&
-              today.getDate() >= birthday.getDate());
+        const hasHadBirthdayThisYear =
+          today.getMonth() > birthday.getMonth() ||
+          (today.getMonth() === birthday.getMonth() &&
+            today.getDate() >= birthday.getDate());
 
-          if (!hasHadBirthdayThisYear) age--;
+        if (!hasHadBirthdayThisYear) age--;
 
-          return age;
-        }
+        return age;
+      }
 
       return {
         id: u.id,
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       return NextResponse.json(
         { error: "User already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { data: newUser, message: "User created successfully" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error: unknown) {
     console.error("Create user error:", error);

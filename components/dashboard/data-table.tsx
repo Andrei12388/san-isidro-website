@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   closestCenter,
   DndContext,
@@ -11,15 +11,15 @@ import {
   useSensors,
   type DragEndEvent,
   type UniqueIdentifier,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   arrayMove,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   IconChevronDown,
   IconChevronLeft,
@@ -33,7 +33,7 @@ import {
   IconLoader,
   IconPlus,
   IconTrendingUp,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
   flexRender,
   getCoreRowModel,
@@ -48,21 +48,21 @@ import {
   type Row,
   type SortingState,
   type VisibilityState,
-} from "@tanstack/react-table"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-import { toast } from "sonner"
-import { z } from "zod"
+} from "@tanstack/react-table";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/chart";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Drawer,
   DrawerClose,
@@ -72,7 +72,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -80,17 +80,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -98,20 +98,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import HoverCard from "../userCard/hoverCard"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import HoverCard from "../userCard/hoverCard";
+import { useRouter } from "next/navigation";
 
 type TableMeta = {
-  deleteRow: (id: number) => void
-}
-
+  deleteRow: (id: number) => void;
+};
 
 export const memberSchema = z.object({
   id: z.number(),
@@ -127,14 +121,13 @@ export const memberSchema = z.object({
   image: z.string(),
   birthday: z.string().nullable(),
   ministry: z.string(),
-})
-
+});
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
     id,
-  })
+  });
 
   return (
     <Button
@@ -147,7 +140,7 @@ function DragHandle({ id }: { id: number }) {
       <IconGripVertical className="text-muted-foreground size-3" />
       <span className="sr-only">Drag to reorder</span>
     </Button>
-  )
+  );
 }
 
 const levelColors: Record<string, string> = {
@@ -155,98 +148,99 @@ const levelColors: Record<string, string> = {
   vine: "bg-blue-100 text-blue-700",
   head: "bg-green-100 text-green-700",
   disciple: "bg-gray-100 text-gray-700",
-}
+};
 
 const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
- 
-    // Drag
+  // Drag
   {
     id: "drag",
     header: () => null,
     cell: ({ row }) => <DragHandle id={row.original.id} />,
   },
   // ✅ PHOTO (ADD HERE)
- {id:'image',
-  accessorKey: "image",
-  header: "Photo",
-  cell: ({ row }) => {
-    const [src, setSrc] = React.useState(row.original.image)
-    const router = useRouter();
+  {
+    id: "image",
+    accessorKey: "image",
+    header: "Photo",
+    cell: ({ row }) => {
+      const [src, setSrc] = React.useState(row.original.image);
+      const router = useRouter();
       const handleUserClick = (userId: number | undefined) => {
-    if (!userId) return;
-    router.push(`/user/${userId}`);
-  };
-    return (
-      <img
-        src={src || "/images/userIcon.png"}
-        onError={() => setSrc("/images/userIcon.png")} // fallback if broken
-        className="size-9 rounded-full object-cover border cursor-pointer hover:brightness-110 transition"
-        onClick={() => handleUserClick(row.original.id)}
-        alt={row.original.name}
-      />
-    )
+        if (!userId) return;
+        router.push(`/user/${userId}`);
+      };
+      return (
+        <img
+          src={src || "/images/userIcon.png"}
+          onError={() => setSrc("/images/userIcon.png")} // fallback if broken
+          className="size-9 rounded-full object-cover border cursor-pointer hover:brightness-110 transition"
+          onClick={() => handleUserClick(row.original.id)}
+          alt={row.original.name}
+        />
+      );
+    },
   },
-},
 
   // Name
   {
-    id:'name',
+    id: "name",
     accessorKey: "name",
     header: "Full Name",
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const router = useRouter();
       const handleUserClick = (userId: number | undefined) => {
-          if (!userId) return;
-          router.push(`/user/${userId}`);
-        };
+        if (!userId) return;
+        router.push(`/user/${userId}`);
+      };
       return (
         <>
-      <HoverCard
-        userId={row.original.id}
-        name={row.original.name}
-        title={"Member"}
-        image={row.original.image || "/images/userIcon.png"}
-        onView={() => toast(`Viewing ${row.original.name}`)}
-      >
-        <span className="font-semibold text-foreground cursor-pointer hover:underline" onClick={() => handleUserClick(row.original.id)}>
-          {row.original.name}
-        </span>
-      </HoverCard>
+          <HoverCard
+            userId={row.original.id}
+            name={row.original.name}
+            title={"Member"}
+            image={row.original.image || "/images/userIcon.png"}
+            onView={() => toast(`Viewing ${row.original.name}`)}
+          >
+            <span
+              className="font-semibold text-foreground cursor-pointer hover:underline"
+              onClick={() => handleUserClick(row.original.id)}
+            >
+              {row.original.name}
+            </span>
+          </HoverCard>
         </>
-  )
+      );
+    },
   },
-},
 
   // Email
   {
-    id:'email',
+    id: "email",
     accessorKey: "email",
     header: "Email",
   },
 
   // Gender
   {
-    id:'gender',
+    id: "gender",
     accessorKey: "gender",
     header: "Gender",
   },
 
   // Age
   {
-    id:'age',
+    id: "age",
     accessorKey: "age",
     header: "Age",
   },
 
   // ✅ Level badge with colors
   {
-    id:'level',
+    id: "level",
     accessorKey: "level",
     header: "Level",
     cell: ({ row }) => (
-      <Badge
-        className={`capitalize ${levelColors[row.original.level]}`}
-      >
+      <Badge className={`capitalize ${levelColors[row.original.level]}`}>
         {row.original.level}
       </Badge>
     ),
@@ -254,28 +248,28 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
 
   // Group
   {
-    id:'group',
+    id: "group",
     accessorKey: "group_name",
     header: "Group",
   },
 
   // Phone
   {
-    id:'phone',
+    id: "phone",
     accessorKey: "phone",
     header: "Phone",
   },
 
   // Address
   {
-    id:'address',
+    id: "address",
     accessorKey: "address",
     header: "Address",
   },
 
   // Birthday
   {
-    id:'birthday',
+    id: "birthday",
     accessorKey: "birthday",
     header: "Birthday",
     cell: ({ row }) => row.original.birthday || "N/A",
@@ -283,7 +277,7 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
 
   // Ministry
   {
-    id:'ministry',
+    id: "ministry",
     accessorKey: "ministry",
     header: "Ministry",
   },
@@ -314,7 +308,7 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
 
           <DropdownMenuSeparator />
 
-         {/* <DropdownMenuItem
+          {/* <DropdownMenuItem
             variant="destructive"
             onClick={() => {
               table.options.meta?.deleteRow?.(row.original.id)
@@ -327,13 +321,12 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
       </DropdownMenu>
     ),
   },
-]
-
+];
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof memberSchema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
-  })
+  });
 
   return (
     <TableRow
@@ -352,71 +345,69 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof memberSchema>> }) {
         </TableCell>
       ))}
     </TableRow>
-  )
+  );
 }
 
 export function DataTable({
   data: initialData,
 }: {
- data: z.infer<typeof memberSchema>[]
+  data: z.infer<typeof memberSchema>[];
 }) {
-  const [data, setData] = React.useState(() => initialData)
-  const [refreshKey, setRefreshKey] = React.useState(0)
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [columnOrder, setColumnOrder] = React.useState(
-  () => columns.map(col => col.id!)
-)
+  const [data, setData] = React.useState(() => initialData);
+  const [refreshKey, setRefreshKey] = React.useState(0);
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [columnOrder, setColumnOrder] = React.useState(() =>
+    columns.map((col) => col.id!),
+  );
 
-  
- const [columnVisibility, setColumnVisibility] =
-  React.useState<VisibilityState>(() => {
-    // default all visible
-    const initial: VisibilityState = {}
-    columns.forEach((col) => {
-      if (!["drag", "actions"].includes(col.id || "")) initial[col.id || ""] = true
-    })
-    return initial
-  })
-  
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>(() => {
+      // default all visible
+      const initial: VisibilityState = {};
+      columns.forEach((col) => {
+        if (!["drag", "actions"].includes(col.id || ""))
+          initial[col.id || ""] = true;
+      });
+      return initial;
+    });
+
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
-  })
-  const sortableId = React.useId()
+  });
+  const sortableId = React.useId();
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
     useSensor(TouchSensor, {}),
-    useSensor(KeyboardSensor, {})
-  )
+    useSensor(KeyboardSensor, {}),
+  );
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
     () => data?.map(({ id }) => id) || [],
-    [data]
-  )
+    [data],
+  );
 
-  const [search, setSearch] = React.useState("")
-  const [levelFilter, setLevelFilter] = React.useState("all")
+  const [search, setSearch] = React.useState("");
+  const [levelFilter, setLevelFilter] = React.useState("all");
 
   const filteredData = React.useMemo(() => {
-  return data.filter((m) => {
-    const matchSearch =
-      m.name.toLowerCase().includes(search.toLowerCase()) ||
-      m.email.toLowerCase().includes(search.toLowerCase())
+    return data.filter((m) => {
+      const matchSearch =
+        m.name.toLowerCase().includes(search.toLowerCase()) ||
+        m.email.toLowerCase().includes(search.toLowerCase());
 
-    const matchLevel =
-      levelFilter === "all" || m.level === levelFilter
+      const matchLevel = levelFilter === "all" || m.level === levelFilter;
 
-    return matchSearch && matchLevel
-  })
-}, [data, search, levelFilter])
-
+      return matchSearch && matchLevel;
+    });
+  }, [data, search, levelFilter]);
 
   const table = useReactTable({
     meta: {
-  deleteRow: (id: number) =>
-    setData((prev) => prev.filter((m) => m.id !== id)),
-},
+      deleteRow: (id: number) =>
+        setData((prev) => prev.filter((m) => m.id !== id)),
+    },
     data: filteredData,
     columns,
     state: {
@@ -432,14 +423,14 @@ export function DataTable({
     onSortingChange: setSorting,
     onColumnOrderChange: setColumnOrder,
     onColumnVisibilityChange: (updater) => {
-  setColumnVisibility(updater)
-  console.log('changed page')
-  setRefreshKey(k => k + 1) // force remount
-   setPagination((prev) => ({
-    ...prev,
-    pageIndex: prev.pageIndex, // same page → still forces rebuild
-  }))
-},
+      setColumnVisibility(updater);
+      console.log("changed page");
+      setRefreshKey((k) => k + 1); // force remount
+      setPagination((prev) => ({
+        ...prev,
+        pageIndex: prev.pageIndex, // same page → still forces rebuild
+      }));
+    },
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -447,34 +438,35 @@ export function DataTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
 
- function handleDragEnd(event: DragEndEvent) {
-  const { active, over } = event
-  if (active && over && active.id !== over.id) {
-    setData((prev) => {
-      const filteredIds = filteredData.map((m) => m.id)
-      const oldIndex = filteredIds.indexOf(active.id as number)
-      const newIndex = filteredIds.indexOf(over.id as number)
-      // If drag outside filtered range, ignore
-      if (oldIndex === -1 || newIndex === -1) return prev
-      // move only within filtered subset
-      const newData = [...prev]
-      const itemsToMove = filteredIds.map((id) => newData.find((d) => d.id === id)!)
-      const reordered = arrayMove(itemsToMove, oldIndex, newIndex)
-      // put back reordered items in original data array
-      let j = 0
-      for (let i = 0; i < newData.length; i++) {
-        if (filteredIds.includes(newData[i].id)) {
-          newData[i] = reordered[j++]
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (active && over && active.id !== over.id) {
+      setData((prev) => {
+        const filteredIds = filteredData.map((m) => m.id);
+        const oldIndex = filteredIds.indexOf(active.id as number);
+        const newIndex = filteredIds.indexOf(over.id as number);
+        // If drag outside filtered range, ignore
+        if (oldIndex === -1 || newIndex === -1) return prev;
+        // move only within filtered subset
+        const newData = [...prev];
+        const itemsToMove = filteredIds.map(
+          (id) => newData.find((d) => d.id === id)!,
+        );
+        const reordered = arrayMove(itemsToMove, oldIndex, newIndex);
+        // put back reordered items in original data array
+        let j = 0;
+        for (let i = 0; i < newData.length; i++) {
+          if (filteredIds.includes(newData[i].id)) {
+            newData[i] = reordered[j++];
+          }
         }
-      }
-      return newData
-    })
-     table.setPageIndex(table.getState().pagination.pageIndex)
+        return newData;
+      });
+      table.setPageIndex(table.getState().pagination.pageIndex);
+    }
   }
-}
-
 
   return (
     <Tabs
@@ -500,14 +492,13 @@ export function DataTable({
             <SelectItem value="focus-documents">Focus Documents</SelectItem>
           </SelectContent>
         </Select>
-           <Input
-  placeholder="Search name or email..."
-  className="w-60"
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-/>
+        <Input
+          placeholder="Search name or email..."
+          className="w-60"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          
           <TabsTrigger value="outline">Total</TabsTrigger>
           <TabsTrigger value="past-performance">
             Leaders <Badge variant="secondary">2</Badge>
@@ -515,31 +506,25 @@ export function DataTable({
           <TabsTrigger value="key-personnel">
             Inactive <Badge variant="secondary">3</Badge>
           </TabsTrigger>
-          
         </TabsList>
         <div className="flex items-center gap-2">
-          
           <DropdownMenu>
-            
             <DropdownMenuTrigger asChild>
-              
               <Button variant="outline" size="sm">
                 <IconLayoutColumns />
                 <span className="hidden lg:inline">Customize Columns</span>
                 <span className="lg:hidden">Columns</span>
-                
+
                 <IconChevronDown />
               </Button>
-              
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              
               {table
                 .getAllColumns()
                 .filter(
                   (column) =>
                     typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
+                    column.getCanHide(),
                 )
                 .map((column) => {
                   return (
@@ -553,10 +538,9 @@ export function DataTable({
                     >
                       {column.id}
                     </DropdownMenuCheckboxItem>
-                  )
+                  );
                 })}
             </DropdownMenuContent>
-         
           </DropdownMenu>
           <Button variant="outline" size="sm">
             <IconPlus />
@@ -576,7 +560,7 @@ export function DataTable({
             sensors={sensors}
             id={sortableId}
           >
-            <Table  key={refreshKey}>
+            <Table key={refreshKey}>
               <TableHeader className="bg-muted sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -587,10 +571,10 @@ export function DataTable({
                             ? null
                             : flexRender(
                                 header.column.columnDef.header,
-                                header.getContext()
+                                header.getContext(),
                               )}
                         </TableHead>
-                      )
+                      );
                     })}
                   </TableRow>
                 ))}
@@ -632,7 +616,7 @@ export function DataTable({
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
-                  table.setPageSize(Number(value))
+                  table.setPageSize(Number(value));
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
@@ -713,7 +697,7 @@ export function DataTable({
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
     </Tabs>
-  )
+  );
 }
 
 const chartData = [
@@ -723,7 +707,7 @@ const chartData = [
   { month: "April", desktop: 73, mobile: 190 },
   { month: "May", desktop: 209, mobile: 130 },
   { month: "June", desktop: 214, mobile: 140 },
-]
+];
 
 const chartConfig = {
   desktop: {
@@ -734,14 +718,13 @@ const chartConfig = {
     label: "Mobile",
     color: "var(--primary)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 function TableCellViewer({ item }: { item: z.infer<typeof memberSchema> }) {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
-      
       <DrawerContent>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
           {!isMobile && (
@@ -801,7 +784,6 @@ function TableCellViewer({ item }: { item: z.infer<typeof memberSchema> }) {
               <Separator />
             </>
           )}
-         
         </div>
         <DrawerFooter>
           <Button>Submit</Button>
@@ -811,5 +793,5 @@ function TableCellViewer({ item }: { item: z.infer<typeof memberSchema> }) {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }

@@ -7,10 +7,7 @@ export async function POST(request: NextRequest) {
     const currentUserId = verifyAuth(request);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -32,13 +29,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { data: attendance, message: "Attendance created" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Create attendance error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -48,10 +45,7 @@ export async function GET(request: NextRequest) {
     const currentUserId = verifyAuth(request);
 
     if (!currentUserId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const skip = parseInt(request.nextUrl.searchParams.get("skip") || "0");
@@ -77,7 +71,7 @@ export async function GET(request: NextRequest) {
     console.error("Get attendance error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
