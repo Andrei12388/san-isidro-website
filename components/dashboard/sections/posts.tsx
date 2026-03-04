@@ -18,7 +18,7 @@ export function Posts({ title, image, description, start, end, location }: Calen
     <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
       {/* Image */}
       <div className="h-48 w-full relative overflow-hidden">
-        <div className="absolute z-100 bg-background dark:bg-yellow-200 w-14 h-16 rounded-md right-2 top-2">
+        <div className="absolute z-10 bg-background dark:bg-yellow-200 w-14 h-16 rounded-md right-2 top-2">
           <span className="text-foreground dark:text-background flex flex-col text-xl text-center capitalize font-bold"> {formatDateToDay(startDate)} </span>
         </div>
         <img
