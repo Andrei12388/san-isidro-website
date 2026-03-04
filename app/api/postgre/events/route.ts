@@ -5,8 +5,18 @@ import { verifyAuth } from "@/middleware/auth";
 // ------------------ GET all ------------------
 export async function GET(request: NextRequest) {
   try {
+    const searchParams = request.nextUrl.searchParams;
+    const allowRegistration = searchParams.get('allowRegistration');
+
+    const where: any = {};
+    
+    // Filter by allowRegistration if specified
+    if (allowRegistration === 'true') {
+      where.allowRegistration = true;
+    }
 
     const events = await prisma.event.findMany({
+      where,
       orderBy: { start: "asc" },
       include: {
         creator: { select: { id: true, name: true } },
@@ -40,6 +50,11 @@ export async function POST(request: NextRequest) {
         title: body.title,
         description: body.description,
         image: body.image,
+        location: body.location || "TBD",
+        locationLatitude: body.locationLatitude ? parseFloat(body.locationLatitude) : null,
+        locationLongitude: body.locationLongitude ? parseFloat(body.locationLongitude) : null,
+        locationRadius: body.locationRadius ? parseFloat(body.locationRadius) : 100,
+        allowRegistration: body.allowRegistration !== undefined ? body.allowRegistration : true,
         start: new Date(body.start),
         end: new Date(body.end),
       },

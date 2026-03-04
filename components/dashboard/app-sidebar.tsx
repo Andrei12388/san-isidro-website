@@ -16,6 +16,7 @@ import {
   IconSettings,
   IconUsers,
   IconCalendar,
+  IconClipboardCheck,
 } from "@tabler/icons-react";
 
 import { NavDocuments } from "@/components/dashboard/nav-documents";
@@ -48,6 +49,25 @@ const data = {
       title: "Dashboard",
       url: "#dashboard",
       icon: IconDashboard,
+    },
+    {
+      title: "Attendance",
+      url: "#attendance",
+      icon: IconClipboardCheck,
+      items: [
+        {
+          title: "Attendance Summary",
+          url: "#attendance",
+        },
+        {
+          title: "Check In",
+          url: "#attendance-checkin",
+        },
+        {
+          title: "Analytics",
+          url: "#attendance-analytics",
+        },
+      ],
     },
     {
       title: "Calendar",

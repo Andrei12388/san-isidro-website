@@ -48,6 +48,7 @@
     "devextreme": "^25.2.4",
     "devextreme-react": "^25.2.4",
     "dompurify": "^3.3.1",
+    "face-api.js": "^0.22.2",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.563.0",
     "motion": "^12.29.2",

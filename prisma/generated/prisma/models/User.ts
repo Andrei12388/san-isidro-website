@@ -39,6 +39,7 @@ export type UserMinAggregateOutputType = {
   name: string | null
   email: string | null
   password: string | null
+  faceDescriptor: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +49,7 @@ export type UserMaxAggregateOutputType = {
   name: string | null
   email: string | null
   password: string | null
+  faceDescriptor: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -57,6 +59,7 @@ export type UserCountAggregateOutputType = {
   name: number
   email: number
   password: number
+  faceDescriptor: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -76,6 +79,7 @@ export type UserMinAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  faceDescriptor?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -85,6 +89,7 @@ export type UserMaxAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  faceDescriptor?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +99,7 @@ export type UserCountAggregateInputType = {
   name?: true
   email?: true
   password?: true
+  faceDescriptor?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -190,6 +196,7 @@ export type UserGroupByOutputType = {
   name: string
   email: string
   password: string
+  faceDescriptor: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -222,6 +229,7 @@ export type UserWhereInput = {
   name?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
+  faceDescriptor?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   attendances?: Prisma.AttendanceInformationListRelationFilter
@@ -236,6 +244,7 @@ export type UserWhereInput = {
   likes?: Prisma.DevotionLikeListRelationFilter
   createdEvents?: Prisma.EventListRelationFilter
   eventJoins?: Prisma.EventAttendeeListRelationFilter
+  eventAttendances?: Prisma.EventAttendanceListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -243,6 +252,7 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  faceDescriptor?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   attendances?: Prisma.AttendanceInformationOrderByRelationAggregateInput
@@ -257,6 +267,7 @@ export type UserOrderByWithRelationInput = {
   likes?: Prisma.DevotionLikeOrderByRelationAggregateInput
   createdEvents?: Prisma.EventOrderByRelationAggregateInput
   eventJoins?: Prisma.EventAttendeeOrderByRelationAggregateInput
+  eventAttendances?: Prisma.EventAttendanceOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -267,6 +278,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
+  faceDescriptor?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   attendances?: Prisma.AttendanceInformationListRelationFilter
@@ -281,6 +293,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   likes?: Prisma.DevotionLikeListRelationFilter
   createdEvents?: Prisma.EventListRelationFilter
   eventJoins?: Prisma.EventAttendeeListRelationFilter
+  eventAttendances?: Prisma.EventAttendanceListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -288,6 +301,7 @@ export type UserOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  faceDescriptor?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -305,6 +319,7 @@ export type UserScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
+  faceDescriptor?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -313,6 +328,7 @@ export type UserCreateInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -327,6 +343,7 @@ export type UserCreateInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -334,6 +351,7 @@ export type UserUncheckedCreateInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -348,12 +366,14 @@ export type UserUncheckedCreateInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -368,6 +388,7 @@ export type UserUpdateInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -375,6 +396,7 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -389,6 +411,7 @@ export type UserUncheckedUpdateInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -396,6 +419,7 @@ export type UserCreateManyInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -404,6 +428,7 @@ export type UserUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -413,6 +438,7 @@ export type UserUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -422,6 +448,7 @@ export type UserCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  faceDescriptor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -435,6 +462,7 @@ export type UserMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  faceDescriptor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -444,6 +472,7 @@ export type UserMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  faceDescriptor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -464,6 +493,10 @@ export type UserNullableScalarRelationFilter = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -648,10 +681,25 @@ export type UserUpdateOneRequiredWithoutEventJoinsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEventJoinsInput, Prisma.UserUpdateWithoutEventJoinsInput>, Prisma.UserUncheckedUpdateWithoutEventJoinsInput>
 }
 
+export type UserCreateNestedOneWithoutEventAttendancesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEventAttendancesInput, Prisma.UserUncheckedCreateWithoutEventAttendancesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEventAttendancesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutEventAttendancesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEventAttendancesInput, Prisma.UserUncheckedCreateWithoutEventAttendancesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEventAttendancesInput
+  upsert?: Prisma.UserUpsertWithoutEventAttendancesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEventAttendancesInput, Prisma.UserUpdateWithoutEventAttendancesInput>, Prisma.UserUncheckedUpdateWithoutEventAttendancesInput>
+}
+
 export type UserCreateWithoutPersonalInformationInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -665,6 +713,7 @@ export type UserCreateWithoutPersonalInformationInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPersonalInformationInput = {
@@ -672,6 +721,7 @@ export type UserUncheckedCreateWithoutPersonalInformationInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -685,6 +735,7 @@ export type UserUncheckedCreateWithoutPersonalInformationInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPersonalInformationInput = {
@@ -707,6 +758,7 @@ export type UserUpdateWithoutPersonalInformationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -720,6 +772,7 @@ export type UserUpdateWithoutPersonalInformationInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPersonalInformationInput = {
@@ -727,6 +780,7 @@ export type UserUncheckedUpdateWithoutPersonalInformationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -740,12 +794,14 @@ export type UserUncheckedUpdateWithoutPersonalInformationInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMenteesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -759,6 +815,7 @@ export type UserCreateWithoutMenteesInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMenteesInput = {
@@ -766,6 +823,7 @@ export type UserUncheckedCreateWithoutMenteesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -779,6 +837,7 @@ export type UserUncheckedCreateWithoutMenteesInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMenteesInput = {
@@ -790,6 +849,7 @@ export type UserCreateWithoutDiscipleInformationInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -803,6 +863,7 @@ export type UserCreateWithoutDiscipleInformationInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDiscipleInformationInput = {
@@ -810,6 +871,7 @@ export type UserUncheckedCreateWithoutDiscipleInformationInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -823,6 +885,7 @@ export type UserUncheckedCreateWithoutDiscipleInformationInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDiscipleInformationInput = {
@@ -845,6 +908,7 @@ export type UserUpdateWithoutMenteesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -858,6 +922,7 @@ export type UserUpdateWithoutMenteesInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMenteesInput = {
@@ -865,6 +930,7 @@ export type UserUncheckedUpdateWithoutMenteesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -878,6 +944,7 @@ export type UserUncheckedUpdateWithoutMenteesInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutDiscipleInformationInput = {
@@ -895,6 +962,7 @@ export type UserUpdateWithoutDiscipleInformationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -908,6 +976,7 @@ export type UserUpdateWithoutDiscipleInformationInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscipleInformationInput = {
@@ -915,6 +984,7 @@ export type UserUncheckedUpdateWithoutDiscipleInformationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -928,12 +998,14 @@ export type UserUncheckedUpdateWithoutDiscipleInformationInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDevotionsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -947,6 +1019,7 @@ export type UserCreateWithoutDevotionsInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDevotionsInput = {
@@ -954,6 +1027,7 @@ export type UserUncheckedCreateWithoutDevotionsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -967,6 +1041,7 @@ export type UserUncheckedCreateWithoutDevotionsInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDevotionsInput = {
@@ -989,6 +1064,7 @@ export type UserUpdateWithoutDevotionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -1002,6 +1078,7 @@ export type UserUpdateWithoutDevotionsInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDevotionsInput = {
@@ -1009,6 +1086,7 @@ export type UserUncheckedUpdateWithoutDevotionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -1022,12 +1100,14 @@ export type UserUncheckedUpdateWithoutDevotionsInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -1041,6 +1121,7 @@ export type UserCreateWithoutCommentsInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1048,6 +1129,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -1061,6 +1143,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1083,6 +1166,7 @@ export type UserUpdateWithoutCommentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -1096,6 +1180,7 @@ export type UserUpdateWithoutCommentsInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1103,6 +1188,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -1116,12 +1202,14 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLikesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -1135,6 +1223,7 @@ export type UserCreateWithoutLikesInput = {
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLikesInput = {
@@ -1142,6 +1231,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -1155,6 +1245,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLikesInput = {
@@ -1177,6 +1268,7 @@ export type UserUpdateWithoutLikesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -1190,6 +1282,7 @@ export type UserUpdateWithoutLikesInput = {
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikesInput = {
@@ -1197,6 +1290,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -1210,12 +1304,14 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTrainingsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -1229,6 +1325,7 @@ export type UserCreateWithoutTrainingsInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTrainingsInput = {
@@ -1236,6 +1333,7 @@ export type UserUncheckedCreateWithoutTrainingsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -1249,6 +1347,7 @@ export type UserUncheckedCreateWithoutTrainingsInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTrainingsInput = {
@@ -1271,6 +1370,7 @@ export type UserUpdateWithoutTrainingsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -1284,6 +1384,7 @@ export type UserUpdateWithoutTrainingsInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTrainingsInput = {
@@ -1291,6 +1392,7 @@ export type UserUncheckedUpdateWithoutTrainingsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -1304,12 +1406,14 @@ export type UserUncheckedUpdateWithoutTrainingsInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOrganizedActivitiesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -1323,6 +1427,7 @@ export type UserCreateWithoutOrganizedActivitiesInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOrganizedActivitiesInput = {
@@ -1330,6 +1435,7 @@ export type UserUncheckedCreateWithoutOrganizedActivitiesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -1343,6 +1449,7 @@ export type UserUncheckedCreateWithoutOrganizedActivitiesInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOrganizedActivitiesInput = {
@@ -1365,6 +1472,7 @@ export type UserUpdateWithoutOrganizedActivitiesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -1378,6 +1486,7 @@ export type UserUpdateWithoutOrganizedActivitiesInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrganizedActivitiesInput = {
@@ -1385,6 +1494,7 @@ export type UserUncheckedUpdateWithoutOrganizedActivitiesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -1398,12 +1508,14 @@ export type UserUncheckedUpdateWithoutOrganizedActivitiesInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAttendancesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   devotions?: Prisma.DevotionCreateNestedManyWithoutUserInput
@@ -1417,6 +1529,7 @@ export type UserCreateWithoutAttendancesInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAttendancesInput = {
@@ -1424,6 +1537,7 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   devotions?: Prisma.DevotionUncheckedCreateNestedManyWithoutUserInput
@@ -1437,6 +1551,7 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAttendancesInput = {
@@ -1459,6 +1574,7 @@ export type UserUpdateWithoutAttendancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   devotions?: Prisma.DevotionUpdateManyWithoutUserNestedInput
@@ -1472,6 +1588,7 @@ export type UserUpdateWithoutAttendancesInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendancesInput = {
@@ -1479,6 +1596,7 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   devotions?: Prisma.DevotionUncheckedUpdateManyWithoutUserNestedInput
@@ -1492,12 +1610,14 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAssignedOutreachesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -1511,6 +1631,7 @@ export type UserCreateWithoutAssignedOutreachesInput = {
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignedOutreachesInput = {
@@ -1518,6 +1639,7 @@ export type UserUncheckedCreateWithoutAssignedOutreachesInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -1531,6 +1653,7 @@ export type UserUncheckedCreateWithoutAssignedOutreachesInput = {
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignedOutreachesInput = {
@@ -1553,6 +1676,7 @@ export type UserUpdateWithoutAssignedOutreachesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -1566,6 +1690,7 @@ export type UserUpdateWithoutAssignedOutreachesInput = {
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedOutreachesInput = {
@@ -1573,6 +1698,7 @@ export type UserUncheckedUpdateWithoutAssignedOutreachesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -1586,12 +1712,14 @@ export type UserUncheckedUpdateWithoutAssignedOutreachesInput = {
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedEventsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -1605,6 +1733,7 @@ export type UserCreateWithoutCreatedEventsInput = {
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedEventsInput = {
@@ -1612,6 +1741,7 @@ export type UserUncheckedCreateWithoutCreatedEventsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -1625,6 +1755,7 @@ export type UserUncheckedCreateWithoutCreatedEventsInput = {
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedEventsInput = {
@@ -1647,6 +1778,7 @@ export type UserUpdateWithoutCreatedEventsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -1660,6 +1792,7 @@ export type UserUpdateWithoutCreatedEventsInput = {
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedEventsInput = {
@@ -1667,6 +1800,7 @@ export type UserUncheckedUpdateWithoutCreatedEventsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -1680,12 +1814,14 @@ export type UserUncheckedUpdateWithoutCreatedEventsInput = {
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEventJoinsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
@@ -1699,6 +1835,7 @@ export type UserCreateWithoutEventJoinsInput = {
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEventJoinsInput = {
@@ -1706,6 +1843,7 @@ export type UserUncheckedCreateWithoutEventJoinsInput = {
   name: string
   email: string
   password: string
+  faceDescriptor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
@@ -1719,6 +1857,7 @@ export type UserUncheckedCreateWithoutEventJoinsInput = {
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEventJoinsInput = {
@@ -1741,6 +1880,7 @@ export type UserUpdateWithoutEventJoinsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
@@ -1754,6 +1894,7 @@ export type UserUpdateWithoutEventJoinsInput = {
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEventJoinsInput = {
@@ -1761,6 +1902,7 @@ export type UserUncheckedUpdateWithoutEventJoinsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
@@ -1774,6 +1916,109 @@ export type UserUncheckedUpdateWithoutEventJoinsInput = {
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutEventAttendancesInput = {
+  name: string
+  email: string
+  password: string
+  faceDescriptor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
+  devotions?: Prisma.DevotionCreateNestedManyWithoutUserInput
+  mentees?: Prisma.DiscipleInformationCreateNestedManyWithoutMentorInput
+  discipleInformation?: Prisma.DiscipleInformationCreateNestedOneWithoutUserInput
+  organizedActivities?: Prisma.MinistryActivitiesCreateNestedManyWithoutOrganizerInput
+  assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
+  personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
+  trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
+  likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
+  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
+  eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutEventAttendancesInput = {
+  id?: number
+  name: string
+  email: string
+  password: string
+  faceDescriptor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
+  devotions?: Prisma.DevotionUncheckedCreateNestedManyWithoutUserInput
+  mentees?: Prisma.DiscipleInformationUncheckedCreateNestedManyWithoutMentorInput
+  discipleInformation?: Prisma.DiscipleInformationUncheckedCreateNestedOneWithoutUserInput
+  organizedActivities?: Prisma.MinistryActivitiesUncheckedCreateNestedManyWithoutOrganizerInput
+  assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
+  personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
+  trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
+  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
+  eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutEventAttendancesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutEventAttendancesInput, Prisma.UserUncheckedCreateWithoutEventAttendancesInput>
+}
+
+export type UserUpsertWithoutEventAttendancesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutEventAttendancesInput, Prisma.UserUncheckedUpdateWithoutEventAttendancesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutEventAttendancesInput, Prisma.UserUncheckedCreateWithoutEventAttendancesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutEventAttendancesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutEventAttendancesInput, Prisma.UserUncheckedUpdateWithoutEventAttendancesInput>
+}
+
+export type UserUpdateWithoutEventAttendancesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
+  devotions?: Prisma.DevotionUpdateManyWithoutUserNestedInput
+  mentees?: Prisma.DiscipleInformationUpdateManyWithoutMentorNestedInput
+  discipleInformation?: Prisma.DiscipleInformationUpdateOneWithoutUserNestedInput
+  organizedActivities?: Prisma.MinistryActivitiesUpdateManyWithoutOrganizerNestedInput
+  assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
+  personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
+  trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
+  likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
+  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
+  eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutEventAttendancesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
+  devotions?: Prisma.DevotionUncheckedUpdateManyWithoutUserNestedInput
+  mentees?: Prisma.DiscipleInformationUncheckedUpdateManyWithoutMentorNestedInput
+  discipleInformation?: Prisma.DiscipleInformationUncheckedUpdateOneWithoutUserNestedInput
+  organizedActivities?: Prisma.MinistryActivitiesUncheckedUpdateManyWithoutOrganizerNestedInput
+  assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
+  personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
+  trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
+  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
+  eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1792,6 +2037,7 @@ export type UserCountOutputType = {
   likes: number
   createdEvents: number
   eventJoins: number
+  eventAttendances: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1805,6 +2051,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   likes?: boolean | UserCountOutputTypeCountLikesArgs
   createdEvents?: boolean | UserCountOutputTypeCountCreatedEventsArgs
   eventJoins?: boolean | UserCountOutputTypeCountEventJoinsArgs
+  eventAttendances?: boolean | UserCountOutputTypeCountEventAttendancesArgs
 }
 
 /**
@@ -1887,12 +2134,20 @@ export type UserCountOutputTypeCountEventJoinsArgs<ExtArgs extends runtime.Types
   where?: Prisma.EventAttendeeWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEventAttendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventAttendanceWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   email?: boolean
   password?: boolean
+  faceDescriptor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   attendances?: boolean | Prisma.User$attendancesArgs<ExtArgs>
@@ -1907,6 +2162,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   likes?: boolean | Prisma.User$likesArgs<ExtArgs>
   createdEvents?: boolean | Prisma.User$createdEventsArgs<ExtArgs>
   eventJoins?: boolean | Prisma.User$eventJoinsArgs<ExtArgs>
+  eventAttendances?: boolean | Prisma.User$eventAttendancesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1915,6 +2171,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   email?: boolean
   password?: boolean
+  faceDescriptor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1924,6 +2181,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   email?: boolean
   password?: boolean
+  faceDescriptor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1933,11 +2191,12 @@ export type UserSelectScalar = {
   name?: boolean
   email?: boolean
   password?: boolean
+  faceDescriptor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "faceDescriptor" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   attendances?: boolean | Prisma.User$attendancesArgs<ExtArgs>
   devotions?: boolean | Prisma.User$devotionsArgs<ExtArgs>
@@ -1951,6 +2210,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   likes?: boolean | Prisma.User$likesArgs<ExtArgs>
   createdEvents?: boolean | Prisma.User$createdEventsArgs<ExtArgs>
   eventJoins?: boolean | Prisma.User$eventJoinsArgs<ExtArgs>
+  eventAttendances?: boolean | Prisma.User$eventAttendancesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1971,12 +2231,14 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     likes: Prisma.$DevotionLikePayload<ExtArgs>[]
     createdEvents: Prisma.$EventPayload<ExtArgs>[]
     eventJoins: Prisma.$EventAttendeePayload<ExtArgs>[]
+    eventAttendances: Prisma.$EventAttendancePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
     email: string
     password: string
+    faceDescriptor: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -2385,6 +2647,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   likes<T extends Prisma.User$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DevotionLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdEvents<T extends Prisma.User$createdEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   eventJoins<T extends Prisma.User$eventJoinsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$eventJoinsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventAttendeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  eventAttendances<T extends Prisma.User$eventAttendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$eventAttendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventAttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2418,6 +2681,7 @@ export interface UserFieldRefs {
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
+  readonly faceDescriptor: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -3083,6 +3347,30 @@ export type User$eventJoinsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.EventAttendeeScalarFieldEnum | Prisma.EventAttendeeScalarFieldEnum[]
+}
+
+/**
+ * User.eventAttendances
+ */
+export type User$eventAttendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventAttendance
+   */
+  select?: Prisma.EventAttendanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventAttendance
+   */
+  omit?: Prisma.EventAttendanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventAttendanceInclude<ExtArgs> | null
+  where?: Prisma.EventAttendanceWhereInput
+  orderBy?: Prisma.EventAttendanceOrderByWithRelationInput | Prisma.EventAttendanceOrderByWithRelationInput[]
+  cursor?: Prisma.EventAttendanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventAttendanceScalarFieldEnum | Prisma.EventAttendanceScalarFieldEnum[]
 }
 
 /**

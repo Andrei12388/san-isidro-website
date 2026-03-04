@@ -633,10 +633,6 @@ export type PersonalInformationUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PersonalInformationUpdateToOneWithWhereWithoutUserInput, Prisma.PersonalInformationUpdateWithoutUserInput>, Prisma.PersonalInformationUncheckedUpdateWithoutUserInput>
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
