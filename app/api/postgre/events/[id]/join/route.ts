@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
 
+// In App Router, params can be a Promise
 type RouteParams = { id: string };
 
 /**
@@ -9,10 +10,10 @@ type RouteParams = { id: string };
  */
 export async function POST(
   req: NextRequest,
-  context: { params: RouteParams } // use this type
+  context: { params: Promise<RouteParams> } // ✅ params is a Promise
 ) {
   try {
-    const { id } = context.params; // extract event ID
+    const { id } = await context.params; // ✅ await it
 
     // Verify user
     const currentUserId = verifyAuth(req);
@@ -52,10 +53,10 @@ export async function POST(
  */
 export async function DELETE(
   req: NextRequest,
-  context: { params: RouteParams } // same fix
+  context: { params: Promise<RouteParams> } // ✅ also a Promise here
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params; // ✅ await it
 
     // Verify user
     const currentUserId = verifyAuth(req);
