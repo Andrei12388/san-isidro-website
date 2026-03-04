@@ -129,8 +129,9 @@ export default function Page() {
         {activeItem === "Devotions" && <DevotionsSection />}
         {activeItem === "Calendar" && <CalendarSection />}
         {activeItem === "Attendance" && <AttendanceSection />}
-        {activeItem === "Attendance Check In" && <CheckInSection />}
-        {activeItem === "Attendance Analytics" && <AttendanceAnalyticsSection />}
+        {activeItem === "Attendance Summary" && <AttendanceSection />}
+        {activeItem === "Check In" && <CheckInSection />}
+        {activeItem === "Analytics" && <AttendanceAnalyticsSection />}
       </SidebarInset>
     </>
   );

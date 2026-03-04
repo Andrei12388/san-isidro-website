@@ -60,7 +60,7 @@ export function NavDocuments({
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-24 rounded-lg"
+                className="w-24 rounded-lg "
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
               >

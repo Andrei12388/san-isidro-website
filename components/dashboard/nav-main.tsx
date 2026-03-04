@@ -30,7 +30,7 @@ export function NavMain({
   }[];
 }) {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
-  const { setActiveItem } = useSidebar();
+  const { activeItem, setActiveItem } = useSidebar(); // Move here
 
   const toggleMenu = (title: string) => {
     setOpenMenus(prev => ({ ...prev, [title]: !prev[title] }));
@@ -79,31 +79,29 @@ export function NavMain({
                     </SidebarMenuButton>
                     {isOpen && (
                       <SidebarMenuSub>
-                        {item.items?.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            {subItem.url.startsWith('#') ? (
-                              <SidebarMenuSubButton
-                                onClick={() => {
-                                  if (subItem.title === 'Attendance Summary') {
-                                    setActiveItem('Attendance');
-                                  } else if (subItem.title === 'Check In') {
-                                    setActiveItem('Attendance Check In');
-                                  } else if (subItem.title === 'Analytics') {
-                                    setActiveItem('Attendance Analytics');
-                                  }
-                                }}
-                              >
-                                <span>{subItem.title}</span>
-                              </SidebarMenuSubButton>
-                            ) : (
-                              <SidebarMenuSubButton asChild>
-                                <Link href={subItem.url}>
-                                  <span>{subItem.title}</span>
-                                </Link>
-                              </SidebarMenuSubButton>
-                            )}
-                          </SidebarMenuSubItem>
-                        ))}
+                        {item.items?.map((subItem) => {
+             const isActive = activeItem === subItem.title;
+
+              return (
+                <SidebarMenuSubItem key={subItem.title}>
+                  {subItem.url.startsWith("#") ? (
+                    <SidebarMenuSubButton
+                    className="cursor-pointer"
+                      isActive={isActive} // ✅ important!
+                      onClick={() => setActiveItem(subItem.title)}
+                    >
+                      <span>{subItem.title}</span>
+                    </SidebarMenuSubButton>
+                  ) : (
+                    <SidebarMenuSubButton asChild isActive={isActive}>
+                      <Link href={subItem.url}>
+                        <span>{subItem.title}</span>
+                      </Link>
+                    </SidebarMenuSubButton>
+                  )}
+                </SidebarMenuSubItem>
+              );
+            })}
                       </SidebarMenuSub>
                     )}
                   </>
