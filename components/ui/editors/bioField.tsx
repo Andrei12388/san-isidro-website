@@ -4,7 +4,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
-import HardBreak from "@tiptap/extension-hard-break";
+import { HardBreak } from "@tiptap/extension-hard-break";
 import { useEffect, useState } from "react";
 
 const MAX_CHARS = 200; // 🔹 letters limit
