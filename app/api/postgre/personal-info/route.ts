@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
-import type {
+
+import type {  
   PersonalInformation,
   User,
   DiscipleInformation,
-  Prisma,
-} from "@prisma/client";
+  Prisma, } from "@/prisma/generated/prisma/client";
 
 // Flattened response type
 type FlattenedPersonalInfo = PersonalInformation & {
