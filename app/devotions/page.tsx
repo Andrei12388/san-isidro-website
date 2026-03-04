@@ -485,48 +485,57 @@ export default function Page() {
             )}
 
             {!isLoading && devotions.length > 0 && (
-              <section className="grid gap-2 lg:gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]">
+              <section className="grid gap-4 sm:gap-6 [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]">
                 {devotions.map((devotion) => (
                   <div
-                    key={devotion.id}
-                    onClick={() => setSelected(devotion)}
-                    className={`${styles.devotionCard} border rounded-lg p-4 shadow bg-background flex flex-col gap-3 cursor-pointer`}
-                  >
-                    <div>
-                      <h2 className="font-semibold text-foreground text-lg line-clamp-1">
-                        {devotion.title}
-                      </h2>
-                      <span className="text-muted-foreground text-sm line-clamp-1">
-                        {devotion.user?.name || "Unknown User"}
-                      </span>
-                    </div>
-                    <div className="flex flex-row justify-center items-center gap-2">
-                      <img
-                        src={devotion.image}
-                        alt={devotion.title}
-                        className="w-full h-40 object-cover rounded"
-                      />
-                    </div>
-                    <span className="text-muted-foreground text-sm line-clamp-1">
+                  key={devotion.id}
+                  onClick={() => setSelected(devotion)}
+                  className={`${styles.devotionCard} group overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full cursor-pointer`}
+                >
+
+                  {/* Image (TOP like Posts) */}
+                  <div className="h-48 w-full overflow-hidden">
+                    <img
+                      src={devotion.image}
+                      alt={devotion.title}
+                      className="h-full w-full object-cover group-hover:scale-105 transition duration-300"
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-4 flex flex-col gap-2 flex-1">
+
+                    {/* Title */}
+                    <h2 className="font-semibold text-lg line-clamp-2">
+                      {devotion.title}
+                    </h2>
+
+                    {/* Author */}
+                    <span className="text-sm text-muted-foreground">
+                      {devotion.user?.name || "Unknown User"}
+                    </span>
+
+                    {/* Scripture */}
+                    <span className="text-sm italic text-muted-foreground line-clamp-3">
                       {devotion.scriptureReference || "No scripture reference"}
                     </span>
-                    <p className="text-sm text-muted-foreground line-clamp-1">
-                      <div
-                        className="
-                  mt-3 max-w-none
-                  [&_a]:text-blue-600
-                  [&_a]:underline
-                  [&_a]:font-medium
-                  [&_a:hover]:text-blue-800
-                "
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(devotion.content),
-                        }}
-                      />
-                    </p>
-                    <div className="flex justify-between text-sm text-foreground-500">
+
+                    {/* Content preview */}
+                    <div
+                      className="
+                        text-sm text-muted-foreground line-clamp-2
+                        [&_a]:text-blue-600 [&_a]:underline
+                      "
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(devotion.content),
+                      }}
+                    />
+
+                    {/* Bottom actions (sticks to bottom) */}
+                    <div className="mt-auto flex justify-between items-center text-sm pt-2">
+
                       <span
-                        className="text-md flex items-center cursor-pointer"
+                        className="flex items-center gap-1 cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleHeartReact(devotion.id);
@@ -534,18 +543,21 @@ export default function Page() {
                       >
                         <IconHeart
                           className={styles.heart}
-                          fill={devotion.userLiked ? "red" : "white"}
-                          color={devotion.userLiked ? "red" : "black"}
-                          size={18}
-                        />{" "}
+                          fill={devotion.userLiked ? "red" : "none"}
+                          color={devotion.userLiked ? "red" : "currentColor"}
+                          size={24}
+                        />
                         {devotion.likesCount}
                       </span>
-                      <span className="flex flex-row gap-1">
-                        <FaCommentDots size={18} />
+
+                      <span className="flex items-center gap-1">
+                        <FaCommentDots size={24} />
                         {devotion.comments.length}
                       </span>
+
                     </div>
                   </div>
+                </div>
                 ))}
               </section>
             )}
@@ -574,13 +586,14 @@ export default function Page() {
                           className="mb-3 rounded w-full max-w-lg"
                           alt={selected.title}
                         />
-                        <span className="text-muted-foreground text-sm mb-5">
+                        <span className="text-muted-foreground text-sm mb-5 italic">
                           {selected.scriptureReference}
                         </span>
                       </div>
                       <p className="text-foreground whitespace-pre-line mt-3">
                         <div
                           className="
+                           text-muted-foreground
                   mt-3 max-w-none
                   [&_a]:text-blue-600
                   [&_a]:underline

@@ -599,66 +599,79 @@ export default function DevotionsSection() {
         </span>
 
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-          <section className="grid gap-2 lg:gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]">
+           <section className="grid gap-4 sm:gap-6 [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))] px-2">
             {devotions.map((item) => (
               <div
-                key={item.id}
-                onClick={() => setSelected(item)}
-                className={`${styles.devotionCard} border rounded-lg p-4 shadow bg-background flex flex-col gap-3`}
-              >
-                <div>
-                  <h2 className="font-semibold text-foreground text-lg line-clamp-1">
-                    {item.title}
-                  </h2>
-                  <span className="text-muted-foreground text-sm line-clamp-1">
-                    {item.user?.name || "Unknown User"}
-                  </span>
-                </div>
-                <div className="flex flex-row justify-center items-center gap-2">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-40 object-cover rounded"
-                  />
-                </div>
-                <span className="text-muted-foreground text-sm line-clamp-1">
+                  key={item.id}
+                  onClick={() => setSelected(item)}
+                  className={`${styles.devotionCard} group overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full cursor-pointer`}
+                >
+
+              {/* Image (TOP like Posts) */}
+              <div className="h-48 w-full overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="h-full w-full object-cover group-hover:scale-105 transition duration-300"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="p-4 flex flex-col gap-2 flex-1">
+
+                {/* Title */}
+                <h2 className="font-semibold text-lg line-clamp-2">
+                  {item.title}
+                </h2>
+
+                {/* Author */}
+                <span className="text-muted-foreground text-sm">
+                  {item.user?.name || "Unknown User"}
+                </span>
+
+                {/* Verse */}
+                <span className="text-sm italic text-muted-foreground line-clamp-1">
                   {item.verse}
                 </span>
+
+                {/* Message preview */}
                 <div
                   className="
-                  mt-3 max-w-none
-                  [&_a]:text-blue-600
-                  [&_a]:underline
-                  [&_a]:font-medium
-                  [&_a:hover]:text-blue-800
-                  line-clamp-1
-                "
+                    text-sm text-muted-foreground line-clamp-2
+                    [&_a]:text-blue-600 [&_a]:underline
+                  "
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(item.message),
                   }}
                 />
-                <div className="flex justify-between text-sm text-foreground-500">
+
+                {/* Bottom row */}
+                <div className="mt-auto flex justify-between text-sm pt-2">
+
                   <span
-                    className="text-md flex items-center cursor-pointer"
+                    className="flex items-center gap-1 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleHeartReact(item.id);
                     }}
                   >
                     <IconHeart
-                      className={styles.heart}
-                      fill={item.heartActive ? "red" : "white"}
-                      color={item.heartActive ? "red" : "black"}
-                      size={18}
-                    />{" "}
+                                  className={styles.heart}
+                                  fill={item.heartActive ? "red" : "white"}
+                                  color={item.heartActive ? "red" : "black"}
+                                  size={24}
+                                />
                     {item.heart}
                   </span>
-                  <span className="flex flex-row gap-1">
-                    <FaCommentDots size={18} />
-                    {commentsById[item.id] ? commentsById[item.id].length : 0}
+
+                  <span className="flex items-center gap-1">
+                    <FaCommentDots size={24} />
+                    {commentsById[item.id]?.length || 0}
                   </span>
+
                 </div>
               </div>
+            </div>
             ))}
 
             {/* Modal */}
@@ -684,12 +697,13 @@ export default function DevotionsSection() {
                           src={selected.image}
                           className="mb-3 rounded w-full max-w-lg"
                         />
-                        <span className="text-muted-foreground text-sm mb-5">
+                        <span className="text-muted-foreground italic text-sm mb-5">
                           {selected.verse}
                         </span>
                       </div>
                       <div
                         className="
+                        text-muted-foreground
                   mt-3 max-w-none
                   [&_a]:text-blue-600
                   [&_a]:underline

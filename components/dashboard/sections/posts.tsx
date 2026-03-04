@@ -3,18 +3,24 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconPlus } from "@tabler/icons-react";
+import { IconClock, IconPlus } from "@tabler/icons-react";
 import styles from "./devotions.module.css";
-import { set } from "nprogress";
 import { fetchAuth } from "@/context/fetchAuth";
 import { useAuth } from "@/context/AuthContext";
 import { CalendarEvent } from "@/app/types/types";
+import { AiOutlineEnvironment } from "react-icons/ai";
+import { formatDate, formatDateToDay, formatDateToHours, toLocalDatetimeInput } from "@/lib/formatData";
 
-export function Posts({ title, image, description }: CalendarEvent) {
+export function Posts({ title, image, description, start, end, location }: CalendarEvent) {
+  const startDate = toLocalDatetimeInput(start)
+  const endDate = toLocalDatetimeInput(end)
   return (
     <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
       {/* Image */}
-      <div className="h-48 w-full overflow-hidden">
+      <div className="h-48 w-full relative overflow-hidden">
+        <div className="absolute z-100 bg-background dark:bg-yellow-200 w-14 h-16 rounded-md right-2 top-2">
+          <span className="text-foreground dark:text-background flex flex-col text-xl text-center capitalize font-bold"> {formatDateToDay(startDate)} </span>
+        </div>
         <img
           src={image}
           alt={title}
@@ -22,16 +28,33 @@ export function Posts({ title, image, description }: CalendarEvent) {
         />
       </div>
 
-      {/* Content */}
-      <div className="p-5 flex flex-col gap-3">
-        <h3 className="absolute font-bold text-white bg-blue-950 dark:bg-blue-700 w-auto max-w-max px-2 py-1 rounded-md top-45">
-          {title}
-        </h3>
+     {/* Content */}
+<div className="p-5 flex flex-col gap-3 flex-1">
 
-        <p className="text-sm text-muted-foreground line-clamp-3">
-          {description}
-        </p>
-      </div>
+  {/* Title (normal flow now) */}
+  <h3 className="text-lg font-bold leading-tight line-clamp-2">
+    {title}
+  </h3>
+
+  {/* Date + Location row */}
+  <div className="flex flex-col gap-1 text-sm text-muted-foreground font-medium">
+    <div className="flex items-center gap-2">
+      <IconClock size={18} />
+      {formatDateToHours(startDate)} - {formatDateToHours(endDate)}
+    </div>
+
+    <div className="flex items-center gap-2">
+      <AiOutlineEnvironment size={18} />
+      {location}
+    </div>
+  </div>
+
+  {/* Description */}
+  <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
+    {description}
+  </p>
+
+</div>
       <div className="flex flex-row justify-end px-2 mb-2">
         <button className="mt-auto self-end px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition cursor-pointer">
           Read More
@@ -43,9 +66,14 @@ export function Posts({ title, image, description }: CalendarEvent) {
 
 const PostsSection = () => {
   const [addingPost, setAddingPost] = useState(false);
+
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const [formImage, setFormImage] = useState<File | null>(null);
+  const [startInput, setStartInput] = useState("");
+  const [endInput, setEndInput] = useState("");
+  const [location, setLocation] = useState("");
+
   const [previewImage, setPreviewImage] = useState("");
   const [closing, setClosing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -144,9 +172,9 @@ const PostsSection = () => {
     allowRegistration: true,
     description: formDescription,
     image: imageUrl,
-    location: null,
-    start: new Date(),
-    end: new Date(),
+    location: location,
+    start: new Date(startInput),
+    end: new Date(endInput),
   };
 
   // Push the new post into events array
@@ -185,8 +213,8 @@ const PostsSection = () => {
       <div className="@container/main flex flex-1 flex-col gap-2">
         <span className="text-center text-xl font-bold mt-3">Events</span>
 
-        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-          <section className="grid gap-2 lg:gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-2">
+          <section className="grid gap-4 sm:gap-6 [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]">
            {events.map((post) => (
               <Posts
                 key={post.id}
@@ -238,22 +266,50 @@ const PostsSection = () => {
                   rows={4}
                 />
               </div>
+              <div className="flex flex-col gap-1">
+                <label className="font-semibold">Location</label>
+                <Input
+                  type="text"
+                  placeholder="Set Event Location..."
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                />
+              </div>
 
               <div className="flex flex-col gap-1">
                 <label className="font-semibold">Image</label>
                 <input
                   type="file"
                   accept="image/*"
+                  required
                   onChange={handleImageChange}
                   className="border rounded px-2 py-1 cursor-pointer"
                 />
-                {previewImage && (
+                 {previewImage && (
                   <img
                     src={previewImage}
                     alt="preview"
                     className="mt-2 max-h-48 rounded"
                   />
                 )}
+                <label className="text-sm">Start</label>
+                <input
+                  type="datetime-local"
+                  className="border p-2 w-full mb-3 accent-blue-500"
+                  value={startInput}
+                  required
+                  onChange={(e) => setStartInput(e.target.value)}
+                />
+                <label className="text-sm">End</label>
+                <input
+                  type="datetime-local"
+                  className="border p-2 w-full mb-4 text-foreground accent-green-500"
+                  value={endInput}
+                  required
+                  onChange={(e) => setEndInput(e.target.value)}
+                />
+               
               </div>
 
               <div className="flex gap-2 justify-end">

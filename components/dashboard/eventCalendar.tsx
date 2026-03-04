@@ -9,6 +9,7 @@ import Modal from "react-modal";
 import { useAuth } from "@/context/AuthContext";
 import { fetchAuth } from "@/context/fetchAuth";
 import styles from "@/components/dashboard/sections/devotions.module.css";
+import { formatDate, toLocalDatetimeInput } from "@/lib/formatData";
 
 const locales = { "en-US": enUS };
 const localizer = dateFnsLocalizer({
@@ -91,13 +92,6 @@ const fetchEvents = async () => {
   } finally {
     setLoading(false);
   }
-};
-
-const toLocalDatetimeInput = (date: Date) => {
-  const d = new Date(date);
-  const offset = d.getTimezoneOffset(); // in minutes
-  const localDate = new Date(d.getTime() - offset * 60000);
-  return localDate.toISOString().slice(0, 16);
 };
 
   // Set modal app element once
@@ -203,16 +197,6 @@ const handleSave = async () => {
   : true;
   console.log("owner and event id", String(id), selectedEvent?.creatorId)
 
-  const formatDate = (date:string) =>
-  new Date(date).toLocaleString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
   // Render only after client mount to avoid SSR issues
   if (!mounted) return <div style={{ height: "700px", margin: "20px" }} />;
 
