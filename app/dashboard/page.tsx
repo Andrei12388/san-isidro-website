@@ -19,6 +19,9 @@ import { Spinner } from "@/components/ui/loadingSpinner";
 import DevotionsSection from "@/components/dashboard/sections/devotions";
 import { useAuth } from "@/context/AuthContext";
 import CalendarSection from "@/components/dashboard/sections/calendar";
+import AttendanceSection from "@/components/dashboard/sections/attendance";
+import CheckInSection from "@/components/dashboard/sections/check-in";
+import AttendanceAnalyticsSection from "@/components/dashboard/sections/attendance-analytics";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -125,6 +128,9 @@ export default function Page() {
         {activeItem === "Members" && <MembersSection />}
         {activeItem === "Devotions" && <DevotionsSection />}
         {activeItem === "Calendar" && <CalendarSection />}
+        {activeItem === "Attendance" && <AttendanceSection />}
+        {activeItem === "Attendance Check In" && <CheckInSection />}
+        {activeItem === "Attendance Analytics" && <AttendanceAnalyticsSection />}
       </SidebarInset>
     </>
   );

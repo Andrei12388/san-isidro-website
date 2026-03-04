@@ -7,6 +7,9 @@ export interface CalendarEvent {
   description: string;       // default ""
   image: string;             // default "" or placeholder
   location: string | null;          // default "TBD"
+  locationLatitude?: number | null;
+  locationLongitude?: number | null;
+  locationRadius?: number | null;
   allowRegistration: boolean;
   start: Date;
   end: Date;

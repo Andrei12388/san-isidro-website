@@ -63,7 +63,8 @@ export const ModelName = {
   AttendanceInformation: 'AttendanceInformation',
   Outreach: 'Outreach',
   Event: 'Event',
-  EventAttendee: 'EventAttendee'
+  EventAttendee: 'EventAttendee',
+  EventAttendance: 'EventAttendance'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -87,6 +88,7 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  faceDescriptor: 'faceDescriptor',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -253,8 +255,13 @@ export const EventScalarFieldEnum = {
   description: 'description',
   image: 'image',
   location: 'location',
+  locationLatitude: 'locationLatitude',
+  locationLongitude: 'locationLongitude',
+  locationRadius: 'locationRadius',
   start: 'start',
   end: 'end',
+  isRegular: 'isRegular',
+  recurrence: 'recurrence',
   allowRegistration: 'allowRegistration',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -272,6 +279,20 @@ export const EventAttendeeScalarFieldEnum = {
 } as const
 
 export type EventAttendeeScalarFieldEnum = (typeof EventAttendeeScalarFieldEnum)[keyof typeof EventAttendeeScalarFieldEnum]
+
+
+export const EventAttendanceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  eventId: 'eventId',
+  date: 'date',
+  timeIn: 'timeIn',
+  isPresent: 'isPresent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventAttendanceScalarFieldEnum = (typeof EventAttendanceScalarFieldEnum)[keyof typeof EventAttendanceScalarFieldEnum]
 
 
 export const SortOrder = {

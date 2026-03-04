@@ -12,6 +12,7 @@ model User {
   name                String
   email               String                  @unique
   password            String
+  faceDescriptor      String?                 @db.Text // Stores 128-dimensional face descriptor as JSON string
   createdAt           DateTime                @default(now())
   updatedAt           DateTime                @updatedAt
   attendances         AttendanceInformation[]
@@ -24,8 +25,9 @@ model User {
   trainings           Training[]
   comments            DevotionComment[]
   likes               DevotionLike[]
-  createdEvents Event[]         @relation("EventCreator")
-  eventJoins    EventAttendee[]
+  createdEvents       Event[]                 @relation("EventCreator")
+  eventJoins          EventAttendee[]
+  eventAttendances    EventAttendance[]       @relation("EventAttendance")
 
   @@map("users")
 }
@@ -218,14 +220,22 @@ model Event {
   title       String
   description String?
   image       String?   // poster URL/path
-  location String @default("TBD")
+  location    String   @default("TBD")
+  locationLatitude  Float?   // For geolocation verification
+  locationLongitude Float?   // For geolocation verification
+  locationRadius    Float?   @default(100) // Radius in meters for geolocation check
 
   // schedule
   start       DateTime
   end         DateTime
 
+  // recurring event settings
+  isRegular   Boolean  @default(false)
+  recurrence  String?  // daily, weekly, monthly, yearly
+
   // relations
   attendees   EventAttendee[]
+  attendances EventAttendance[] @relation("EventAttendance")
 
   //
   allowRegistration Boolean @default(false) 
@@ -253,4 +263,26 @@ model EventAttendee {
   @@unique([eventId, userId]) // prevent duplicate joins
   @@index([userId])
   @@map("event_attendees")
+}
+
+model EventAttendance {
+  id         Int      @id @default(autoincrement())
+
+  userId     Int
+  eventId    Int
+
+  date       DateTime @db.Date
+  timeIn     DateTime
+  isPresent  Boolean  @default(true)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation("EventAttendance", fields: [userId], references: [id], onDelete: Cascade)
+  event      Event    @relation("EventAttendance", fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([userId])
+  @@index([date])
+  @@map("event_attendance")
 }
