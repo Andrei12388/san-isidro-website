@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
-import type { Prisma } from "@prisma/client";
 
 /* ============================= */
 /* Types */
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest) {
     const body: DevotionBody = await request.json();
     console.log("Devotion POST body:", body);
 
-    const createData: Prisma.DevotionCreateInput = {
+    const createData = {
       title: body.title,
       content: body.content,
       image: body.image,
