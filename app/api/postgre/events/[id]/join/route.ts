@@ -2,18 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyAuth } from "@/middleware/auth";
 
-interface Params {
-  params: { id: string };
-}
+type RouteParams = { id: string };
 
 /**
  * POST → join event
  */
 export async function POST(
   req: NextRequest,
-  { params }: Params
+  context: { params: RouteParams } // use this type
 ) {
   try {
+    const { id } = context.params; // extract event ID
+
     // Verify user
     const currentUserId = verifyAuth(req);
     if (!currentUserId) {
@@ -21,33 +21,26 @@ export async function POST(
     }
 
     // Parse event ID
-    const eventId = parseInt(params.id, 10);
+    const eventId = parseInt(id, 10);
     if (isNaN(eventId)) {
       return NextResponse.json({ error: "Invalid event ID" }, { status: 400 });
     }
 
     // Prevent double-join
     const existing = await prisma.eventAttendee.findUnique({
-      where: {
-        eventId_userId: { eventId, userId: currentUserId },
-      },
+      where: { eventId_userId: { eventId, userId: currentUserId } },
     });
+
     if (existing) {
       return NextResponse.json({ status: "already_joined" }, { status: 200 });
     }
 
     // Join event
     const join = await prisma.eventAttendee.create({
-      data: {
-        eventId,
-        userId: currentUserId,
-      },
+      data: { eventId, userId: currentUserId },
     });
 
-    return NextResponse.json({
-      ...join,
-      status: "joined",
-    });
+    return NextResponse.json({ message: "joined", data: join });
   } catch (err) {
     console.error("Join event error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -59,9 +52,11 @@ export async function POST(
  */
 export async function DELETE(
   req: NextRequest,
-  { params }: Params
+  context: { params: RouteParams } // same fix
 ) {
   try {
+    const { id } = context.params;
+
     // Verify user
     const currentUserId = verifyAuth(req);
     if (!currentUserId) {
@@ -69,16 +64,14 @@ export async function DELETE(
     }
 
     // Parse event ID
-    const eventId = parseInt(params.id, 10);
+    const eventId = parseInt(id, 10);
     if (isNaN(eventId)) {
       return NextResponse.json({ error: "Invalid event ID" }, { status: 400 });
     }
 
     // Check if attendance exists
     const attendance = await prisma.eventAttendee.findUnique({
-      where: {
-        eventId_userId: { eventId, userId: currentUserId },
-      },
+      where: { eventId_userId: { eventId, userId: currentUserId } },
     });
 
     if (!attendance) {
@@ -87,9 +80,7 @@ export async function DELETE(
 
     // Delete attendance
     await prisma.eventAttendee.delete({
-      where: {
-        eventId_userId: { eventId, userId: currentUserId },
-      },
+      where: { eventId_userId: { eventId, userId: currentUserId } },
     });
 
     return NextResponse.json({ status: "left" });
