@@ -203,7 +203,7 @@ const handleSave = async () => {
   : true;
   console.log("owner and event id", String(id), selectedEvent?.creatorId)
 
-  const formatDate = (date) =>
+  const formatDate = (date:string) =>
   new Date(date).toLocaleString("en-US", {
     weekday: "short",
     month: "short",
