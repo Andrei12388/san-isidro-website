@@ -8,6 +8,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import Modal from "react-modal";
 import { useAuth } from "@/context/AuthContext";
 import { fetchAuth } from "@/context/fetchAuth";
+import styles from "@/components/dashboard/sections/devotions.module.css";
 
 const locales = { "en-US": enUS };
 const localizer = dateFnsLocalizer({
@@ -18,7 +19,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-type CalendarEvent = Event & { id: string };
+type CalendarEvent = Event & { id: string | null, creatorId: string | null };
 
 export default function Scheduler() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -35,12 +36,23 @@ export default function Scheduler() {
   const [newTitle, setNewTitle] = useState("");
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { access_token } = useAuth();
+  const { access_token, id } = useAuth();
+
+  const [closing, setClosing] = useState(false);
 
   //event inputs
   const [description, setDescription] = useState("");
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
+
+  const handleClose = () => {
+    setClosing(true);
+    setModalOpen(true)
+    setTimeout(() => {
+      setClosing(false);
+      setModalOpen(false)
+    }, 300);
+  };
 
   //fetch events from API on mount
   useEffect(() => {
@@ -63,6 +75,7 @@ const fetchEvents = async () => {
 
     const formatted = json.data.map((e: any) => ({
       id: String(e.id),
+      creatorId: String(e.creatorId),
       title: e.title || "Untitled Event",
       description: e.description || "",
       image: e.image || "",
@@ -70,10 +83,19 @@ const fetchEvents = async () => {
       end: e.end ? new Date(e.end) : new Date(),
     }));
 
+    console.log("formatted data even:", formatted);
+
     setEvents(formatted);
   } finally {
     setLoading(false);
   }
+};
+
+const toLocalDatetimeInput = (date: Date) => {
+  const d = new Date(date);
+  const offset = d.getTimezoneOffset(); // in minutes
+  const localDate = new Date(d.getTime() - offset * 60000);
+  return localDate.toISOString().slice(0, 16);
 };
 
   // Set modal app element once
@@ -83,13 +105,16 @@ const fetchEvents = async () => {
   }, []);
 
 const handleSelectEvent = (event: CalendarEvent & any) => {
-  setSelectedEvent(event);
+  setSelectedEvent({
+    ...event,
+    creatorId: event.creatorId?.toString() ?? null, // ensure string type
+  });
 
   setNewTitle(event.title ?? "");
   setDescription(event.description ?? "");
 
-  setStartInput(new Date(event.start).toISOString().slice(0, 16));
-  setEndInput(new Date(event.end).toISOString().slice(0, 16));
+ setStartInput(toLocalDatetimeInput(event.start));
+setEndInput(toLocalDatetimeInput(event.end));
 
   setModalOpen(true);
 };
@@ -101,8 +126,8 @@ const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
   setNewTitle("");
   setDescription("");
 
-  setStartInput(start.toISOString().slice(0, 16));
-  setEndInput(end.toISOString().slice(0, 16));
+ setStartInput(toLocalDatetimeInput(start));
+setEndInput(toLocalDatetimeInput(end));
 
   setModalOpen(true);
 };
@@ -171,6 +196,10 @@ const handleSave = async () => {
   }
 };
 
+  const isOwner = selectedEvent
+  ? String(selectedEvent.creatorId) === String(id)
+  : true;
+  console.log("owner and event id", String(id), selectedEvent?.creatorId)
   // Render only after client mount to avoid SSR issues
   if (!mounted) return <div style={{ height: "700px", margin: "20px" }} />;
 
@@ -202,68 +231,97 @@ const handleSave = async () => {
         style={{ height: "100%" }}
       />
 
-      <Modal
-        isOpen={modalOpen}
-        onRequestClose={() => setModalOpen(false)}
-        contentLabel="Event Modal"
-        className="bg-background text-foreground p-6 rounded shadow-lg max-w-md mx-auto mt-20 z-900"
-        overlayClassName="fixed inset-0 bg-black/50 flex justify-center items-start z-800"
-      >
-        <h2 className="text-xl font-bold mb-4">
-          {selectedEvent ? "Edit Event" : "New Event"}
-        </h2>
-        <input
+    <Modal
+  isOpen={modalOpen}
+  onRequestClose={handleClose}
+  contentLabel="Event Modal"
+  className={`bg-background text-foreground p-6 rounded shadow-lg max-w-md mx-auto mt-20 z-900 ${
+    closing ? styles.backdropOut : styles.backdropIn
+  }`}
+  overlayClassName={`fixed inset-0 bg-black/50 flex justify-center items-start z-800 ${
+    closing ? styles.backdropOut : styles.backdropIn
+  }`}
+>
+  <h2 className="text-xl font-bold mb-4">
+    {selectedEvent
+      ? isOwner
+        ? "Edit Event"
+        : "Event Details"
+      : "New Event"}
+  </h2>
+
+  {isOwner ? (
+    <>
+      <input
         className="border p-2 w-full mb-3"
         placeholder="Event Title"
         value={newTitle}
         onChange={(e) => setNewTitle(e.target.value)}
       />
-
       <textarea
         className="border p-2 w-full mb-3"
         placeholder="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-
       <label className="text-sm">Start</label>
       <input
         type="datetime-local"
-        className="border p-2 w-full mb-3"
+        className="border p-2 w-full mb-3 accent-blue-500"
         value={startInput}
         onChange={(e) => setStartInput(e.target.value)}
       />
-
       <label className="text-sm">End</label>
       <input
         type="datetime-local"
-        className="border p-2 w-full mb-4"
+        className="border p-2 w-full mb-4 text-foreground accent-green-500"
         value={endInput}
         onChange={(e) => setEndInput(e.target.value)}
       />
-        <div className="flex justify-end gap-2">
-          {selectedEvent && (
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded"
-              onClick={handleDelete}
-            >
-              Delete
-            </button>
-          )}
-          <button
-            className="bg-background px-4 py-2 rounded"
-            onClick={() => setModalOpen(false)}
-          >
-            Cancel
-          </button>
-          <button
-            className="bg-background text-foreground px-4 py-2 rounded"
-            onClick={handleSave}
-          >
-            Save
-          </button>
-        </div>
-      </Modal>
+    </>
+  ) : (
+    <>
+      <p className="mb-2"><strong>Title:</strong> {newTitle}</p>
+      <p className="mb-2"><strong>Description:</strong> {description}</p>
+      <p className="mb-2"><strong>Start:</strong> {new Date(startInput).toLocaleString()}</p>
+      <p className="mb-2"><strong>End:</strong> {new Date(endInput).toLocaleString()}</p>
+      <p className="mb-2"><strong>Creator:</strong> {selectedEvent?.creatorId}</p> 
+    </>
+  )}
+
+  <div className="flex justify-end gap-2 mt-4">
+    {isOwner && selectedEvent && (
+      <button
+        className={`px-4 py-2 rounded text-white font-semibold transition 
+                    ${loading ? "bg-red-300 cursor-not-allowed" : "bg-red-500 hover:bg-red-600"}`}
+        onClick={handleDelete}
+        disabled={loading}
+      >
+        Delete
+      </button>
+    )}
+
+    <button
+      className={`px-4 py-2 rounded border border-gray-300 font-medium transition
+                  ${loading ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-800 hover:bg-gray-50"}`}
+      onClick={handleClose}
+      disabled={loading}
+    >
+      {isOwner && selectedEvent ? "Cancel" : "Close"}
+    </button>
+
+    {isOwner && (
+        <button
+          className={`px-4 py-2 rounded font-semibold transition
+                      ${loading ? "bg-blue-200 text-blue-400 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
+          onClick={handleSave}
+          disabled={loading}
+        >
+          Save
+        </button>
+      )}
+  </div>
+</Modal>
     </div>
   );
 }

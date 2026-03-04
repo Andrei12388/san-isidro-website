@@ -122,6 +122,7 @@ html {
   --sidebar-ring: oklch(0.556 0 0);
   --calendar-today: oklch(94.228% 0.2214 119.065);
   --button-blue-background: oklch(61.742% 0.17788 267.307);
+
 }
 
 /* Chrome, Edge, Safari */
@@ -192,6 +193,24 @@ html {
 .rbc-today .rbc-date-cell {
   border-radius: 6px;
 }
+
+/* Datetime input icon */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  transition: filter 0.2s ease-in-out;
+}
+
+/* Light mode filter */
+html:not(.dark) input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter:  hue-rotate(200deg);
+}
+
+/* Dark mode filter */
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(80%);
+}
+
+
 
 @layer base {
   * {
