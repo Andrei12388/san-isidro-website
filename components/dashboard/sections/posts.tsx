@@ -11,7 +11,9 @@ import { CalendarEvent } from "@/app/types/types";
 import { AiOutlineEnvironment } from "react-icons/ai";
 import { formatDate, formatDateToDay, formatDateToHours, toLocalDatetimeInput } from "@/lib/formatData";
 
-export function Posts({ title, image, description, onEdit }: CalendarEvent & { onEdit?: () => void }) {
+export function Posts({ title, image, description, start, end, location, onEdit }: CalendarEvent & { onEdit?: () => void }) {
+  const startDate = toLocalDatetimeInput(start)
+  const endDate = toLocalDatetimeInput(end)
   return (
     <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
       {/* Image */}
@@ -202,7 +204,7 @@ const PostsSection = () => {
       // Update existing event
       const response = await fetchAuth(
         `/api/postgre/events/${editingEventId}`,
-        access_token,
+        access_token || '',
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -239,7 +241,7 @@ const PostsSection = () => {
       // Create new event
       const response = await fetchAuth(
         "/api/postgre/events",
-        access_token,
+        access_token || '',
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
