@@ -19,7 +19,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-type CalendarEvent = Event & { id: string | null, creatorId: string | null };
+type CalendarEvent = Event & { id: string | null, creatorId: string | null, location: string | null, creatorName: string | null };
 
 export default function Scheduler() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -76,7 +76,9 @@ const fetchEvents = async () => {
     const formatted = json.data.map((e: any) => ({
       id: String(e.id),
       creatorId: String(e.creatorId),
+      creatorName: e.creator?.name || "Unknown",
       title: e.title || "Untitled Event",
+      location: e.location || "TBD",
       description: e.description || "",
       image: e.image || "",
       start: e.start ? new Date(e.start) : new Date(),
@@ -200,6 +202,17 @@ const handleSave = async () => {
   ? String(selectedEvent.creatorId) === String(id)
   : true;
   console.log("owner and event id", String(id), selectedEvent?.creatorId)
+
+  const formatDate = (date) =>
+  new Date(date).toLocaleString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
   // Render only after client mount to avoid SSR issues
   if (!mounted) return <div style={{ height: "700px", margin: "20px" }} />;
 
@@ -235,13 +248,14 @@ const handleSave = async () => {
   isOpen={modalOpen}
   onRequestClose={handleClose}
   contentLabel="Event Modal"
-  className={`bg-background text-foreground p-6 rounded shadow-lg max-w-md mx-auto mt-20 z-900 ${
+  className={`bg-background text-foreground p-6 rounded shadow-lg w-lg mx-auto mt-20 z-900 ${
     closing ? styles.backdropOut : styles.backdropIn
   }`}
   overlayClassName={`fixed inset-0 bg-black/50 flex justify-center items-start z-800 ${
     closing ? styles.backdropOut : styles.backdropIn
   }`}
 >
+  <div className="border-b">
   <h2 className="text-xl font-bold mb-4">
     {selectedEvent
       ? isOwner
@@ -249,6 +263,7 @@ const handleSave = async () => {
         : "Event Details"
       : "New Event"}
   </h2>
+  </div>
 
   {isOwner ? (
     <>
@@ -281,11 +296,10 @@ const handleSave = async () => {
     </>
   ) : (
     <>
-      <p className="mb-2"><strong>Title:</strong> {newTitle}</p>
-      <p className="mb-2"><strong>Description:</strong> {description}</p>
-      <p className="mb-2"><strong>Start:</strong> {new Date(startInput).toLocaleString()}</p>
-      <p className="mb-2"><strong>End:</strong> {new Date(endInput).toLocaleString()}</p>
-      <p className="mb-2"><strong>Creator Id:</strong> {selectedEvent?.creatorId}</p> 
+   <p className="mb-2 opacity-60">Posted By: {selectedEvent?.creatorName}</p> 
+    <p className="mb-2 font-bold opacity-60">{formatDate(startInput)}</p>
+      <p className="mb-2 text-2xl"><strong>{newTitle}</strong></p>
+      <p className="mb-2 opacity-75 py-2">{description}</p>
     </>
   )}
 

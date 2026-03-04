@@ -218,6 +218,7 @@ model Event {
   title       String
   description String?
   image       String?   // poster URL/path
+  location String @default("TBD")
 
   // schedule
   start       DateTime
@@ -225,6 +226,9 @@ model Event {
 
   // relations
   attendees   EventAttendee[]
+
+  //
+  allowRegistration Boolean @default(false) 
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

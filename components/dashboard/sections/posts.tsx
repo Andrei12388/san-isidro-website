@@ -1,41 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IconPlus } from "@tabler/icons-react";
 import styles from "./devotions.module.css";
 import { set } from "nprogress";
+import { fetchAuth } from "@/context/fetchAuth";
+import { useAuth } from "@/context/AuthContext";
+import { CalendarEvent } from "@/app/types/types";
 
-interface PostProps {
-  id: number;
-  title: string;
-  image: string;
-  description: string;
-}
-
-const INITIAL_POSTS: PostProps[] = [
-  {
-    id: 1,
-    title: "March Champfest",
-    image: "/images/devotion1.jpeg",
-    description: "Join us on March 28.",
-  },
-  {
-    id: 2,
-    title: "Soaking",
-    image: "/images/devotion2.jpeg",
-    description: "Join us for our Soaking event on April 15.",
-  },
-  {
-    id: 3,
-    title: "Sunday Celebration",
-    image: "/images/devotion3.jpeg",
-    description: "See you on Sunday.",
-  },
-];
-
-export function Posts({ title, image, description }: PostProps) {
+export function Posts({ title, image, description }: CalendarEvent) {
   return (
     <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
       {/* Image */}
@@ -67,7 +42,6 @@ export function Posts({ title, image, description }: PostProps) {
 }
 
 const PostsSection = () => {
-  const [posts, setPosts] = useState<PostProps[]>(INITIAL_POSTS);
   const [addingPost, setAddingPost] = useState(false);
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
@@ -75,6 +49,51 @@ const PostsSection = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [closing, setClosing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+   const [loading, setLoading] = useState(false);
+  //fetch events from API on mount
+    useEffect(() => {
+    fetchEvents();
+  }, []);
+
+    const { access_token, id } = useAuth();
+  
+  const fetchEvents = async () => {
+    if (!access_token) return;
+  
+    setLoading(true);
+  
+    try {
+      const res = await fetchAuth(
+        "/api/postgre/events",
+        access_token,
+        { method: "GET" }
+      );
+  
+      const json = await res.json();
+  
+          const formatted: CalendarEvent[] = json.data
+        .map((e: any) => ({
+          id: String(e.id),
+          creatorId: e.creatorId ? String(e.creatorId) : null,
+          creatorName: e.creator?.name || "Unknown",
+          title: e.title || "Untitled Event",
+          description: e.description || "",
+          image: e.image || "/images/defaultPost.jpg",
+          location: e.location || "TBD",
+          allowRegistration: Boolean(e.allowRegistration),
+          start: e.start ? new Date(e.start) : new Date(),
+          end: e.end ? new Date(e.end) : new Date(),
+        }))
+        // 🔹 Only allow registration
+        .filter((e: CalendarEvent) => e.allowRegistration === true);
+
+      setEvents(formatted);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,57 +104,62 @@ const PostsSection = () => {
   };
 
   const handleAddPost = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formTitle.trim() || !formDescription.trim()) {
-      alert("Please fill in all fields");
-      return;
+  if (!formTitle.trim() || !formDescription.trim()) {
+    alert("Please fill in all fields");
+    return;
+  }
+
+  let imageUrl = "/images/defaultPost.jpg"; // fallback
+  setIsSubmitting(true);
+
+  if (formImage) {
+    try {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = "unsigned_image";
+
+      const formData = new FormData();
+      formData.append("file", formImage);
+      formData.append("upload_preset", uploadPreset);
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        { method: "POST", body: formData }
+      );
+
+      const data = await res.json();
+      imageUrl = data.secure_url;
+    } catch (err) {
+      console.error("Cloudinary upload failed:", err);
+      alert("Failed to upload image. Using default.");
     }
+  }
 
-    let imageUrl = "/images/defaultPost.jpg"; // fallback
-    setIsSubmitting(true);
-
-    // Upload to Cloudinary if image selected
-    if (formImage) {
-      try {
-        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-        const uploadPreset = "unsigned_image";
-
-        const formData = new FormData();
-        formData.append("file", formImage);
-        formData.append("upload_preset", uploadPreset);
-
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          {
-            method: "POST",
-            body: formData,
-          },
-        );
-
-        const data = await res.json();
-        imageUrl = data.secure_url;
-      } catch (err) {
-        console.error("Cloudinary upload failed:", err);
-        alert("Failed to upload image. Using default.");
-      }
-    }
-
-    const newPost: PostProps = {
-      id: posts.length + 1,
-      title: formTitle,
-      description: formDescription,
-      image: imageUrl,
-    };
-
-    setPosts((prev) => [newPost, ...prev]);
-    setFormTitle("");
-    setFormDescription("");
-    setFormImage(null);
-    setPreviewImage("");
-    setAddingPost(false);
-    setIsSubmitting(false);
+  const newEvent: CalendarEvent = {
+    id: String(Date.now()), // temp unique id
+    creatorId: null,
+    creatorName: "You",
+    title: formTitle,
+    allowRegistration: true,
+    description: formDescription,
+    image: imageUrl,
+    location: null,
+    start: new Date(),
+    end: new Date(),
   };
+
+  // Push the new post into events array
+  setEvents((prev) => [newEvent, ...prev]);
+
+  // Reset form
+  setFormTitle("");
+  setFormDescription("");
+  setFormImage(null);
+  setPreviewImage("");
+  setAddingPost(false);
+  setIsSubmitting(false);
+};
 
   const handleClose = () => {
     setClosing(true);
@@ -163,13 +187,19 @@ const PostsSection = () => {
 
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           <section className="grid gap-2 lg:gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(240px,240px))]">
-            {posts.map((post) => (
+           {events.map((post) => (
               <Posts
                 key={post.id}
+                location={post.location}
+                allowRegistration={post.allowRegistration}
+                creatorName={post.creatorName}
                 id={post.id}
+                creatorId={post.creatorId}
                 title={post.title}
                 image={post.image}
                 description={post.description}
+                start={post.start}
+                end={post.end}
               />
             ))}
           </section>
