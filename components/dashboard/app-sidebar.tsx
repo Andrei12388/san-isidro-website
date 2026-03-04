@@ -3,21 +3,19 @@
 import * as React from "react";
 import {
   IconCamera,
-  IconChartBar,
   IconDashboard,
-  IconDatabase,
   IconFileAi,
   IconFileDescription,
   IconFileWord,
   IconFolder,
   IconHelp,
   IconBook,
-  IconInnerShadowTop,
   IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
+  IconCalendar,
 } from "@tabler/icons-react";
 
 import { NavDocuments } from "@/components/dashboard/nav-documents";
@@ -52,6 +50,11 @@ const data = {
       icon: IconDashboard,
     },
     {
+      title: "Calendar",
+      url: "#calendar",
+      icon: IconCalendar,
+    },
+    {
       title: "Members",
       url: "#",
       icon: IconUsers,
@@ -60,11 +63,6 @@ const data = {
       title: "Posts",
       url: "#posts",
       icon: IconListDetails,
-    },
-    {
-      title: "Calendar",
-      url: "#calendar",
-      icon: IconChartBar,
     },
     {
       title: "Projects",

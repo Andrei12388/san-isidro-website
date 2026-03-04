@@ -3,6 +3,7 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
+import { useEffect } from "react";
 import Placeholder from "@tiptap/extension-placeholder";
 
 export default function MessageEditor({
@@ -36,6 +37,12 @@ export default function MessageEditor({
       setMessage(editor.getHTML());
     },
   });
+
+  useEffect(() => {
+  if (editor && message !== editor.getHTML()) {
+    editor.commands.setContent(message || "");
+  }
+}, [message, editor]);
 
   if (!editor) return null;
 

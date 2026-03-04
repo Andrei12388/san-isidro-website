@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/loadingSpinner";
 import styles from "@/components/dashboard/sections/devotions.module.css";
 import { FaPrayingHands } from "react-icons/fa";
+import DOMPurify from "dompurify";
 
 interface UserType {
   name: string;
@@ -31,6 +32,7 @@ interface PersonalInfoType {
   middleName: string;
   lastName: string;
   birthday: string;
+  bio: string;
   gender: string;
   level: string;
   groupName: string;
@@ -72,6 +74,15 @@ export default function UserProfilePage({
   const [isImageOpen, setIsImageOpen] = useState(false);
   const { access_token } = useAuth();
   const userId = id;
+
+  useEffect(() => {
+      DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+        if (node.tagName === "A") {
+          node.setAttribute("target", "_blank");
+          node.setAttribute("rel", "noopener noreferrer");
+        }
+      });
+    }, []);
 
   const handleClose = () => {
     setClosing(true);
@@ -276,9 +287,10 @@ export default function UserProfilePage({
             </div>
 
             {/* Lower part border */}
-            <div className="p-5 flex flex-row gap-5 items-start sm:items-center">
+            <div className="p-5 flex flex-col md:flex-row gap-5 items-center md:items-start justify-between">
               {/* Profile Image */}
-              <div className="flex-shrink-0">
+              <div className=" flex flex-row items-center gap-5">
+              <div className="shrink-0">
                 <img
                   src={
                     personalInfo?.profileImage ||
@@ -296,21 +308,40 @@ export default function UserProfilePage({
                   {personalInfo?.firstName} {personalInfo?.middleName}{" "}
                   {personalInfo?.lastName}
                 </span>
-                <span className="text-sm opacity-70 flex lg:flex-row lg:gap-2 gap-1 flex-col">
-                  <span className="flex flex-row gap-1">
-                    ID: {personalInfo?.user?.id || "N/A"}
-                  </span>
-                  <span>Age: {age || "N/A"}</span>
-                  <span className="flex lg:flex-row lg:gap-2 gap-1">
-                    Status: Active{" "}
-                    <span className="w-3 h-3 bg-green-500 rounded-full self-center mb-0.5 items-center"></span>
-                  </span>
+                <span className="text-sm opacity-70 flex flex-wrap gap-1 lg:gap-2 items-center">
+                <span className="flex items-center gap-1">
+                  ID: {personalInfo?.user?.id || "N/A"}
                 </span>
+                <span className="flex items-center gap-1">
+                  Age: {age || "N/A"}
+                </span>
+                <span className="flex items-center gap-1">
+                  Status: Active
+                  <span className="w-3 h-3 bg-green-500 rounded-full inline-block"></span>
+                </span>
+              </span>
+              </div>
+              </div>
+
+              <div className="flex flex-col px-4 rounded-md w-full h-full max-h-100">
+                <div
+                                        className="
+                                        text-center
+                                   max-w-none
+                                  [&_a]:text-blue-600
+                                  [&_a]:underline
+                                  [&_a]:font-medium
+                                  [&_a:hover]:text-blue-800
+                                "
+                                        dangerouslySetInnerHTML={{
+                                          __html: DOMPurify.sanitize(personalInfo?.bio || ''),
+                                        }}
+                                      />
               </div>
             </div>
 
             {/* Personal Details Grid */}
-            <div className="w-full px-5 gap-y-2 gap-x-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5 mt-2 pb-5">
+            <div className="w-full px-5 gap-y-2 gap-x-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5 mt-2 pb-5 justify-items-center items-center">
               {/* Birthday */}
               <div className="flex flex-col gap-2">
                 <label className="text-medium font-medium opacity-70 flex flex-row items-center gap-2">
@@ -363,7 +394,7 @@ export default function UserProfilePage({
               </div>
 
               {/* Group */}
-              <div className="flex flex-col gap-2 mb-5">
+              <div className="flex flex-col gap-2">
                 <label className="text-medium font-medium opacity-70 flex flex-row items-center gap-2">
                   <IconUsersGroup size={16} /> Group
                 </label>
@@ -375,11 +406,10 @@ export default function UserProfilePage({
                 </div>
               </div>
             </div>
-          </section>
 
-          {/* Contact and Address Cards */}
-          <div className="mt-5">
-            <div className="grid gap-6 md:grid-cols-2">
+                    {/* Contact and Address Cards */}
+          <div className="mt-5 px-2 py-2">
+            <div className="grid gap-2 md:grid-cols-2">
               {/* Contacts Section */}
               <div className="rounded-2xl border bg-muted shadow-lg overflow-hidden">
                 <div className="px-5 py-3 border-b bg-muted/70">
@@ -418,13 +448,13 @@ export default function UserProfilePage({
                 <div className="flex lg:flex-row flex-col px-5 gap-3 justify-between pb-5">
                   <div className="basis-1/2 gap-2 rounded-sm flex flex-col">
                     <span className="text-sm font-medium">Phone</span>
-                    <div className="bg-background rounded-sm px-3 py-2 border">
+                    <div className="rounded-sm px-3 py-2 border">
                       {personalInfo?.phone || "N/A"}
                     </div>
                   </div>
                   <div className="basis-1/2 gap-2 rounded-sm flex flex-col">
                     <span className="text-sm font-medium">Email</span>
-                    <div className="bg-background rounded-sm px-3 py-2 border break-all">
+                    <div className="rounded-sm px-3 py-2 border break-all">
                       {personalInfo?.user?.email || "N/A"}
                     </div>
                   </div>
@@ -472,13 +502,13 @@ export default function UserProfilePage({
                 <div className="flex lg:flex-row flex-col px-5 gap-3 justify-between pb-5">
                   <div className="basis-1/2 gap-2 rounded-sm flex flex-col">
                     <span className="text-sm font-medium">Country</span>
-                    <div className="bg-background rounded-sm px-3 py-2 border">
+                    <div className="rounded-sm px-3 py-2 border">
                       {personalInfo?.country || "N/A"}
                     </div>
                   </div>
                   <div className="basis-1/2 gap-2 rounded-sm flex flex-col">
                     <span className="text-sm font-medium">City</span>
-                    <div className="bg-background rounded-sm px-3 py-2 border">
+                    <div className="rounded-sm px-3 py-2 border">
                       {personalInfo?.city || "N/A"}
                     </div>
                   </div>
@@ -487,7 +517,7 @@ export default function UserProfilePage({
                 <div className="flex lg:flex-row flex-col px-5 gap-3 justify-between pb-5">
                   <div className="basis-full gap-2 rounded-sm flex flex-col">
                     <span className="text-sm font-medium">Barangay</span>
-                    <div className="bg-background rounded-sm px-3 py-2 border">
+                    <div className="rounded-sm px-3 py-2 border">
                       {personalInfo?.barangay || "N/A"}
                     </div>
                   </div>
@@ -496,7 +526,7 @@ export default function UserProfilePage({
                 <div className="flex lg:flex-row flex-col px-5 gap-3 justify-between pb-5">
                   <div className="basis-full gap-2 rounded-sm flex flex-col">
                     <span className="text-sm font-medium">House Number</span>
-                    <div className="bg-background rounded-sm px-3 py-2 border">
+                    <div className="rounded-sm px-3 py-2 border">
                       {personalInfo?.houseNumber || "N/A"}
                     </div>
                   </div>
@@ -504,6 +534,9 @@ export default function UserProfilePage({
               </div>
             </div>
           </div>
+
+          </section>
+  
         </div>
         {isImageOpen && (
           <div

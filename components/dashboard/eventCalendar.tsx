@@ -285,7 +285,7 @@ const handleSave = async () => {
       <p className="mb-2"><strong>Description:</strong> {description}</p>
       <p className="mb-2"><strong>Start:</strong> {new Date(startInput).toLocaleString()}</p>
       <p className="mb-2"><strong>End:</strong> {new Date(endInput).toLocaleString()}</p>
-      <p className="mb-2"><strong>Creator:</strong> {selectedEvent?.creatorId}</p> 
+      <p className="mb-2"><strong>Creator Id:</strong> {selectedEvent?.creatorId}</p> 
     </>
   )}
 

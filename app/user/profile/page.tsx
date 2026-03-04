@@ -36,8 +36,8 @@ import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import styles from "./PassModalCard.module.css";
 import { Spinner } from "@/components/ui/loadingSpinner";
-import { startHealthPolling } from "@/lib/fetchWithTimeout";
 import { useAuth } from "@/context/AuthContext";
+import BioEditor from "@/components/ui/editors/bioField";
 
 interface UserType {
   name: string;
@@ -233,6 +233,7 @@ export default function ProfilePage() {
   const [form, setForm] = useState({
     birthday: undefined as Date | undefined,
     level: "",
+    bio: "",
     barangay: "",
     houseNumber: "",
     city: "",
@@ -290,6 +291,7 @@ export default function ProfilePage() {
       "lName",
       "mName",
       "birthday",
+      "bio",
       "age",
       "gender",
       "level",
@@ -365,6 +367,7 @@ export default function ProfilePage() {
             firstName: form.fName,
             middleName: form.mName,
             lastName: form.lName,
+            bio: form.bio,
             phone: form.phone,
             birthday: form.birthday?.toISOString().split("T")[0],
             gender: form.gender,
@@ -374,7 +377,6 @@ export default function ProfilePage() {
             city: form.city,
             barangay: form.barangay,
             country: form.country,
-            bio: "string",
             profileImage: uploadedPhotoUrl, // ← include Cloudinary URL
           }),
         });
@@ -499,6 +501,7 @@ export default function ProfilePage() {
           city: personalInfo.data.city ?? "",
           country: personalInfo.data.country ?? "",
           group: personalInfo.data.groupName ?? "",
+          bio: personalInfo.data.bio ?? "",
           age: personalInfo.data.age ?? "0",
           gender: personalInfo.data.gender ?? "",
           fName: personalInfo.data.firstName ?? "",
@@ -621,57 +624,92 @@ export default function ProfilePage() {
                 </div>
 
                 {/*Lower part border */}
-                <div className="p-5 flex flex-row gap-5 items-start sm:items-center">
-                  <FormPhoto
-                    link={photo}
-                    size={100}
-                    editable
-                    onChange={(base64, file) => {
-                      setPhoto(base64); // show preview
-                      setPhotoFile(file); // store file for upload on save
-                    }}
-                  />
+                <div className="p-5 flex flex-col md:flex-row gap-2 border rounded-xl justify-between">
 
-                  <div className="flex flex-col ">
-                    <span className="font-medium">
-                      {form?.fName} {form?.mName} {form?.lName}
-                    </span>
-                    <span className="text-sm opacity-70 flex lg:flex-row lg:gap-2 gap-1 flex-col">
-                      <span className="flex flex-row gap-1">
-                        {" "}
-                        ID: {user?.id}{" "}
-                        <IconCopy
-                          className="cursor-pointer"
-                          onClick={(e) =>
-                            copyToClipboard(`${user?.id}`, () =>
-                              handleClickNotify(e),
-                            )
-                          }
-                        />{" "}
-                      </span>
-                      Age: {age || "0"}
-                      <span className="flex lg:flex-row lg:gap-2 gap-1">
-                        Status: Active{" "}
-                        <span className="w-3 h-3 bg-green-500 rounded-full self-center mb-0.5 items-center"></span>
-                      </span>
-                    </span>
+  {/* ================= HEADER ================= */}
+  <div className="flex flex-col md:flex-row gap-5 md:items-start items-center md:justify-start">
 
-                    <FloatingMessage />
+    {/* Photo */}
+    <FormPhoto
+      link={photo}
+      size={100}
+      editable
+      onChange={(base64, file) => {
+        setPhoto(base64);
+        setPhotoFile(file);
+      }}
+    />
 
-                    <PassModalCard
-                      user={user}
-                      open={passModal}
-                      onClose={() => setPassModal(false)}
-                      token={accessToken}
-                    />
-                    <button
-                      onClick={() => setPassModal(true)}
-                      className="mt-2 border rounded-sm px-4 py-2 flex cursor-pointer items-center gap-2 bg-muted hover:bg-muted-foreground/30"
-                    >
-                      <IconLock /> Change Password
-                    </button>
-                  </div>
-                </div>
+    {/* Info */}
+    <div className="flex flex-col flex-1 gap-2 justify-center items-center">
+
+      {/* Name */}
+      <span className="text-xl font-semibold leading-tight">
+        {form?.fName} {form?.mName} {form?.lName}
+      </span>
+
+      {/* Meta row */}
+      <div className="text-sm text-muted-foreground flex flex-wrap items-center gap-4">
+
+        <span className="flex items-center gap-1">
+          ID: {user?.id}
+          <IconCopy
+            className="cursor-pointer size-4"
+            onClick={(e) =>
+              copyToClipboard(`${user?.id}`, () => handleClickNotify(e))
+            }
+          />
+        </span>
+
+        <span>Age: {age || "N/A"}</span>
+
+        <span className="flex items-center gap-2">
+          <span>Status</span>
+          <span className="w-2.5 h-2.5 bg-green-500 rounded-full" />
+          <span className="text-green-600 font-medium">Active</span>
+        </span>
+
+      </div>
+
+      {/* Actions */}
+      <div className="flex flex-wrap items-center gap-3 mt-2">
+        <FloatingMessage />
+
+        <button
+          onClick={() => setPassModal(true)}
+          className="border rounded-md px-4 py-2 flex items-center gap-2 bg-muted hover:bg-muted-foreground/30 transition"
+        >
+          <IconLock size={16} />
+          Change Password
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  {/* ================= BIO / EDITOR CARD ================= */}
+  <div className="flex flex-col px-4 rounded-md w-full h-full max-h-100 text-center">
+
+    <BioEditor
+      message={form.bio}
+      setMessage={(value) =>
+        setForm((prev) => ({ ...prev, bio: value }))
+      }
+    />
+
+  </div>
+
+
+  {/* Modals */}
+  <PassModalCard
+    user={user}
+    open={passModal}
+    onClose={() => setPassModal(false)}
+    token={accessToken}
+  />
+
+</div>
                 {/*Fullname Lastname */}
                 <div className="flex lg:flex-row flex-col px-5 gap-3 justify-between">
                   <div className=" basis-1/2 gap-1 rounded-sm flex flex-col">
