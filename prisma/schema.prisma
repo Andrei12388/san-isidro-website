@@ -1,10 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "./generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -24,6 +24,8 @@ model User {
   trainings           Training[]
   comments            DevotionComment[]
   likes               DevotionLike[]
+  createdEvents Event[]         @relation("EventCreator")
+  eventJoins    EventAttendee[]
 
   @@map("users")
 }
@@ -203,4 +205,48 @@ model Outreach {
   pastor         User                  @relation("AssignedPastor", fields: [assignedPastor], references: [id], onDelete: Cascade)
 
   @@map("outreach")
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+
+  // creator
+  creatorId   Int
+  creator     User     @relation("EventCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  // event info
+  title       String
+  description String?
+  image       String?   // poster URL/path
+
+  // schedule
+  start       DateTime
+  end         DateTime
+
+  // relations
+  attendees   EventAttendee[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([creatorId])
+  @@map("events")
+}
+
+model EventAttendee {
+  id        Int      @id @default(autoincrement())
+
+  eventId   Int
+  userId    Int
+
+  // optional tracking (very useful later)
+  joinedAt  DateTime @default(now())
+  status    String   @default("joined") // joined | cancelled | attended
+
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId]) // prevent duplicate joins
+  @@index([userId])
+  @@map("event_attendees")
 }
