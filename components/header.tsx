@@ -10,8 +10,8 @@ import { NavUser } from "./dashboard/nav-user";
 import { SidebarProvider } from "./ui/sidebar";
 
 const menuItems = [
-  { name: "Updates", href: "#updates" },
-  { name: "Discipleship", href: "#discipleship" },
+  { name: "Home", href: "#home" },
+  { name: "Church Events", href: "#churchevents" },
   { name: "Organizational Chart", href: "#org" },
   { name: "About Us", href: "#about" },
 ];
@@ -89,7 +89,8 @@ export const HeroHeader = ({
         });
       },
       {
-        rootMargin: "-40% 0px -50% 0px",
+       rootMargin: "-80px 0px -20% 0px",
+      threshold: 0.1
       },
     );
 
@@ -136,7 +137,7 @@ export const HeroHeader = ({
                   </button>
 
                   {user && (
-                    <SidebarProvider className="lg:top-5 absolute right-5 top-4.5 m-auto w-50 h-20">
+                    <SidebarProvider className="lg:top-5 absolute right-5 top-4.5 m-auto w-50 h-full max-h-14 min-h-0">
                       <NavUser item={item ?? null} />
                     </SidebarProvider>
                   )}

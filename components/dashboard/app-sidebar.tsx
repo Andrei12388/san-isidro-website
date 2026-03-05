@@ -80,8 +80,8 @@ const data = {
       icon: IconUsers,
     },
     {
-      title: "Posts",
-      url: "#posts",
+      title: "Events",
+      url: "#events",
       icon: IconListDetails,
     },
     {

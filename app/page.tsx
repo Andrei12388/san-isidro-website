@@ -81,7 +81,7 @@ export default function Home() {
 
   return (
     <div>
-      <section id="updates">
+      <section id="home">
         <div
           className="z-[-1]"
           style={{ width: "100%", height: "600px", position: "absolute" }}
@@ -104,12 +104,15 @@ export default function Home() {
         <HeroHeader item={user} />
 
         <HeroSection user={user} isLoading={isLoading} />
+         </section>
         <ContentSection />
-
+        
+       
       {/* Fetch Event Posts */}
+     <section className="scroll-mt-24" id="churchevents">
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-2 items-center bg-muted">
-                <section className="grid gap-4 sm:gap-6 [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]">
-                  <span className="font-bold text-3xl text-center">Events</span>
+                <div className="grid grid-flow-row md:grid-flow-col auto-cols-max gap-4 sm:gap-6 overflow-x-auto">
+               {/* <span className="font-bold text-3xl text-center">Events</span> */}  
                  {events.map((post) => (
                     <Posts
                       key={post.id}
@@ -125,20 +128,21 @@ export default function Home() {
                       end={post.end}
                     />
                   ))}
-                </section>
+                </div>
               </div>
       </section>
-          {/*
-      <section id="discipleship">
+     
+         
+      <section id="discipleship" className="scroll-mt-24" >
         <Features />
       </section>
 
-      <section id="org">
+      <section id="org" className="scroll-mt-24" >
         <IntegrationsSection />
       </section>
-       */}
+      
 
-      <section id="about">
+      <section id="about" className="scroll-mt-24" >
         <FooterSection />
       </section>
     </div>

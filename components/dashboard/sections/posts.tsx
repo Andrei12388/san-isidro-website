@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconClock, IconPlus } from "@tabler/icons-react";
+import { IconClock, IconEdit, IconPlus } from "@tabler/icons-react";
 import styles from "./devotions.module.css";
 import { fetchAuth } from "@/context/fetchAuth";
+import Modal from "react-modal";
 import { useAuth } from "@/context/AuthContext";
 import { CalendarEvent } from "@/app/types/types";
 import { AiOutlineEnvironment } from "react-icons/ai";
@@ -14,56 +15,164 @@ import { formatDate, formatDateToDay, formatDateToHours, toLocalDatetimeInput } 
 export function Posts({ title, image, description, start, end, location, onEdit }: CalendarEvent & { onEdit?: () => void }) {
   const startDate = toLocalDatetimeInput(start)
   const endDate = toLocalDatetimeInput(end)
+   const { access_token, id } = useAuth();
+    const [open, setOpen] = useState(false)
+    const [mounted, setMounted] = useState(false);
+
+      useEffect(() => {
+        setMounted(true);
+        Modal.setAppElement(document.body); // safest option for calendar interaction
+      }, []);
+
+    const [closing, setClosing] = useState(false);
+
+     const handleClose = () => {
+    setClosing(true);
+    setOpen(true)
+    setTimeout(() => {
+      setClosing(false);
+      setOpen(false)
+    }, 300);
+  };
+
+  // Render only after client mount to avoid SSR issues
+  if (!mounted) return <div style={{ height: "700px", margin: "20px" }} />;
+
   return (
-    <div className="group w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
-      {/* Image */}
-      <div className="h-48 w-full relative overflow-hidden">
-        <div className="absolute z-10 bg-background dark:bg-yellow-200 w-14 h-16 rounded-md right-2 top-2">
-          <span className="text-foreground dark:text-background flex flex-col text-xl text-center capitalize font-bold"> {formatDateToDay(startDate)} </span>
+     <>
+      <div className="group w-full overflow-hidden rounded-xl border border-border bg-background dark:bg-muted shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
+
+        {/* Image */}
+        <div className="h-48 w-full relative overflow-hidden">
+          <div className="absolute z-10 bg-background dark:bg-yellow-200 w-14 h-16 rounded-md right-2 top-2">
+            <span className="text-foreground dark:text-background flex flex-col text-xl text-center capitalize font-bold">
+              {formatDateToDay(startDate)}
+            </span>
+          </div>
+
+          <img
+            src={image}
+            alt={title}
+            className="h-full w-full object-cover group-hover:scale-105 transition duration-300"
+          />
         </div>
-        <img
-          src={image}
-          alt={title}
-          className="h-full w-full object-cover group-hover:scale-105 transition duration-300"
-        />
+
+        {/* Content */}
+        <div className="p-5 flex flex-col gap-3 flex-1">
+
+          <h3 className="text-lg font-bold leading-tight line-clamp-2">
+            {title}
+          </h3>
+
+          <div className="flex flex-col gap-1 text-sm text-muted-foreground font-medium">
+            <div className="flex items-center gap-2">
+              <IconClock size={18} />
+              {formatDateToHours(startDate)} - {formatDateToHours(endDate)}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <AiOutlineEnvironment size={18} />
+              {location}
+            </div>
+          </div>
+
+          <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
+            {description}
+          </p>
+
+        </div>
+
+        {/* Buttons */}
+        <div className="flex flex-row justify-end px-2 mb-2 gap-2">
+
+          {id && (
+            <button
+              onClick={onEdit}
+              className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
+            >
+              <IconEdit size={20} />
+            </button>
+          )}
+
+          <button
+            onClick={() => setOpen(true)}
+            className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
+          >
+            Read More
+          </button>
+
+        </div>
       </div>
 
-     {/* Content */}
-<div className="p-5 flex flex-col gap-3 flex-1">
+      {/* Modal */}
+            
+          <Modal
+            isOpen={open}
+            onRequestClose={handleClose}
+            contentLabel="Event Details"
+            className={`bg-muted text-foreground p-0 rounded-md shadow-xl z-100 
+                      max-w-lg w-full max-h-[90vh] mx-auto overflow-y-auto ${
+                        closing ? styles.backdropOut : styles.backdropIn
+                      }`}
+           overlayClassName={`fixed inset-0 bg-black/50 flex justify-center items-start z-50 p-4 ${
+    closing ? styles.backdropOut : styles.backdropIn
+  }`}
+          >
+            {/* Image */}
+            <div className="w-full relative overflow-hidden">
+              <div className="absolute z-10 bg-background dark:bg-yellow-200 w-14 h-16 rounded-md right-2 top-2">
+                <span className="text-foreground dark:text-background flex flex-col text-xl text-center capitalize font-bold">
+                  {formatDateToDay(startDate)}
+                </span>
+              </div>
 
-  {/* Title (normal flow now) */}
-  <h3 className="text-lg font-bold leading-tight line-clamp-2">
-    {title}
-  </h3>
+              <img
+                src={image}
+                alt={title}
+                className="h-full w-full object-background"
+              />
+            </div>
 
-  {/* Date + Location row */}
-  <div className="flex flex-col gap-1 text-sm text-muted-foreground font-medium">
-    <div className="flex items-center gap-2">
-      <IconClock size={18} />
-      {formatDateToHours(startDate)} - {formatDateToHours(endDate)}
-    </div>
+            {/* Body */}
+            <div className="px-6 py-4">
+            <div className="py-2">
+              <h2 className="text-xl font-bold">{title}</h2>
+            </div>
+              <div className="flex flex-col gap-2 text-sm text-muted-foreground mb-4">
 
-    <div className="flex items-center gap-2">
-      <AiOutlineEnvironment size={18} />
-      {location}
-    </div>
-  </div>
+                <div className="flex items-center gap-2">
+                  <IconClock size={18} />
+                  {formatDateToHours(startDate)} - {formatDateToHours(endDate)}
+                </div>
 
-  {/* Description */}
-  <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
-    {description}
-  </p>
+                <div className="flex items-center gap-2">
+                  <AiOutlineEnvironment size={18} />
+                  {location}
+                </div>
 
-</div>
-      <div className="flex flex-row justify-end px-2 mb-2">
-        <button 
-          onClick={onEdit}
-          className="mt-auto self-end px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition cursor-pointer"
-        >
-          Edit Event
-        </button>
-      </div>
-    </div>
+              </div>
+
+              <p className="text-sm leading-relaxed">
+                {description}
+              </p>
+
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-2 px-6 pb-6">
+
+              <button
+                className="px-4 py-2 rounded border border-gray-300 font-medium transition bg-white text-gray-800 hover:bg-gray-50"
+                onClick={handleClose}
+              >
+                Close
+              </button>
+
+            </div>
+
+          </Modal>
+        
+    </>
   );
 }
 

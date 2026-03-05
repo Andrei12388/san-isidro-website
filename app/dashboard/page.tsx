@@ -123,7 +123,7 @@ export default function Page() {
             </div>
           </div>
         )}
-        {activeItem === "Posts" && <PostsSection />}
+        {activeItem === "Events" && <PostsSection />}
         {activeItem === "Analytics" && <AnalyticsSection />}
         {activeItem === "Members" && <MembersSection />}
         {activeItem === "Devotions" && <DevotionsSection />}
