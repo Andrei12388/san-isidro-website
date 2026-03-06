@@ -3,15 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    // Optionally filter by date range
-    const startDate = request.nextUrl.searchParams.get("startDate");
-    const endDate = request.nextUrl.searchParams.get("endDate");
 
     const events = await prisma.event.findMany({
-      where: startDate && endDate ? {
-        start: { gte: new Date(startDate) },
-        end: { lte: new Date(endDate) },
-      } : {},
+      where: {
+    allowRegistration: true,
+  },
       include: {
         attendances: {
           include: {

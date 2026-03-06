@@ -86,40 +86,8 @@ export function ChartAreaInteractive() {
   const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = React.useState("90d");
 
-  //Fetch Events to map on Graph
- const [events, setEvents] = React.useState<Event[]>([]);
-  const [selectedEventId, setSelectedEventId] = React.useState<string>('');
-  const [attendanceData, setAttendanceData] = React.useState<AttendanceData | null>(null);
-  const [loading, setLoading] = React.useState(false);
-  const [eventsLoading, setEventsLoading] = React.useState(true);
+  const [chartData, setChartData] = React.useState<{ date: string; male: number; female: number }[]>([]);
 
- const [chartData, setChartData] = React.useState<{ date: string; male: number; female: number }[]>([]);
-
-    const fetchEvents = async () => {
-    try {
-      setEventsLoading(true);
-      const response = await fetch('/api/postgre/events?allowRegistration=true');
-      const result = await response.json();
-      
-      // API returns { data: [...] }
-      const eventsArray = Array.isArray(result?.data) ? result.data : (Array.isArray(result) ? result : []);
-      setEvents(eventsArray);
-      
-      // Auto-select first event if available
-      if (eventsArray.length > 0) {
-        setSelectedEventId(eventsArray[0].id.toString());
-      }
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      setEvents([]); // Set empty array on error
-    } finally {
-      setEventsLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
-  fetchEvents();
-}, []);
 
 React.useEffect(() => {
   fetch("/api/postgre/attendance/by-event")
@@ -152,8 +120,6 @@ React.useEffect(() => {
   const maxGenderValue = Math.max(
     ...filteredData.map((d) => Math.max(d.male, d.female)),
   );
-  
-  console.log(chartData)
 
   return (
     <Card className="@container/card mt-2">
