@@ -23,6 +23,14 @@ export const formatDateToHours = (date:string) =>
     hour12: true,
   });
 
+  export const formatDateToDayWithYear = (date:string) =>
+  new Date(date).toLocaleString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour12: true,
+  });
+
   export const toLocalDatetimeInput = (date: Date) => {
   const d = new Date(date);
   const offset = d.getTimezoneOffset(); // in minutes

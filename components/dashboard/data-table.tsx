@@ -164,19 +164,36 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
     header: "Photo",
     cell: ({ row }) => {
       const [src, setSrc] = React.useState(row.original.image);
-      const router = useRouter();
+
+       const router = useRouter();
       const handleUserClick = (userId: number | undefined) => {
         if (!userId) return;
         router.push(`/user/${userId}`);
       };
+
       return (
+        <>
+       
+        <HoverCard
+                                        userId={row.original.id}
+                                        name={row.original.name || "Unknown" }
+                                        title={"Member"}
+                                        image={
+                                          row.original.image ||
+                                          "/images/userIcon.png"
+                                        }
+                                        onView={() =>
+                                          handleUserClick(row.original.id)
+                                        }
+                                      >
         <img
           src={src || "/images/userIcon.png"}
           onError={() => setSrc("/images/userIcon.png")} // fallback if broken
           className="size-9 rounded-full object-cover border cursor-pointer hover:brightness-110 transition"
-          onClick={() => handleUserClick(row.original.id)}
           alt={row.original.name}
         />
+        </HoverCard>
+         </>
       );
     },
   },
@@ -187,6 +204,7 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
     accessorKey: "name",
     header: "Full Name",
     cell: ({ row }) => {
+
       const router = useRouter();
       const handleUserClick = (userId: number | undefined) => {
         if (!userId) return;
@@ -203,7 +221,6 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
           >
             <span
               className="font-semibold text-foreground cursor-pointer hover:underline"
-              onClick={() => handleUserClick(row.original.id)}
             >
               {row.original.name}
             </span>

@@ -26,11 +26,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { attendanceData } from "@/lib/data";
+import { formatDateToDay, formatDateToDayWithYear, toLocalDatetimeInput } from "@/lib/formatData";
 
 export const description = "An interactive area chart";
-
-const chartData = attendanceData;
 
 const chartConfig = {
   visitors: {
@@ -46,9 +44,90 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+interface Event {
+  id: number;
+  title: string;
+  description?: string;
+  location: string;
+  start: string;
+  end: string;
+  isRegular: boolean;
+  recurrence?: string;
+}
+
+interface AttendanceRecord {
+  gender: string;
+  userId: number;
+  userName: string;
+  userEmail: string;
+  firstName?: string;
+  lastName?: string;
+  profileImage?: string;
+  isPresent: boolean;
+  timeIn: string | null;
+  date: string | null;
+  attendanceId: number | null;
+  checkedIn: boolean;
+}
+
+interface AttendanceData {
+  event: Event;
+  attendance: AttendanceRecord[];
+  stats: {
+    totalUsers: number;
+    present: number;
+    absent: number;
+    checkedIn: number;
+    notCheckedIn: number;
+  };
+}
+
 export function ChartAreaInteractive() {
   const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = React.useState("90d");
+
+  //Fetch Events to map on Graph
+ const [events, setEvents] = React.useState<Event[]>([]);
+  const [selectedEventId, setSelectedEventId] = React.useState<string>('');
+  const [attendanceData, setAttendanceData] = React.useState<AttendanceData | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [eventsLoading, setEventsLoading] = React.useState(true);
+
+ const [chartData, setChartData] = React.useState<{ date: string; male: number; female: number }[]>([]);
+
+    const fetchEvents = async () => {
+    try {
+      setEventsLoading(true);
+      const response = await fetch('/api/postgre/events?allowRegistration=true');
+      const result = await response.json();
+      
+      // API returns { data: [...] }
+      const eventsArray = Array.isArray(result?.data) ? result.data : (Array.isArray(result) ? result : []);
+      setEvents(eventsArray);
+      
+      // Auto-select first event if available
+      if (eventsArray.length > 0) {
+        setSelectedEventId(eventsArray[0].id.toString());
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents([]); // Set empty array on error
+    } finally {
+      setEventsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+  fetchEvents();
+}, []);
+
+React.useEffect(() => {
+  fetch("/api/postgre/attendance/by-event")
+    .then(res => res.json())
+    .then(res => setChartData(res.data))
+    .catch(console.error);
+}, []);
+
 
   React.useEffect(() => {
     if (isMobile) {
@@ -73,6 +152,8 @@ export function ChartAreaInteractive() {
   const maxGenderValue = Math.max(
     ...filteredData.map((d) => Math.max(d.male, d.female)),
   );
+  
+  console.log(chartData)
 
   return (
     <Card className="@container/card mt-2">
@@ -160,15 +241,14 @@ export function ChartAreaInteractive() {
             <ChartTooltip
               cursor={false}
               content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    });
-                  }}
-                  indicator="dot"
-                />
+               <ChartTooltipContent
+              labelFormatter={(value, payload) => {
+                const item = payload?.[0]?.payload;
+                const date = new Date(value); // convert ISO string to Date
+                const startDate = toLocalDatetimeInput(date)
+                return `${item?.eventName || ""} - ${formatDateToDayWithYear(startDate) || ""}`;
+              }}
+            />
               }
             />
             <Area

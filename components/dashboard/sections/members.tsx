@@ -23,7 +23,10 @@ const MembersSection = () => {
       });
       if (!response.ok) throw new Error("Failed to fetch users");
       const json = await response.json();
-      setMembers(json.data);
+      // Reverse the original order
+        const reversedData = json.data.slice().reverse(); // slice() to avoid mutating original array
+
+        setMembers(reversedData);
     } catch (error) {
       console.error(error);
     } finally {
@@ -42,7 +45,7 @@ const MembersSection = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
