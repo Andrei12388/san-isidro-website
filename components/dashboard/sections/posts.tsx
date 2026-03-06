@@ -11,6 +11,8 @@ import { useAuth } from "@/context/AuthContext";
 import { CalendarEvent } from "@/app/types/types";
 import { AiOutlineEnvironment } from "react-icons/ai";
 import { formatDate, formatDateToDay, formatDateToHours, toLocalDatetimeInput } from "@/lib/formatData";
+import ImageSelector from "@/lib/imageSelector";
+import { ImageCropperProvider } from "@/context/ImageCropperContext";
 
 export function Posts({ title, image, description, start, end, location, onEdit }: CalendarEvent & { onEdit?: () => void }) {
   const startDate = toLocalDatetimeInput(start)
@@ -425,6 +427,9 @@ const PostsSection = () => {
   };
 
   return (
+    <>
+    <ImageCropperProvider>
+      
     <div className="flex flex-1 flex-col">
       <div className="fixed bottom-10 z-90 right-10">
         <Button onClick={() => setAddingPost(true)}>
@@ -466,7 +471,7 @@ const PostsSection = () => {
           className={`fixed inset-0 bg-black/40 flex justify-center items-center z-100 p-4 overflow-y-auto ${closing ? styles.backdropOut : styles.backdropIn}`}
         >
           <div
-            className={`bg-background rounded-lg p-6 w-full max-w-md shadow-lg ${closing ? styles.modalOut : styles.modalIn}`}
+            className={`bg-background rounded-lg p-6 w-full max-w-md shadow-lg h-auto max-h-[95vh] overflow-x-auto ${closing ? styles.modalOut : styles.modalIn}`}
           >
             <h2 className="text-lg font-semibold mb-4">{editingEventId ? "Edit Event" : "Add New Post"}</h2>
             <form onSubmit={handleAddPost} className="flex flex-col gap-4">
@@ -505,13 +510,7 @@ const PostsSection = () => {
 
               <div className="flex flex-col gap-1">
                 <label className="font-semibold">Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  required
-                  onChange={handleImageChange}
-                  className="border rounded px-2 py-1 cursor-pointer"
-                />
+                  <ImageSelector setImage={setFormImage} aspect={16/9} />
                 {editingEventId && !formImage && (
                   <p className="text-xs text-muted-foreground mt-1">Leave empty to keep current image</p>
                 )}
@@ -522,6 +521,15 @@ const PostsSection = () => {
                     className="mt-2 max-h-48 rounded"
                   />
                 )}
+                {formImage && (
+                          <div className="mt-3 flex flex-row justify-center">
+                            <img
+                              src={URL.createObjectURL(formImage)}
+                              alt="preview"
+                              className="max-w-xs max-h-64 mt-2"
+                            />
+                          </div>
+                        )}
               </div>
 
               {/* Location Section */}
@@ -631,6 +639,8 @@ const PostsSection = () => {
         </div>
       )}
     </div>
+    </ImageCropperProvider>
+    </>
   );
 };
 

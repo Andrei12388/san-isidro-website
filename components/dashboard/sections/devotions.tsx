@@ -13,6 +13,9 @@ import { Spinner } from "@/components/ui/loadingSpinner";
 import HoverCard from "@/components/userCard/hoverCard";
 import { useRouter } from "next/navigation";
 import MessageEditor from "@/components/ui/editors/textField";
+import { ImageCropperProvider } from "@/context/ImageCropperContext";
+import ImageSelector from "@/lib/imageSelector";
+
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -592,6 +595,8 @@ export default function DevotionsSection() {
   }
 
   return (
+    <>
+    <ImageCropperProvider>
     <div className="flex flex-1 flex-col">
       <div className="fixed bottom-10 z-90 right-10">
         {" "}
@@ -890,12 +895,7 @@ export default function DevotionsSection() {
                       </div>
                       <div className="flex flex-col gap-2 mt-5">
                         <span className="text-lg font-semibold">Image</span>
-                        <input
-                          className="border rounded px-2 py-1 cursor-pointer"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleSetImage}
-                        />
+                        <ImageSelector setImage={setImage} aspect={16/9} />
                         {image && (
                           <div className="mt-3 flex flex-row justify-center">
                             <img
@@ -932,5 +932,7 @@ export default function DevotionsSection() {
         </div>
       </div>
     </div>
+    </ImageCropperProvider>
+    </>
   );
 }

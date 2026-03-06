@@ -9,8 +9,50 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAuth } from "@/context/AuthContext";
+import { useEffect, useState } from "react";
+import { Member } from "@/lib/data";
+import { Spinner } from "../ui/loadingSpinner";
+
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : "http://localhost:3000";
 
 export function SectionCards() {
+  const [loading, setLoading] = useState(true);
+    const [members, setMembers] = useState<Member[]>([]);
+    const { access_token } = useAuth();
+  
+    const fetchMembers = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/postgre/users/`, {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+        if (!response.ok) throw new Error("Failed to fetch users");
+        const json = await response.json();
+        setMembers(json.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    useEffect(() => {
+      fetchMembers();
+    }, []);
+
+      if (loading) {
+        return (
+          <div className="flex flex-1 flex-row justify-center items-center text-center">
+            Loading Infos...
+            <Spinner size={16} />
+          </div>
+        );
+      }
+
   return (
     <>
       <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
@@ -62,7 +104,7 @@ export function SectionCards() {
           <CardHeader>
             <CardDescription>Active Members</CardDescription>
             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-              67
+              {members.length}
             </CardTitle>
             <CardAction>
               <Badge variant="outline">

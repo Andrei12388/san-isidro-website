@@ -12,6 +12,7 @@ import { Spinner } from "@/components/ui/loadingSpinner";
 import DOMPurify from "dompurify";
 import HoverCard from "@/components/userCard/hoverCard";
 import { useRouter } from "next/navigation";
+import { ImageCropperProvider } from "@/context/ImageCropperContext";
 
 function CommentActions({
   onEdit,
@@ -424,6 +425,7 @@ export default function Page() {
   };
   return (
     <>
+    <ImageCropperProvider>
       <Head>
         <meta name="description" content="Devotions page for My App" />
       </Head>
@@ -782,6 +784,7 @@ export default function Page() {
           </div>
         </div>
       </main>
+      </ImageCropperProvider>
     </>
   );
 }
