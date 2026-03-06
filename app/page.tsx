@@ -110,27 +110,34 @@ export default function Home() {
        
       {/* Fetch Event Posts */}
      <section className="scroll-mt-24" id="churchevents">
-      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-2 items-center bg-muted">
-                <div className="grid grid-flow-row md:grid-flow-col auto-cols-max gap-4 sm:gap-6 overflow-x-auto">
-               {/* <span className="font-bold text-3xl text-center">Events</span> */}  
-                 {events.map((post) => (
-                    <Posts
-                      key={post.id}
-                      location={post.location}
-                      allowRegistration={post.allowRegistration}
-                      creatorName={post.creatorName}
-                      id={post.id}
-                      creatorId={post.creatorId}
-                      title={post.title}
-                      image={post.image}
-                      description={post.description}
-                      start={post.start}
-                      end={post.end}
-                    />
-                  ))}
-                </div>
-              </div>
-      </section>
+      
+      
+  <div className="flex flex-col justify-center gap-4 py-4 md:gap-6 md:py-6 px-2 items-center bg-muted w-full">
+    <div className="flex flex-row justify-center my-2"> <h2 className="text-balance text-4xl font-semibold lg:text-5xl">
+            Events
+          </h2> </div>
+    
+    <div className="flex gap-4 sm:gap-6 overflow-x-auto w-full snap-x snap-mandatory scroll-smooth flex-row justify-start lg:justify-center">
+      {events.map((post) => (
+        <div key={post.id} className="shrink-0 lg:shrink w-full max-w-80 flex flex-row justify-center">
+          <Posts
+            location={post.location}
+            allowRegistration={post.allowRegistration}
+            creatorName={post.creatorName}
+            id={post.id}
+            creatorId={post.creatorId}
+            title={post.title}
+            image={post.image}
+            description={post.description}
+            start={post.start}
+            end={post.end}
+          />
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
      
          
       <section id="discipleship" className="scroll-mt-24" >

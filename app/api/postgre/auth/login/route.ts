@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, hashPassword } from "@/utils/password";
 import { createAccessToken, createRefreshToken } from "@/utils/jwt";
-import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,12 +50,11 @@ export async function POST(request: NextRequest) {
       message: "Login successful",
     };
     const response = NextResponse.json(result, { status: 200 });
-    const cookieStore = await cookies();
 
-    console.log("cookie fetch data", result, cookieStore);
+    console.log("cookie fetch data", result);
 
     // ✅ access token
-    cookieStore.set("access_token", result.accessToken, {
+    response.cookies.set("access_token", result.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -65,7 +63,7 @@ export async function POST(request: NextRequest) {
     });
 
     // ✅ user id (KEEP OLD WORKING VERSION)
-    cookieStore.set("user_id", String(result.id), {
+    response.cookies.set("user_id", String(result.id), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -74,7 +72,7 @@ export async function POST(request: NextRequest) {
     });
 
     // ✅ Name
-    cookieStore.set("name", String(result.name), {
+    response.cookies.set("name", String(result.name), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -83,7 +81,7 @@ export async function POST(request: NextRequest) {
     });
 
     // ✅ Email
-    cookieStore.set("email", String(result.email), {
+    response.cookies.set("email", String(result.email), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -114,7 +112,7 @@ export async function POST(request: NextRequest) {
     console.log("Image Fetch:", imageRes.data.profileImage);
 
     // ✅ Image
-    cookieStore.set("profileImage", String(imageRes.data.profileImage), {
+    response.cookies.set("profileImage", String(imageRes.data.profileImage), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

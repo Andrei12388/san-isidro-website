@@ -60,7 +60,7 @@ export function Posts({ title, image, description, start, end, location, onEdit 
         {/* Content */}
         <div className="p-5 flex flex-col gap-3 flex-1">
 
-          <h3 className="text-lg font-bold leading-tight line-clamp-2">
+          <h3 className="text-lg font-bold leading-tight line-clamp-1">
             {title}
           </h3>
 
@@ -76,7 +76,7 @@ export function Posts({ title, image, description, start, end, location, onEdit 
             </div>
           </div>
 
-          <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
+          <p className="text-sm text-muted-foreground line-clamp-1 flex-1">
             {description}
           </p>
 

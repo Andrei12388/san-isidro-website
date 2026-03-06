@@ -663,15 +663,27 @@ export default function Page() {
                             selected.comments.map((c, idx) => (
                               <div key={c.id} className="rounded p-3">
                                 <div className="flex items-start gap-2">
+                              <HoverCard
+                                          userId={c.user?.id}
+                                          name={c.user?.name || "Unknown"}
+                                          title={c.user?.title || "Member"}
+                                          image={
+                                            c.user?.profileImage ||
+                                            "/images/userIcon.png"
+                                          }
+                                          onView={() =>
+                                            handleUserClick(c.user?.id)
+                                          }
+                                        >
                                   <img
                                     src={
                                       c.user?.profileImage ||
                                       "images/userIcon.png"
                                     }
-                                    alt={c.user?.name || "User"}
-                                    onClick={() => handleUserClick(c.user?.id)}
-                                    className="w-8 h-8 rounded-full object-cover cursor-pointer"
+                                    alt={c.user?.name || "User"}                                    
+                                    className="w-8 h-8 rounded-full object-cover"
                                   />
+                                  </HoverCard>
                                   <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start gap-2">
                                       <div>
@@ -689,9 +701,6 @@ export default function Page() {
                                         >
                                           <span
                                             className="font-semibold text-sm cursor-pointer hover:underline"
-                                            onClick={() =>
-                                              handleUserClick(c.user?.id)
-                                            }
                                           >
                                             {c.user?.name || "Unknown"}
                                           </span>

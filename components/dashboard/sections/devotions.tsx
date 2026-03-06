@@ -125,7 +125,15 @@ function CommentsCard({
     <div className="p-2 bg-background text-muted-foreground rounded flex-col">
       <section className="flex flex-row justify-between gap-2">
         <div className="flex flex-row gap-5">
+           <HoverCard
+              userId={userId}
+              name={name || "Unknown"}
+              title={"Member"}
+              image={image || "/images/userIcon.png"}
+              onView={() => handleUserClick(userId)}
+            >
           <img src={image} className="rounded-full w-8 h-8 cursor-pointer" />
+          </HoverCard>
           <div className="flex flex-col">
             <HoverCard
               userId={userId}
@@ -136,7 +144,6 @@ function CommentsCard({
             >
               <span
                 className="font-semibold text-sm text-foreground cursor-pointer hover:underline"
-                onClick={() => handleUserClick(userId)}
               >
                 {name || "Unknown"}
               </span>

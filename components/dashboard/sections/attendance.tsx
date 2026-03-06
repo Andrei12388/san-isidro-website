@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { CheckCircle2, XCircle, Users, Clock, MapPin, Calendar, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import HoverCard from '@/components/userCard/hoverCard';
+import { useRouter } from 'next/navigation';
 
 interface Event {
   id: number;
@@ -53,6 +55,12 @@ export default function AttendanceSection() {
   const [attendanceData, setAttendanceData] = useState<AttendanceData | null>(null);
   const [loading, setLoading] = useState(false);
   const [eventsLoading, setEventsLoading] = useState(true);
+
+  const router = useRouter();
+   const handleUserClick = (userId: number | undefined) => {
+    if (!userId) return;
+    router.push(`/user/${userId}`);
+  };
 
   useEffect(() => {
     fetchEvents();
@@ -330,12 +338,42 @@ export default function AttendanceSection() {
                               <TableCell>
                                 <div className="flex items-center gap-3">
                                   <Avatar className="h-8 w-8">
+                                    <HoverCard
+                                userId={record.userId}
+                                name={getUserDisplayName(record) || "Unknown" }
+                                title={"Member"}
+                                image={
+                                  record.profileImage ||
+                                  "/images/userIcon.png"
+                                }
+                                onView={() =>
+                                  handleUserClick(record.userId)
+                                }
+                              >
                                     <AvatarImage src={record.profileImage || ''} />
+                                    </HoverCard>
                                     <AvatarFallback>
                                       {getUserDisplayName(record).charAt(0).toUpperCase()}
                                     </AvatarFallback>
                                   </Avatar>
-                                  <span className="font-medium">{getUserDisplayName(record)}</span>
+                              <HoverCard
+                                userId={record.userId}
+                                name={getUserDisplayName(record) || "Unknown" }
+                                title={"Member"}
+                                image={
+                                  record.profileImage ||
+                                  "/images/userIcon.png"
+                                }
+                                onView={() =>
+                                  handleUserClick(record.userId)
+                                }
+                              >
+                                <span
+                                  className="font-semibold text-sm cursor-pointer hover:underline">
+                                  {getUserDisplayName(record) || "Unknown" }
+                                </span>
+                              </HoverCard>
+                                  <span className="font-medium"></span>
                                 </div>
                               </TableCell>
                               <TableCell className="text-muted-foreground">{record.userEmail}</TableCell>
