@@ -210,7 +210,7 @@ React.useEffect(() => {
                <ChartTooltipContent
               labelFormatter={(value, payload) => {
                 const item = payload?.[0]?.payload;
-                const date = new Date(value); // convert ISO string to Date
+                const date = new Date(value || "");
                 const startDate = toLocalDatetimeInput(date)
                 return `${item?.eventName || ""} - ${formatDateToDayWithYear(startDate) || ""}`;
               }}
