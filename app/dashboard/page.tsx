@@ -131,7 +131,6 @@ export default function Page() {
         {activeItem === "Attendance" && <AttendanceSection />}
         {activeItem === "Attendance Summary" && <AttendanceSection />}
         {activeItem === "Check In" && <CheckInSection />}
-        {activeItem === "Analytics" && <AttendanceAnalyticsSection />}
       </SidebarInset>
     </>
   );

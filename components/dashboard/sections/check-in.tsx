@@ -36,16 +36,21 @@ export default function CheckInSection() {
   const [submitting, setSubmitting] = useState(false);
   const [eventsLoading, setEventsLoading] = useState(true);
 
+  const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
+  const [checkingAttendance, setCheckingAttendance] = useState(false);
+
   useEffect(() => {
     fetchEvents();
   }, []);
 
-  useEffect(() => {
-    if (selectedEventId) {
-      const event = events.find((e) => e.id.toString() === selectedEventId);
-      setSelectedEvent(event || null);
-    }
-  }, [selectedEventId, events]);
+ useEffect(() => {
+  if (selectedEventId) {
+    const event = events.find((e) => e.id.toString() === selectedEventId);
+    setSelectedEvent(event || null);
+
+    checkAttendance(selectedEventId); // ✅ check if already checked in
+  }
+}, [selectedEventId, events]);
 
   const fetchEvents = async () => {
     try {
@@ -69,6 +74,30 @@ export default function CheckInSection() {
       setEventsLoading(false);
     }
   };
+
+  const checkAttendance = async (eventId: string) => {
+  if (!userId || !eventId) return;
+
+  try {
+    setCheckingAttendance(true);
+
+    const response = await fetch(
+      `/api/event-attendance?eventId=${eventId}&userId=${userId}`
+    );
+
+    const data = await response.json();
+
+    if (Array.isArray(data) && data.length > 0) {
+      setAlreadyCheckedIn(true);
+    } else {
+      setAlreadyCheckedIn(false);
+    }
+  } catch (error) {
+    console.error('Error checking attendance:', error);
+  } finally {
+    setCheckingAttendance(false);
+  }
+};
 
   const handleLocationVerified = (loc: { latitude: number; longitude: number }) => {
     setLocationVerified(true);
@@ -114,6 +143,12 @@ export default function CheckInSection() {
         }),
       });
 
+        // 🚨 If attendance already exists
+      if (response.status === 409) {
+        toast.warning('You have already checked in for this event.');
+        return;
+      }
+
       if (!response.ok) {
         throw new Error('Failed to submit attendance');
       }
@@ -133,7 +168,7 @@ export default function CheckInSection() {
     }
   };
 
-  const canSubmit = locationVerified || faceVerified;
+ const canSubmit = (locationVerified || faceVerified) && !alreadyCheckedIn;
 
   return (
     <div className="flex flex-1 flex-col">
@@ -282,16 +317,30 @@ export default function CheckInSection() {
             </CardContent>
           </Card>
 
+          {alreadyCheckedIn && (
+          <Card className="border-green-500">
+            <CardContent className="p-4 text-center">
+              <Badge variant="default">
+                ✓ You already checked in for this event
+              </Badge>
+            </CardContent>
+          </Card>
+        )}
+
           {/* Submit Button */}
           <Button
-            onClick={submitAttendance}
-            disabled={!canSubmit || submitting}
-            size="lg"
-            className="w-full"
-          >
-            <CheckCircle2 className="mr-2 h-5 w-5" />
-            {submitting ? 'Submitting...' : 'Submit Attendance'}
-          </Button>
+          onClick={submitAttendance}
+          disabled={!canSubmit || submitting || alreadyCheckedIn}
+          size="lg"
+          className="w-full"
+        >
+          <CheckCircle2 className="mr-2 h-5 w-5" />
+          {alreadyCheckedIn
+            ? 'Already Checked In'
+            : submitting
+            ? 'Submitting...'
+            : 'Submit Attendance'}
+        </Button>
         </div>
       </div>
     </div>

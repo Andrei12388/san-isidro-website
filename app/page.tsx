@@ -112,7 +112,7 @@ export default function Home() {
      <section className="scroll-mt-24" id="churchevents">
       
       
-  <div className="flex flex-col justify-center gap-4 py-4 md:gap-6 md:py-6 px-2 items-center bg-muted w-full">
+  <div className="flex flex-col justify-center gap-4 py-4 md:gap-6 md:py-6 px-2 items-center bg-background w-full">
     <div className="flex flex-row justify-center my-2"> <h2 className="text-balance text-4xl font-semibold lg:text-5xl">
             Events
           </h2> </div>

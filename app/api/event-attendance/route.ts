@@ -14,10 +14,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const parsedUserId = parseInt(userId);
+    const parsedEventId = parseInt(eventId);
+
+    // ✅ Check if attendance already exists
+    const existingAttendance = await prisma.eventAttendance.findFirst({
+      where: {
+        userId: parsedUserId,
+        eventId: parsedEventId,
+      },
+    });
+
+    if (existingAttendance) {
+      return NextResponse.json(
+        { error: 'Attendance already recorded for this event.' },
+        { status: 409 }
+      );
+    }
+
+    // ✅ Create attendance if not existing
     const attendance = await prisma.eventAttendance.create({
       data: {
-        userId: parseInt(userId),
-        eventId: parseInt(eventId),
+        userId: parsedUserId,
+        eventId: parsedEventId,
         date: new Date(),
         timeIn: timeIn ? new Date(timeIn) : new Date(),
         isPresent: isPresent ?? true,

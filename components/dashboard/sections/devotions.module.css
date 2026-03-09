@@ -4,11 +4,6 @@
   transition: all 0.2s ease-in-out;
 }
 
-.devotionCard:hover {
-  transform: scale(1.08);
-  cursor: pointer;
-  z-index: 70;
-}
 
 /* OVERLAY BACKDROP FADE */
 .backdropIn {

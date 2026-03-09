@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { formatDateToDay, formatDateToDayWithYear, toLocalDatetimeInput } from "@/lib/formatData";
+import { Skeleton } from "../ui/skeleton";
 
 export const description = "An interactive area chart";
 
@@ -87,13 +88,16 @@ export function ChartAreaInteractive() {
   const [timeRange, setTimeRange] = React.useState("90d");
 
   const [chartData, setChartData] = React.useState<{ date: string; male: number; female: number }[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
 
 React.useEffect(() => {
+  setLoading(true);
   fetch("/api/postgre/attendance/by-event")
     .then(res => res.json())
     .then(res => setChartData(res.data))
-    .catch(console.error);
+    .catch(console.error)
+    .finally(() => setLoading(false));
 }, []);
 
 
@@ -120,6 +124,20 @@ React.useEffect(() => {
   const maxGenderValue = Math.max(
     ...filteredData.map((d) => Math.max(d.male, d.female)),
   );
+
+ if (loading) {
+  return (
+    <Card className="@container/card mt-2">
+      <CardHeader>
+        <CardTitle>Total Attendees</CardTitle>
+        <CardDescription>Loading chart...</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Skeleton className="h-[250px] w-full rounded-xl" />
+      </CardContent>
+    </Card>
+  );
+}
 
   return (
     <Card className="@container/card mt-2">

@@ -17,6 +17,7 @@ import { ImageCropperProvider } from "@/context/ImageCropperContext";
 export function Posts({ title, image, description, start, end, location, onEdit }: CalendarEvent & { onEdit?: () => void }) {
   const startDate = toLocalDatetimeInput(start)
   const endDate = toLocalDatetimeInput(end)
+
    const { access_token, id } = useAuth();
     const [open, setOpen] = useState(false)
     const [mounted, setMounted] = useState(false);
@@ -261,6 +262,8 @@ const PostsSection = () => {
     setCurrentImageUrl(event.image);
     setPreviewImage(event.image); // Show existing image as preview
     setAddingPost(true);
+    setStartInput(toLocalDatetimeInput(event.start));
+    setEndInput(toLocalDatetimeInput(event.end));
   };
 
   const handleAddPost = async (e: React.FormEvent) => {
@@ -307,8 +310,8 @@ const PostsSection = () => {
       locationLongitude: locationLongitude || null,
       locationRadius: locationRadius || "100",
       allowRegistration: true,
-      start: new Date().toISOString(),
-      end: new Date().toISOString(),
+      start: new Date(startInput).toISOString(),
+      end: new Date(endInput).toISOString(),
     };
 
     if (editingEventId) {
@@ -502,8 +505,8 @@ const PostsSection = () => {
                 <Input
                   type="text"
                   placeholder="Set Event Location..."
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  value={locationAddress}
+                  onChange={(e) => setLocationAddress(e.target.value)}
                   required
                 />
               </div>
@@ -619,6 +622,20 @@ const PostsSection = () => {
                   />
                   <p className="text-xs text-muted-foreground">Users must be within this distance to check-in</p>
                 </div>
+                 <label className="text-sm">Start</label>
+                  <input
+                    type="datetime-local"
+                    className="border p-2 w-full mb-3 accent-blue-500"
+                    value={startInput}
+                    onChange={(e) => setStartInput(e.target.value)}
+                  />
+                  <label className="text-sm">End</label>
+                  <input
+                    type="datetime-local"
+                    className="border p-2 w-full mb-4 text-foreground accent-green-500"
+                    value={endInput}
+                    onChange={(e) => setEndInput(e.target.value)}
+                  />
               </div>
 
               <div className="flex gap-2 justify-end">
