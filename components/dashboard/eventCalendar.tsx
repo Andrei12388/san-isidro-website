@@ -20,7 +20,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-type CalendarEvent = Event & { id: string | null, creatorId: string | null, location: string | null, creatorName: string | null };
+type CalendarEvent = Event & { id: string | null, creatorId: string | null, location: string | null, creatorName: string | null, allowRegistration: boolean | false };
 
 export default function Scheduler() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -82,6 +82,7 @@ const fetchEvents = async () => {
       location: e.location || "TBD",
       description: e.description || "",
       image: e.image || "",
+      allowRegistration: e.allowRegistration || "",
       start: e.start ? new Date(e.start) : new Date(),
       end: e.end ? new Date(e.end) : new Date(),
     }));
@@ -104,6 +105,7 @@ const handleSelectEvent = (event: CalendarEvent & any) => {
   setSelectedEvent({
     ...event,
     creatorId: event.creatorId?.toString() ?? null, // ensure string type
+    allowRegistration: event.allowRegistration ?? false, 
   });
 
   setNewTitle(event.title ?? "");
@@ -200,6 +202,29 @@ const handleSave = async () => {
   // Render only after client mount to avoid SSR issues
   if (!mounted) return <div style={{ height: "700px", margin: "20px" }} />;
 
+  //for designing event item
+  const eventStyleGetter = (event: CalendarEvent) => {
+  let backgroundColor = "#3174ad"; // default blue
+
+  if (event.allowRegistration) {
+    backgroundColor = "#22c55e"; // green
+  }
+
+  return {
+    style: {
+      backgroundColor,
+      borderRadius: "6px",
+      opacity: 0.9,
+      color: "white",
+      border: "none",
+
+      display: "flex",
+      alignItems: "center",  
+      justifyContent: "center", 
+    },
+  };
+};
+
   return (
     <div
       style={{
@@ -224,6 +249,7 @@ const handleSave = async () => {
         onView={(view) => setCurrentView(view)} // update view when switching
         defaultView="month"
         views={["month", "week", "day"]}
+        eventPropGetter={eventStyleGetter}
         popup
         style={{ height: "100%" }}
       />
@@ -277,6 +303,7 @@ const handleSave = async () => {
         value={endInput}
         onChange={(e) => setEndInput(e.target.value)}
       />
+      {selectedEvent?.allowRegistration && <label className="text-sm text-green-500">Registration Allowed</label>}
     </>
   ) : (
     <>
@@ -284,6 +311,7 @@ const handleSave = async () => {
     <p className="mb-2 font-bold opacity-60">{formatDate(startInput)}</p>
       <p className="mb-2 text-2xl"><strong>{newTitle}</strong></p>
       <p className="mb-2 opacity-75 py-2">{description}</p>
+        {selectedEvent?.allowRegistration && <label className="text-sm text-green-500">Registration Allowed</label>}
     </>
   )}
 

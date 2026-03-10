@@ -85,8 +85,6 @@ export default function Page() {
 
   const { activeItem } = useSidebar();
 
-  console.log("dashboard:", activeItem);
-
   return (
     <>
       {/* Left Side of the Dashboard */}

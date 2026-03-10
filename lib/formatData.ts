@@ -23,6 +23,12 @@ export const formatDateToHours = (date:string) =>
     hour12: true,
   });
 
+  export const formatDateToDayNoMonth = (date:string) =>
+  new Date(date).toLocaleString("en-US", {
+    day: "2-digit",
+    hour12: true,
+  });
+
   export const formatDateToDayWithYear = (date:string) =>
   new Date(date).toLocaleString("en-US", {
     day: "2-digit",

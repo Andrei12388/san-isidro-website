@@ -10,13 +10,16 @@ import Modal from "react-modal";
 import { useAuth } from "@/context/AuthContext";
 import { CalendarEvent } from "@/app/types/types";
 import { AiOutlineEnvironment } from "react-icons/ai";
-import { formatDate, formatDateToDay, formatDateToHours, toLocalDatetimeInput } from "@/lib/formatData";
+import { formatDate, formatDateToDay, formatDateToDayNoMonth, formatDateToHours, toLocalDatetimeInput } from "@/lib/formatData";
 import ImageSelector from "@/lib/imageSelector";
 import { ImageCropperProvider } from "@/context/ImageCropperContext";
+import { useSidebar } from "@/components/ui/sidebar";
 
 export function Posts({ title, image, description, start, end, location, onEdit }: CalendarEvent & { onEdit?: () => void }) {
   const startDate = toLocalDatetimeInput(start)
   const endDate = toLocalDatetimeInput(end)
+
+  const sameDate = startDate === endDate;
 
    const { access_token, id } = useAuth();
     const [open, setOpen] = useState(false)
@@ -40,16 +43,21 @@ export function Posts({ title, image, description, start, end, location, onEdit 
 
   // Render only after client mount to avoid SSR issues
   if (!mounted) return <div style={{ height: "700px", margin: "20px" }} />;
-
+ 
+  const { authActiveItem } = useAuth();
+  
   return (
      <>
       <div className="group w-full overflow-hidden rounded-xl border border-border bg-background dark:bg-muted shadow-sm hover:shadow-lg transition justify-between flex flex-col relative">
 
         {/* Image */}
         <div className="h-48 w-full relative overflow-hidden">
-          <div className="absolute z-10 bg-background dark:bg-yellow-200 w-14 h-16 rounded-md right-2 top-2">
+          <div className="absolute z-10 bg-background dark:bg-yellow-200 w-15 h-16 rounded-md right-2 top-2">
             <span className="text-foreground dark:text-background flex flex-col text-xl text-center capitalize font-bold">
-              {formatDateToDay(startDate)}
+             {sameDate
+              ? formatDateToDay(startDate)
+              : `${formatDateToDay(startDate)}-${formatDateToDayNoMonth(endDate)}`
+            }
             </span>
           </div>
 
@@ -88,7 +96,7 @@ export function Posts({ title, image, description, start, end, location, onEdit 
         {/* Buttons */}
         <div className="flex flex-row justify-end px-2 mb-2 gap-2">
 
-          {id && (
+          {authActiveItem === "Events" && (
             <button
               onClick={onEdit}
               className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
@@ -123,9 +131,12 @@ export function Posts({ title, image, description, start, end, location, onEdit 
           >
             {/* Image */}
             <div className="w-full relative overflow-hidden">
-              <div className="absolute z-10 bg-background dark:bg-yellow-200 w-14 h-16 rounded-md right-2 top-2">
+              <div className="absolute z-10 bg-background dark:bg-yellow-200 w-15 h-16 rounded-md right-2 top-2">
                 <span className="text-foreground dark:text-background flex flex-col text-xl text-center capitalize font-bold">
-                  {formatDateToDay(startDate)}
+                   {sameDate
+              ? formatDateToDay(startDate)
+              : `${formatDateToDay(startDate)}-${formatDateToDayNoMonth(endDate)}`
+            }
                 </span>
               </div>
 
@@ -265,6 +276,35 @@ const PostsSection = () => {
     setStartInput(toLocalDatetimeInput(event.start));
     setEndInput(toLocalDatetimeInput(event.end));
   };
+
+  const handleDeleteEvent = async () => {
+  if (!editingEventId) return;
+
+  const confirmDelete = confirm("Are you sure you want to delete this event?");
+  if (!confirmDelete) return;
+
+  try {
+    const res = await fetchAuth(
+      `/api/postgre/events/${editingEventId}`,
+      access_token || "",
+      { method: "DELETE" }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to delete event");
+    }
+
+    // remove from UI
+    setEvents((prev) => prev.filter((e) => e.id !== editingEventId));
+
+    alert("Event deleted successfully");
+
+    handleClose();
+  } catch (error) {
+    console.error("Delete error:", error);
+    alert("Failed to delete event");
+  }
+};
 
   const handleAddPost = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -429,6 +469,13 @@ const PostsSection = () => {
     }, 300);
   };
 
+  const { activeItem } = useSidebar();
+const { setSession } = useAuth();
+
+useEffect(() => {
+  setSession({ authActiveItem: activeItem });
+}, []);
+
   return (
     <>
     <ImageCropperProvider>
@@ -476,7 +523,7 @@ const PostsSection = () => {
           <div
             className={`bg-background rounded-lg p-6 w-full max-w-md shadow-lg h-auto max-h-[95vh] overflow-x-auto ${closing ? styles.modalOut : styles.modalIn}`}
           >
-            <h2 className="text-lg font-semibold mb-4">{editingEventId ? "Edit Event" : "Add New Post"}</h2>
+            <h2 className="text-lg font-semibold mb-4">{editingEventId ? "Edit Event" : "Add New Event"}</h2>
             <form onSubmit={handleAddPost} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label className="font-semibold">Title</label>
@@ -639,6 +686,16 @@ const PostsSection = () => {
               </div>
 
               <div className="flex gap-2 justify-end">
+                 {editingEventId && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={handleDeleteEvent}
+                    disabled={isSubmitting}
+                  >
+                    Delete Event
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   type="button"

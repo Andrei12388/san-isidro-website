@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         locationLatitude: body.locationLatitude ? parseFloat(body.locationLatitude) : null,
         locationLongitude: body.locationLongitude ? parseFloat(body.locationLongitude) : null,
         locationRadius: body.locationRadius ? parseFloat(body.locationRadius) : 100,
-        allowRegistration: body.allowRegistration !== undefined ? body.allowRegistration : true,
+        allowRegistration: body.allowRegistration !== undefined ? body.allowRegistration : false,
         start: new Date(body.start),
         end: new Date(body.end),
       },
