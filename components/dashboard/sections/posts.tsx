@@ -125,7 +125,7 @@ export function Posts({ title, image, description, start, end, location, onEdit 
                       max-w-lg w-full max-h-[90vh] mx-auto overflow-y-auto ${
                         closing ? styles.backdropOut : styles.backdropIn
                       }`}
-           overlayClassName={`fixed inset-0 bg-black/50 flex justify-center items-start z-50 p-4 ${
+           overlayClassName={`fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4 ${
     closing ? styles.backdropOut : styles.backdropIn
   }`}
           >

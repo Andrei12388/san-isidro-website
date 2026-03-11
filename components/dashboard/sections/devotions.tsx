@@ -65,6 +65,123 @@ type CommentType = {
 
 type CommentsCardProps = CommentType;
 
+export function AddDevotionModal({
+  onSubmit,
+  closing,
+  title,
+  setTitle,
+  verseInput,
+  handleChange,
+  setImage,
+  image,
+  message,
+  setMessage,
+  handleClose,
+  isSubmitting,
+}: {
+  onSubmit: (e: React.FormEvent) => void;
+  closing: boolean;
+  title: string;
+  setTitle: (value: string) => void;
+  verseInput: string;
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  setImage: (file: File | null) => void;
+  image: File | null;
+  message: string;
+  setMessage: (value: string) => void;
+  handleClose: () => void;
+  isSubmitting: boolean;
+}) {
+  return (
+    <form
+      onSubmit={onSubmit}
+      className={`fixed inset-0 bg-black/40 flex justify-center items-start overflow-y-auto z-100 ${
+        closing ? styles.backdropOut : styles.backdropIn
+      }`}
+    >
+      <div
+        className={`lg:fixed overflow-y-auto inset-0 bg-black/40 flex lg:flex-row flex-col lg:justify-end justify-center items-center lg:items-start z-100 ${
+          closing ? styles.modalOut : styles.modalIn
+        }`}
+      >
+        {/* LEFT PANEL */}
+        <div className="bg-background lg:rounded-lg p-6 w-full lg:h-full lg:max-w-md lg:mr-2 flex flex-col lg:overflow-y-auto border-b">
+          <h2 className="text-lg font-semibold text-center mb-5 border-b">
+            Bible Verse
+          </h2>
+          <BibleVersePickerNoAPI />
+        </div>
+
+        {/* RIGHT PANEL */}
+        <div className="bg-background lg:rounded-lg p-6 w-full lg:h-full max-w-3xl flex flex-col justify-between">
+          <div className="overflow-y-auto">
+            <h2 className="text-lg font-semibold mb-4">Add New Devotion</h2>
+
+            {/* TITLE */}
+            <div className="flex flex-col gap-2">
+              <span className="text-lg font-semibold">Title</span>
+              <Input
+                type="text"
+                placeholder="Title"
+                value={title}
+                required
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+
+            {/* VERSE */}
+            <div className="flex flex-col gap-2 mt-3">
+              <span className="text-lg font-semibold">Verse</span>
+              <textarea
+                placeholder="Verse (e.g. John 3:16)"
+                value={verseInput}
+                required
+                rows={1}
+                onChange={handleChange}
+                className="mb-3 w-full resize-none overflow-hidden border border-muted-foreground rounded px-2"
+              />
+            </div>
+
+            {/* IMAGE */}
+            <div className="flex flex-col gap-2 mt-5">
+              <span className="text-lg font-semibold">Image</span>
+
+              <ImageSelector setImage={setImage} aspect={16 / 9} />
+
+              {image && (
+                <div className="mt-3 flex flex-row justify-center">
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="preview"
+                    className="max-w-xs max-h-64 mt-2"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* MESSAGE */}
+            <div className="mt-5">
+              <span className="text-lg font-semibold">Message</span>
+              <MessageEditor message={message} setMessage={setMessage} />
+            </div>
+          </div>
+
+          {/* BUTTONS */}
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" type="button" onClick={handleClose}>
+              Cancel
+            </Button>
+
+            <Button disabled={isSubmitting} type="submit">
+              {isSubmitting ? "Adding Devotion..." : "Add Devotion"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+}
+
 function CommentActions({
   onEdit,
   onDelete,
@@ -195,6 +312,8 @@ export default function DevotionsSection() {
   const [chapter, setChapter] = useState<number>(3);
   const [verse, setVerse] = useState<number>(16);
   const [verseData, setVerseData] = useState<any>(null);
+
+  const router = useRouter();
 
   // Alternatively, use a hook:
   useEffect(() => {
@@ -342,6 +461,7 @@ export default function DevotionsSection() {
     setTimeout(() => {
       setSelected(null);
       setClosing(false);
+      setComment("");
       setAddDevotion(false);
     }, 300);
   };
@@ -492,6 +612,11 @@ export default function DevotionsSection() {
     setVerseInput("");
     setMessage("");
     setImage(null);
+  };
+
+   const handleUserClick = (userId: number | undefined) => {
+    if (!userId) return;
+    router.push(`/user/${userId}`);
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -689,7 +814,7 @@ export default function DevotionsSection() {
             {/* Modal */}
             {selected && (
               <div
-                className={`fixed inset-0 bg-black/40 flex justify-center items-start p-4 z-100 overflow-y-auto  ${
+                className={`fixed inset-0 bg-black/40 flex justify-center items-start lg:items-center p-4 z-100 overflow-y-auto  ${
                   closing ? styles.backdropOut : styles.backdropIn
                 }`}
                 onClick={handleClose}
@@ -741,16 +866,31 @@ export default function DevotionsSection() {
                             {selected.title}
                           </h2>
                           <span className="text-muted-foreground text-sm">
-                            {selected.user?.name || "Unknown User"}
+                              <HoverCard
+                              userId={selected.user?.id || 0}
+                              name={selected.user?.name || "Unknown"}
+                              title={"Member"}
+                              image={
+                                selected.user?.profileImage ||
+                                "/images/userIcon.png"
+                              }
+                              onView={() =>
+                                handleUserClick(selected.user?.id)
+                              }
+                            >
+                              <span
+                                className="font-semibold text-sm cursor-pointer hover:underline"
+                              >
+                                {selected.user?.name || "Unknown User"}
+                              </span>
+                            </HoverCard>
+                           
                           </span>
                         </div>
                         <div className="flex flex-row items-center justify-between mb-5">
-                          <button
-                            className="px-4 py-2 bg-background text-foreground rounded cursor-pointer"
-                            onClick={handleClose}
-                          >
-                            Close
-                          </button>
+                          <Button variant="outline" type="button" onClick={handleClose}>
+                          Close
+                        </Button>
                         </div>
                       </div>
                       <div className="flex flex-row justify-between mb-2">
@@ -767,7 +907,7 @@ export default function DevotionsSection() {
                           />
                           {selected.heart}
                         </span>
-                        <span className="flex flex-row justify-center items-center gap-1 text-muted-foreground">
+                        <span className="flex flex-row justify-center items-center gap-1 text-foreground">
                           <FaCommentDots size={22} />
                           {commentsById[selected.id]
                             ? commentsById[selected.id].length
@@ -848,85 +988,20 @@ export default function DevotionsSection() {
               </div>
             )}
             {addDevotion && (
-              <form
-                onSubmit={onSubmit}
-                className={`fixed inset-0 bg-black/40 flex justify-center items-start overflow-y-auto z-100 ${
-                  closing ? styles.backdropOut : styles.backdropIn
-                }`}
-              >
-                <div
-                  className={`lg:fixed overflow-y-auto inset-0 bg-black/40 flex lg:flex-row flex-col lg:justify-end justify-center items-center lg:items-start z-100 ${
-                    closing ? styles.modalOut : styles.modalIn
-                  }`}
-                >
-                  <div className="bg-background lg:rounded-lg p-6 w-full lg:h-full lg:max-w-md lg:mr-2 flex flex-col lg:overflow-y-auto border-b">
-                    <h2 className="text-lg font-semibold text-center mb-5 border-b">
-                      Bible Verse
-                    </h2>
-                    <BibleVersePickerNoAPI />
-                  </div>
-                  <div className="bg-background lg:rounded-lg p-6 w-full lg:h-full max-w-3xl flex flex-col justify-between">
-                    <div className="overflow-y-auto">
-                      <h2 className="text-lg font-semibold mb-4">
-                        Add New Devotion
-                      </h2>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-col gap-1 w-full">
-                          <span className="text-lg font-semibold">Title</span>
-                          <Input
-                            type="text"
-                            placeholder="Title"
-                            value={title}
-                            required
-                            onChange={(e) => setTitle(e.target.value)}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <span className="text-lg font-semibold">Verse</span>
-                          <textarea
-                            placeholder="Verse (e.g. John 3:16)"
-                            value={verseInput}
-                            required
-                            rows={1}
-                            onChange={handleChange}
-                            className="mb-3 w-full resize-none overflow-hidden border border-muted-foreground rounded px-2"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2 mt-5">
-                        <span className="text-lg font-semibold">Image</span>
-                        <ImageSelector setImage={setImage} aspect={16/9} />
-                        {image && (
-                          <div className="mt-3 flex flex-row justify-center">
-                            <img
-                              src={URL.createObjectURL(image)}
-                              alt="preview"
-                              className="max-w-xs max-h-64 mt-2"
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <span className="text-lg font-semibold">Message</span>
-                      <MessageEditor
-                        message={message}
-                        setMessage={setMessage}
-                      />
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        type="button"
-                        onClick={handleClose}
-                      >
-                        Cancel
-                      </Button>
-                      <Button disabled={isSubmitting} type="submit">
-                        {isSubmitting ? "Adding Devotion..." : "Add Devotion"}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </form>
+             <AddDevotionModal 
+             onSubmit={onSubmit} 
+             closing={closing} 
+             title={title} 
+             setTitle={setTitle} 
+             verseInput={verseInput} 
+             handleChange={handleChange} 
+             setImage={setImage} 
+             image={image} 
+             message={message} 
+             setMessage={setMessage} 
+             handleClose={handleClose} 
+             isSubmitting={isSubmitting} 
+             />
             )}
           </section>
         </div>

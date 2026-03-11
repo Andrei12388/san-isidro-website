@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { fetchAuth } from "@/context/fetchAuth";
 import styles from "@/components/dashboard/sections/devotions.module.css";
 import { formatDate, toLocalDatetimeInput } from "@/lib/formatData";
+import { IconEdit } from "@tabler/icons-react";
 
 const locales = { "en-US": enUS };
 const localizer = dateFnsLocalizer({
@@ -20,7 +21,11 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-type CalendarEvent = Event & { id: string | null, creatorId: string | null, location: string | null, creatorName: string | null, allowRegistration: boolean | false };
+type CalendarEvent = Event & { id: string | null, 
+  creatorId: string | null, 
+  location: string | null, 
+  creatorName: string | null, 
+  allowRegistration: boolean | false };
 
 export default function Scheduler() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -101,19 +106,21 @@ const fetchEvents = async () => {
     Modal.setAppElement(document.body); // safest option for calendar interaction
   }, []);
 
+  const [isEditing, setIsEditing] = useState(false); // new
+
 const handleSelectEvent = (event: CalendarEvent & any) => {
   setSelectedEvent({
     ...event,
     creatorId: event.creatorId?.toString() ?? null, // ensure string type
     allowRegistration: event.allowRegistration ?? false, 
   });
-
+  
   setNewTitle(event.title ?? "");
   setDescription(event.description ?? "");
+  setStartInput(toLocalDatetimeInput(event.start));
+  setEndInput(toLocalDatetimeInput(event.end));
 
- setStartInput(toLocalDatetimeInput(event.start));
-setEndInput(toLocalDatetimeInput(event.end));
-
+  setIsEditing(false); // view mode by default
   setModalOpen(true);
 };
 
@@ -123,10 +130,10 @@ const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
 
   setNewTitle("");
   setDescription("");
+  setStartInput(toLocalDatetimeInput(start));
+  setEndInput(toLocalDatetimeInput(end));
 
- setStartInput(toLocalDatetimeInput(start));
-setEndInput(toLocalDatetimeInput(end));
-
+  setIsEditing(true); // <-- force edit mode for new event
   setModalOpen(true);
 };
 
@@ -265,29 +272,34 @@ const handleSave = async () => {
     closing ? styles.backdropOut : styles.backdropIn
   }`}
 >
-  <div className="border-b">
-  <h2 className="text-xl font-bold mb-4">
-    {selectedEvent
-      ? isOwner
-        ? "Edit Event"
-        : "Event Details"
-      : "New Event"}
-  </h2>
+  {/* Header */}
+  <div className="border-b flex justify-between items-center mb-4">
+    <h2 className="text-xl font-bold">
+      {selectedEvent
+        ? isEditing
+          ? "Edit Event"
+          : "Event Details"
+        : "New Event"}
+    </h2>
+
   </div>
 
-  {isOwner ? (
+  {/* Body */}
+  {isEditing ? (
     <>
       <input
         className="border p-2 w-full mb-3"
         placeholder="Event Title"
         value={newTitle}
         onChange={(e) => setNewTitle(e.target.value)}
+        required
       />
       <textarea
         className="border p-2 w-full mb-3"
         placeholder="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        required
       />
       <label className="text-sm">Start</label>
       <input
@@ -303,20 +315,30 @@ const handleSave = async () => {
         value={endInput}
         onChange={(e) => setEndInput(e.target.value)}
       />
-      {selectedEvent?.allowRegistration && <label className="text-sm text-green-500">Registration Allowed</label>}
+      {selectedEvent?.allowRegistration && (
+        <label className="text-sm text-green-500">Registration Allowed</label>
+      )}
     </>
   ) : (
     <>
-   <p className="mb-2 opacity-60">Posted By: {selectedEvent?.creatorName}</p> 
-    <p className="mb-2 font-bold opacity-60">{formatDate(startInput)}</p>
-      <p className="mb-2 text-2xl"><strong>{newTitle}</strong></p>
+      <p className="mb-2 opacity-60">
+        Posted By: {selectedEvent?.creatorName || "You"}
+      </p>
+      <p className="mb-2 text-sm opacity-60">{formatDate(startInput)}</p>
+      <p className="mb-2 text-2xl">
+        <strong>{newTitle}</strong>
+      </p>
       <p className="mb-2 opacity-75 py-2">{description}</p>
-        {selectedEvent?.allowRegistration && <label className="text-sm text-green-500">Registration Allowed</label>}
+      {selectedEvent?.allowRegistration && (
+        <label className="text-sm text-green-500">Registration Allowed</label>
+      )}
     </>
   )}
 
+  {/* Footer buttons */}
   <div className="flex justify-end gap-2 mt-4">
-    {isOwner && selectedEvent && (
+    {/* Delete button (only visible in edit mode) */}
+    {isEditing && selectedEvent && (
       <button
         className={`px-4 py-2 rounded text-white font-semibold transition 
                     ${loading ? "bg-red-300 cursor-not-allowed" : "bg-red-500 hover:bg-red-600"}`}
@@ -327,25 +349,37 @@ const handleSave = async () => {
       </button>
     )}
 
+    {/* Edit button for existing event */}
+    {selectedEvent && !isEditing && (
+       <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
+            >
+              <IconEdit size={20} />
+            </button>
+    )}
+
+    {/* Close button */}
     <button
       className={`px-4 py-2 rounded border border-gray-300 font-medium transition
                   ${loading ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-800 hover:bg-gray-50"}`}
       onClick={handleClose}
       disabled={loading}
     >
-      {isOwner && selectedEvent ? "Cancel" : "Close"}
+      Close
     </button>
 
-    {isOwner && (
-        <button
-          className={`px-4 py-2 rounded font-semibold transition
-                      ${loading ? "bg-blue-200 text-blue-400 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
-          onClick={handleSave}
-          disabled={loading}
-        >
-          Save
-        </button>
-      )}
+    {/* Save button (only visible in edit mode) */}
+    {isEditing && (
+      <button
+        className={`px-4 py-2 rounded font-semibold transition
+                    ${loading ? "bg-blue-200 text-blue-400 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
+        onClick={handleSave}
+        disabled={loading}
+      >
+        {isEditing ? 'Save' : 'Post'}
+      </button>
+    )}
   </div>
 </Modal>
     </div>

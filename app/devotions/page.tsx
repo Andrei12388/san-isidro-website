@@ -13,6 +13,7 @@ import DOMPurify from "dompurify";
 import HoverCard from "@/components/userCard/hoverCard";
 import { useRouter } from "next/navigation";
 import { ImageCropperProvider } from "@/context/ImageCropperContext";
+import { AddDevotionModal, DevotionCommentItem, DevotionItem } from "@/components/dashboard/sections/devotions";
 
 function CommentActions({
   onEdit,
@@ -65,19 +66,33 @@ interface UserType {
   id: number;
 }
 
+type CommentType = {
+  userId: number;
+  id: number;
+  name: string;
+  comment: string;
+  time: string;
+  image: string;
+};
+
 interface DevotionType {
   id: number;
   title: string;
   content: string;
   image: string;
+  verse: string;
+  message: string;
   scriptureReference?: string;
   devotionDate: string;
   createdAt: string;
   updatedAt: string;
-  comments: any[];
+  comments: DevotionCommentItem[];
   likesCount: number;
   userLiked: boolean;
-  user: {
+  heart: number;
+  heartActive: boolean;
+  
+  user?: {
     id: number;
     name: string;
     profileImage?: string;
@@ -187,10 +202,12 @@ export default function Page() {
 
   const handleClose = () => {
     setClosing(true);
+
     setTimeout(() => {
       setSelected(null);
       setClosing(false);
       setComment("");
+      setAddDevotion(false);
     }, 300);
   };
 
@@ -291,6 +308,142 @@ export default function Page() {
       console.error("Error adding comment:", error);
     }
   };
+
+  //add Devotion Method
+const [addDevotion, setAddDevotion] = useState(false);
+const [title, setTitle] = useState("");
+const [message, setMessage] = useState("");
+const [image, setImage] = useState<File | null>(null);
+const [verseInput, setVerseInput] = useState("");
+const [isSubmitting, setIsSubmitting] = useState(false);
+ const [commentsById, setCommentsById] = useState<
+    Record<number, CommentType[]>
+  >({});
+ const addDevotionToState = (newDev: DevotionType) => {
+    setDevotions((prev) => [newDev, ...prev]);
+    setCommentsById((prev) => ({ ...prev, [newDev.id]: [] }));
+  };
+
+const openAddDevotion = () => {
+  setAddDevotion(true);
+  setTitle("");
+  setVerseInput("");
+  setMessage("");
+  setImage(null);
+};
+
+ const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setVerseInput(e.target.value);
+
+    e.target.style.height = "auto";
+    e.target.style.height = e.target.scrollHeight + "px";
+  };
+
+const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!access_token) {
+      console.warn("no access token, user probably not authenticated");
+      alert("You must be logged in to add a devotion.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    let uploadedImageUrl = "images/defaultDevotion.jpg"; // default fallback
+
+    // 1️⃣ Upload image to Cloudinary if user selected one
+    if (image) {
+      try {
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+        const uploadPreset = "unsigned_image"; // make sure this exists in Cloudinary
+
+        const formData = new FormData();
+        formData.append("file", image);
+        formData.append("upload_preset", uploadPreset);
+
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
+
+        const data = await res.json();
+        uploadedImageUrl = data.secure_url;
+        console.log("Cloudinary upload success:", uploadedImageUrl);
+      } catch (err) {
+        console.error("Cloudinary upload failed:", err);
+        alert("Failed to upload image. Using default.");
+      }
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/api/postgre/devotions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+        body: JSON.stringify({
+          title,
+          content: message,
+          scriptureReference: verseInput,
+          image: uploadedImageUrl, // use Cloudinary URL instead of blob
+          devotionDate: new Date().toISOString(),
+        }),
+      });
+
+      const result = await res.json().catch(() => null);
+      if (!res.ok) {
+        const msg = result?.error || res.statusText || "unknown error";
+        throw new Error(msg);
+      }
+
+      const created = result.data;
+      const newDevotion: DevotionType = {
+        id: created.id,
+        title: created.title,
+        content: created.content,
+        image: created.image,
+        message: created.content,
+        verse: created.scriptureReference || "",
+        scriptureReference: created.scriptureReference || "",
+        devotionDate: created.devotionDate || new Date().toISOString(),
+        createdAt: created.createdAt || new Date().toISOString(),
+        updatedAt: created.updatedAt || new Date().toISOString(),
+
+        comments: [],
+        likesCount: 0,
+        userLiked: false,
+
+        heart: 0,
+        heartActive: false,
+
+        user: created.user
+          ? {
+              id: created.user.id,
+              name: created.user.name,
+              profileImage:
+                created.user.personalInformation?.profileImage || undefined,
+            }
+          : undefined,
+      };
+      addDevotionToState(newDevotion);
+    } catch (error: any) {
+      console.error("Error submitting devotion:", error);
+      alert(`Unable to submit devotion: ${error.message}`);
+      setIsSubmitting(false);
+      return;
+    }
+
+    setIsSubmitting(false);
+    handleClose();
+  };
+
+
+
+  //End add devotion method
 
   const handleEditComment = (devotionId: number, commentIdx: number) => {
     const devotion = devotions.find((d) => d.id === devotionId);
@@ -485,6 +638,12 @@ export default function Page() {
                 </p>
               </div>
             )}
+            <div className="fixed bottom-10 right-10 z-50">
+                <Button onClick={openAddDevotion}>
+                  <IconPlus />
+                  Add Devotion
+                </Button>
+              </div>
 
             {!isLoading && devotions.length > 0 && (
               <section className="grid gap-4 sm:gap-6 [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]">
@@ -567,7 +726,7 @@ export default function Page() {
             {/* Modal */}
             {selected && (
               <div
-                className={`fixed inset-0 bg-black/40 flex justify-center items-start p-4 z-100 overflow-y-auto ${
+                className={`fixed inset-0 bg-black/40 flex justify-center items-start lg:items-center p-4 z-100 overflow-y-auto ${
                   closing ? styles.backdropOut : styles.backdropIn
                 }`}
                 onClick={handleClose}
@@ -622,16 +781,31 @@ export default function Page() {
                             {selected.title}
                           </h2>
                           <span className="text-muted-foreground text-sm">
-                            {selected.user?.name || "Unknown User"}
+                            <HoverCard
+                                          userId={selected.user?.id || 0}
+                                          name={selected.user?.name || "Unknown"}
+                                          title={"Member"}
+                                          image={
+                                            selected.user?.profileImage ||
+                                            "/images/userIcon.png"
+                                          }
+                                          onView={() =>
+                                            handleUserClick(selected.user?.id)
+                                          }
+                                        >
+                                          <span
+                                            className="font-semibold text-sm cursor-pointer hover:underline"
+                                          >
+                                            {selected.user?.name || "Unknown User"}
+                                          </span>
+                                        </HoverCard>
+                           
                           </span>
                         </div>
                         <div className="flex flex-row items-center justify-between mb-5">
-                          <button
-                            className="px-4 py-2 bg-background text-foreground rounded cursor-pointer"
-                            onClick={handleClose}
-                          >
-                            Close
-                          </button>
+                           <Button variant="outline" type="button" onClick={handleClose}>
+                          Close
+                        </Button>
                         </div>
                       </div>
                       <div className="flex flex-row justify-between mb-2">
@@ -647,7 +821,7 @@ export default function Page() {
                           />
                           {selected.likesCount}
                         </span>
-                        <span className="flex flex-row justify-center items-center gap-1 text-muted-foreground">
+                        <span className="flex flex-row justify-center items-center gap-1 text-foreground">
                           <FaCommentDots size={22} />
                           {selected.comments.length}
                         </span>
@@ -666,9 +840,9 @@ export default function Page() {
                               <div key={c.id} className="rounded p-3">
                                 <div className="flex items-start gap-2">
                               <HoverCard
-                                          userId={c.user?.id}
+                                          userId={c.user?.id || 0}
                                           name={c.user?.name || "Unknown"}
-                                          title={c.user?.title || "Member"}
+                                          title={"Member"}
                                           image={
                                             c.user?.profileImage ||
                                             "/images/userIcon.png"
@@ -690,9 +864,9 @@ export default function Page() {
                                     <div className="flex justify-between items-start gap-2">
                                       <div>
                                         <HoverCard
-                                          userId={c.user?.id}
+                                          userId={c.user?.id || 0}
                                           name={c.user?.name || "Unknown"}
-                                          title={c.user?.title || "Member"}
+                                          title={"Member"}
                                           image={
                                             c.user?.profileImage ||
                                             "/images/userIcon.png"
@@ -782,6 +956,22 @@ export default function Page() {
               </div>
             )}
           </div>
+           {addDevotion && (
+             <AddDevotionModal 
+             onSubmit={onSubmit} 
+             closing={closing} 
+             title={title} 
+             setTitle={setTitle} 
+             verseInput={verseInput} 
+             handleChange={handleChange} 
+             setImage={setImage} 
+             image={image} 
+             message={message} 
+             setMessage={setMessage} 
+             handleClose={handleClose} 
+             isSubmitting={isSubmitting} 
+             />
+            )}
         </div>
       </main>
       </ImageCropperProvider>

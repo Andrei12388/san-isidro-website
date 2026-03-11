@@ -25,7 +25,7 @@ export default function BioEditor({
 
     extensions: [
       StarterKit,
-      // ✅ single line break instead of paragraph
+     
       HardBreak.configure({
         HTMLAttributes: {
           class: "block",
