@@ -43,6 +43,10 @@ const chartConfig = {
     label: "Female",
     color: "var(--primary)",
   },
+   total: {
+    label: "Total",
+    color: "var(--primary)",
+  },
 } satisfies ChartConfig;
 
 interface Event {
@@ -87,7 +91,7 @@ export function ChartAreaInteractive() {
   const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = React.useState("90d");
 
-  const [chartData, setChartData] = React.useState<{ date: string; male: number; female: number }[]>([]);
+  const [chartData, setChartData] = React.useState<{ date: string; male: number; female: number, total: number }[]>([]);
   const [loading, setLoading] = React.useState(true);
 
 
@@ -199,6 +203,8 @@ React.useEffect(() => {
                 <stop offset="5%" stopColor="#ec4899" stopOpacity={0.8} />
                 <stop offset="95%" stopColor="#ec4899" stopOpacity={0.1} />
               </linearGradient>
+
+               
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
@@ -230,6 +236,7 @@ React.useEffect(() => {
                 const item = payload?.[0]?.payload;
                 const date = new Date(value || "");
                 const startDate = toLocalDatetimeInput(date)
+                
                 return `${item?.eventName || ""} - ${formatDateToDayWithYear(startDate) || ""}`;
               }}
             />
@@ -248,6 +255,14 @@ React.useEffect(() => {
               fill="url(#fillMale)"
               stroke="#3b82f6"
             />
+
+            <Area
+            dataKey="total"
+            type="linear"
+            fill="url(#fillTotal)"
+            stroke="#facc15"
+            strokeWidth={1}
+          />
           </AreaChart>
         </ChartContainer>
       </CardContent>

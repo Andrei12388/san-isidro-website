@@ -24,18 +24,21 @@ export async function GET(request: NextRequest) {
     const chartData = events.map((event) => {
       let male = 0;
       let female = 0;
+      let total = 0;
 
       event.attendances.forEach((att) => {
         if (!att.isPresent) return;
         const gender = att.user.personalInformation?.gender;
         if (gender === "male") male++;
         else if (gender === "female") female++;
+        total = male + female;
       });
 
       return {
         date: event.start.toISOString().split("T")[0], // "YYYY-MM-DD"
         male,
         female,
+        total,
         eventName: event.title
       };
     });
