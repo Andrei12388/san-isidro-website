@@ -723,8 +723,11 @@ export default function DevotionsSection() {
     <>
     <ImageCropperProvider>
     <div className="flex flex-1 flex-col">
-      <div className="fixed bottom-10 z-90 right-10">
+      <div className="flex flex-row gap-2 fixed bottom-10 z-90 right-10">
         {" "}
+        <Button onClick={() => router.push(`/devotions`)}>
+         View All Devotions
+        </Button>
         <Button onClick={openAddDevotion}>
           <IconPlus /> Add Devotion
         </Button>
@@ -732,7 +735,7 @@ export default function DevotionsSection() {
 
       <div className="@container/main flex flex-1 flex-col gap-2">
         <span className="text-center text-xl font-bold mt-3">
-          Devotion Wall
+          Your Devotions
         </span>
 
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">

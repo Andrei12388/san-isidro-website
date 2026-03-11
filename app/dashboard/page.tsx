@@ -115,6 +115,7 @@ export default function Page() {
                     <div className="px-4 lg:px-6">
                       <ChartAreaInteractive />
                     </div>
+                    <MembersSection />
                   </div>
                 )}
               </div>
@@ -126,6 +127,7 @@ export default function Page() {
         {activeItem === "Members" && <MembersSection />}
         {activeItem === "Devotions" && <DevotionsSection />}
         {activeItem === "Calendar" && <CalendarSection />}
+        {activeItem === "Calendar Summary" && <CalendarSection />}
         {activeItem === "Attendance" && <AttendanceSection />}
         {activeItem === "Attendance Summary" && <AttendanceSection />}
         {activeItem === "Check In" && <CheckInSection />}

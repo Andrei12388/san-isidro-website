@@ -73,16 +73,18 @@ const data = {
       title: "Calendar",
       url: "#calendar",
       icon: IconCalendar,
-    },
-    {
-      title: "Members",
-      url: "#",
-      icon: IconUsers,
-    },
-    {
+       items: [
+         {
+      title: "Calendar Summary",
+      url: "#calendar",
+      icon: IconCalendar,
+       },
+         {
       title: "Events",
       url: "#events",
       icon: IconListDetails,
+    },
+      ],
     },
     {
       title: "Projects",

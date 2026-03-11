@@ -185,6 +185,9 @@ const handleSave = async () => {
  const handleDelete = async () => {
   if (!selectedEvent || !access_token) return;
 
+  const confirmDelete = confirm("Are you sure you want to delete this event?");
+  if (!confirmDelete) return;
+
   setLoading(true);
 
   try {
