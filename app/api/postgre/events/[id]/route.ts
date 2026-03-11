@@ -22,13 +22,21 @@ export async function GET(
         creator: {
           select: { id: true, name: true },
         },
-        attendees: {
-          include: {
-            user: {
-              select: { id: true, name: true },
+       attendees: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    personalInformation: {
+                      select: {
+                        profileImage: true
+                      }
+                    }
+                  }
+                }
+              }
             },
-          },
-        },
       },
     });
 

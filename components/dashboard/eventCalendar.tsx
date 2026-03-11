@@ -226,6 +226,7 @@ const handleSave = async () => {
       borderRadius: "6px",
       opacity: 0.9,
       color: "white",
+      fontWeight: "bold",
       border: "none",
 
       display: "flex",
@@ -319,7 +320,7 @@ const handleSave = async () => {
         onChange={(e) => setEndInput(e.target.value)}
       />
       {selectedEvent?.allowRegistration && (
-        <label className="text-sm text-green-500">Registration Allowed</label>
+        <label className="text-sm text-green-500">Registration Allowed (Full Details on Events)</label>
       )}
     </>
   ) : (

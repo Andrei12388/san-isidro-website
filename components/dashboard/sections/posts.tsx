@@ -14,16 +14,135 @@ import { formatDate, formatDateToDay, formatDateToDayNoMonth, formatDateToHours,
 import ImageSelector from "@/lib/imageSelector";
 import { ImageCropperProvider } from "@/context/ImageCropperContext";
 import { useSidebar } from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
+import HoverCard from "@/components/userCard/hoverCard";
 
-export function Posts({ title, image, description, start, end, location, onEdit }: CalendarEvent & { onEdit?: () => void }) {
+type Attendee = {
+  id: number
+  eventId: number
+  userId: number
+  joinedAt: string
+  status: string
+
+  user: {
+    id: number
+    name: string
+
+    personalInformation?: {
+      profileImage?: string | null
+    } | null
+  }
+}
+
+export function Posts({id: eventId, title, image, description, start, end, location, onEdit }: CalendarEvent & { onEdit?: () => void }) {
   const startDate = toLocalDatetimeInput(start)
   const endDate = toLocalDatetimeInput(end)
 
+  const [joining, setJoining] = useState(false);
+  const [joined, setJoined] = useState(false);
+  const [attendees, setAttendees] = useState<Attendee[]>([])
+  const [attendeeCount, setAttendeeCount] = useState(0);
+
+  const router = useRouter();
+
   const sameDate = startDate === endDate;
 
-   const { access_token, id } = useAuth();
+   const { access_token, id: userId, profileImage, name } = useAuth();
     const [open, setOpen] = useState(false)
     const [mounted, setMounted] = useState(false);
+
+    const handleUserClick = (userId: number | undefined) => {
+    if (!userId) return;
+    router.push(`/user/${userId}`);
+  };
+
+   useEffect(() => {
+  if (!access_token) return;
+
+  const fetchJoinStatus = async () => {
+    try {
+      const res = await fetchAuth(
+        `/api/postgre/events/${eventId}`,
+        access_token,
+        { method: "GET" }
+      );
+
+      const json = await res.json();
+
+      if (!res.ok) return;
+
+      const attendeeList = json.data.attendees || [];
+
+      setAttendees(attendeeList);
+      setAttendeeCount(attendeeList.length);
+
+      const isJoined = attendeeList.some(
+        (a: any) => String(a.userId) === String(userId)
+      );
+
+      setJoined(isJoined);
+    } catch (err) {
+      console.error("Join status fetch error:", err);
+    }
+  };
+
+  fetchJoinStatus();
+}, [open]);
+
+//handle join event
+       const handleJoin = async () => {
+          if (!access_token || !eventId || !userId) return;
+
+          setJoining(true);
+
+          try {
+            const res = await fetchAuth(
+              `/api/postgre/events/${eventId}/join`,
+              access_token,
+              { method: joined ? "DELETE" : "POST" }
+            );
+
+            if (!res.ok) throw new Error("Failed to join/leave event");
+
+            const data = await res.json();
+
+            if (joined) {
+              // User is leaving
+              setJoined(false);
+              setAttendeeCount((prev) => prev - 1);
+
+              setAttendees((prev) =>
+                prev.filter((a) => a.userId !== userId)
+              );
+            } else {
+              // User just joined, use API response for full attendee
+              const newAttendee: Attendee = {
+                id: data.data.id,
+                eventId: data.data.eventId,
+                userId: data.data.userId,
+                joinedAt: data.data.joinedAt,
+                status: data.data.status,
+                user: {
+                  id: userId,
+                  name: name || "", // Optional, or fetch from session if available
+                  personalInformation: {
+                    profileImage: profileImage || null, // can set real profile image if you have it
+                  },
+                },
+              };
+
+              setJoined(true);
+              setAttendeeCount((prev) => prev + 1);
+
+              setAttendees((prev) => [...prev, newAttendee]);
+            }
+          } catch (err) {
+            console.error("Join error:", err);
+          } finally {
+            setJoining(false);
+          }
+        };
 
       useEffect(() => {
         setMounted(true);
@@ -93,26 +212,59 @@ export function Posts({ title, image, description, start, end, location, onEdit 
 
         </div>
 
-        {/* Buttons */}
-        <div className="flex flex-row justify-end px-2 mb-2 gap-2">
+                {/* Buttons */}
+                <div className="flex flex-row justify-between px-4 mb-2 gap-2">
 
-          {authActiveItem === "Events" && (
-            <button
-              onClick={onEdit}
-              className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
-            >
-              <IconEdit size={20} />
-            </button>
-          )}
+                  <div className="flex items-center gap-2">
 
-          <button
-            onClick={() => setOpen(true)}
-            className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
-          >
-            Read More
-          </button>
+                    <div className="flex -space-x-2">
+                      {attendees.slice(0, 3).map((a) => (
+                        <Avatar key={a.userId} className="h-8 w-8 border">
+                          <HoverCard
+                            userId={a.user?.id || 0}
+                            name={a.user?.name || "Unknown"}
+                            title={"Member"}
+                            image={
+                              a.user?.personalInformation?.profileImage ||
+                              "/images/userIcon.png"
+                            }
+                            onView={() =>
+                              handleUserClick(a.user?.id)
+                            }
+                          >
+                            <AvatarImage src={a.user?.personalInformation?.profileImage || ""} />
+                          </HoverCard>
+                          
+                          <AvatarFallback>
+                            {a.user?.name?.[0] || "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                      ))}
+                    </div>
 
-        </div>
+                    <span className="text-sm text-muted-foreground">
+                    {attendeeCount >= 4 && `+ ${attendeeCount}`} 
+                    </span>
+
+                  </div>
+                      <div className="flex flex-row gap-2">
+                  {authActiveItem === "Events" && (
+                    <button
+                      onClick={onEdit}
+                      className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
+                    >
+                      <IconEdit size={20} />
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => setOpen(true)}
+                    className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
+                  >
+                    Read More
+                  </button>
+                    </div>
+                </div>
       </div>
 
       {/* Modal */}
@@ -173,15 +325,65 @@ export function Posts({ title, image, description, start, end, location, onEdit 
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end gap-2 px-6 pb-6">
+            <div className="flex justify-between gap-2 px-6 pb-6">
 
+               <div className="flex items-center gap-2">
+
+                    <div className="flex -space-x-2">
+                      {attendees.slice(0, 5).map((a) => (
+                        <Avatar key={a.userId} className="h-8 w-8 border">
+                         <HoverCard
+                            userId={a.user?.id || 0}
+                            name={a.user?.name || "Unknown"}
+                            title={"Member"}
+                            image={
+                              a.user?.personalInformation?.profileImage ||
+                              "/images/userIcon.png"
+                            }
+                            onView={() =>
+                              handleUserClick(a.user?.id)
+                            }
+                          >
+                            <AvatarImage src={a.user?.personalInformation?.profileImage || ""} />
+                          </HoverCard>
+                          <AvatarFallback>
+                            {a.user?.name?.[0] || "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                      ))}
+                    </div>
+
+                    <span className="text-sm text-muted-foreground">
+                      {attendeeCount} {attendeeCount === 1 ? "person" : "people"} joined
+                    </span>
+
+                  </div>
+                  <div className="flex flex-row gap-2">
+              {/*Join Button */}
               <button
-                className="px-4 py-2 rounded border border-gray-300 font-medium transition bg-white text-gray-800 hover:bg-gray-50"
-                onClick={handleClose}
-              >
-                Close
-              </button>
+              onClick={handleJoin}
+              disabled={joining}
+              className={`px-4 py-2 rounded-lg text-sm font-medium cursor-pointer
+                ${joined 
+                  ? "bg-red-500 text-white" 
+                  : "bg-green-600 text-white"
+                }`}
+            >
+              {joining
+                ? "Processing..."
+                : joined
+                ? "Leave Event"
+                : "Join Event"}
+            </button>
 
+                <button
+                  className="px-4 py-2 rounded border border-gray-300 font-medium transition bg-white text-gray-800 hover:bg-gray-50"
+                  onClick={handleClose}
+                >
+                  Close
+                </button>
+
+            </div>
             </div>
 
           </Modal>
