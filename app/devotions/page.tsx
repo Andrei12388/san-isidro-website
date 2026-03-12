@@ -814,8 +814,8 @@ const onSubmit = async (e: React.FormEvent) => {
                           onClick={() => handleHeartReact(selected.id)}
                         >
                           <IconHeart
-                            fill={selected.userLiked ? "red" : "white"}
-                            color={selected.userLiked ? "red" : "black"}
+                            fill={selected.userLiked ? "red" : "none"}
+                            color={selected.userLiked ? "red" : "currentColor"}
                             className={styles.heart}
                             size={22}
                           />

@@ -52,11 +52,6 @@ export function Posts({id: eventId, title, image, description, start, end, locat
     const [open, setOpen] = useState(false)
     const [mounted, setMounted] = useState(false);
 
-    const handleUserClick = (userId: number | undefined) => {
-    if (!userId) return;
-    router.push(`/user/${userId}`);
-  };
-
    useEffect(() => {
   if (!access_token) return;
 
@@ -228,9 +223,6 @@ export function Posts({id: eventId, title, image, description, start, end, locat
                               a.user?.personalInformation?.profileImage ||
                               "/images/userIcon.png"
                             }
-                            onView={() =>
-                              handleUserClick(a.user?.id)
-                            }
                           >
                             <AvatarImage src={a.user?.personalInformation?.profileImage || ""} />
                           </HoverCard>
@@ -339,9 +331,6 @@ export function Posts({id: eventId, title, image, description, start, end, locat
                             image={
                               a.user?.personalInformation?.profileImage ||
                               "/images/userIcon.png"
-                            }
-                            onView={() =>
-                              handleUserClick(a.user?.id)
                             }
                           >
                             <AvatarImage src={a.user?.personalInformation?.profileImage || ""} />

@@ -334,7 +334,7 @@ const handleSave = async () => {
       </p>
       <p className="mb-2 opacity-75 py-2">{description}</p>
       {selectedEvent?.allowRegistration && (
-        <label className="text-sm text-green-500">Registration Allowed</label>
+        <label className="text-sm text-green-500">Registration Allowed (Full Details on Events)</label>
       )}
     </>
   )}

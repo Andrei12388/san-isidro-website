@@ -797,8 +797,8 @@ export default function DevotionsSection() {
                   >
                     <IconHeart
                                   className={styles.heart}
-                                  fill={item.heartActive ? "red" : "white"}
-                                  color={item.heartActive ? "red" : "black"}
+                                  fill={item.heartActive ? "red" : "none"}
+                                  color={item.heartActive ? "red" : "currentColor"}
                                   size={24}
                                 />
                     {item.heart}
@@ -903,8 +903,8 @@ export default function DevotionsSection() {
                           onClick={() => handleHeartReact(selected.id)}
                         >
                           <IconHeart
-                            fill={selected.heartActive ? "red" : "white"}
-                            color={selected.heartActive ? "red" : "black"}
+                            fill={selected.heartActive ? "red" : "none"}
+                            color={selected.heartActive ? "red" : "currentColor"}
                             className={styles.heart}
                             size={22}
                           />

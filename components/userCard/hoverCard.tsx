@@ -23,8 +23,6 @@ export default function HoverCard({
   name,
   title,
   image,
-  onView,
-  onMessage,
   className,
   cardClassName,
 }: HoverCardProps) {
@@ -109,27 +107,17 @@ export default function HoverCard({
                 </div>
               </div>
 
-              {(onView || onMessage) && (
+             
                 <div className="mt-3 flex gap-2">
-                  {onView && (
+                
                     <button
                       onClick={() => router.push(`/user/${userId}`)}
                       className="flex-1 px-3 py-1 border border-foreground rounded cursor-pointer"
                     >
                       View Profile
                     </button>
-                  )}
-
-                  {onMessage && (
-                    <button
-                      onClick={onMessage}
-                      className="flex-1 px-3 py-1 bg-secondary rounded"
-                    >
-                      Message
-                    </button>
-                  )}
                 </div>
-              )}
+            
             </div>
           </div>,
           document.body
