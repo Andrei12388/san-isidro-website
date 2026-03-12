@@ -351,14 +351,18 @@ export function Posts({id: eventId, title, image, description, start, end, locat
               {/*Join Button */}
               <button
               onClick={handleJoin}
-              disabled={joining}
-              className={`px-4 py-2 rounded-lg text-sm font-medium cursor-pointer
-                ${joined 
-                  ? "bg-red-500 text-white" 
-                  : "bg-green-600 text-white"
-                }`}
+              disabled={joining || !access_token}
+              className={`px-4 py-2 rounded-lg text-sm font-medium
+                ${!access_token
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : joined
+                  ? "bg-red-500 text-white"
+                  : "bg-green-600 text-white"}
+              `}
             >
-              {joining
+              {!access_token
+                ? "Log in to join"
+                : joining
                 ? "Processing..."
                 : joined
                 ? "Leave Event"
