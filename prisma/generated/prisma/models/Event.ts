@@ -57,6 +57,7 @@ export type EventMinAggregateOutputType = {
   isRegular: boolean | null
   recurrence: string | null
   allowRegistration: boolean | null
+  color: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -76,6 +77,7 @@ export type EventMaxAggregateOutputType = {
   isRegular: boolean | null
   recurrence: string | null
   allowRegistration: boolean | null
+  color: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -95,6 +97,7 @@ export type EventCountAggregateOutputType = {
   isRegular: number
   recurrence: number
   allowRegistration: number
+  color: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -132,6 +135,7 @@ export type EventMinAggregateInputType = {
   isRegular?: true
   recurrence?: true
   allowRegistration?: true
+  color?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -151,6 +155,7 @@ export type EventMaxAggregateInputType = {
   isRegular?: true
   recurrence?: true
   allowRegistration?: true
+  color?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -170,6 +175,7 @@ export type EventCountAggregateInputType = {
   isRegular?: true
   recurrence?: true
   allowRegistration?: true
+  color?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -276,6 +282,7 @@ export type EventGroupByOutputType = {
   isRegular: boolean
   recurrence: string | null
   allowRegistration: boolean
+  color: string
   createdAt: Date
   updatedAt: Date
   _count: EventCountAggregateOutputType | null
@@ -318,6 +325,7 @@ export type EventWhereInput = {
   isRegular?: Prisma.BoolFilter<"Event"> | boolean
   recurrence?: Prisma.StringNullableFilter<"Event"> | string | null
   allowRegistration?: Prisma.BoolFilter<"Event"> | boolean
+  color?: Prisma.StringFilter<"Event"> | string
   createdAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -340,6 +348,7 @@ export type EventOrderByWithRelationInput = {
   isRegular?: Prisma.SortOrder
   recurrence?: Prisma.SortOrderInput | Prisma.SortOrder
   allowRegistration?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   creator?: Prisma.UserOrderByWithRelationInput
@@ -365,6 +374,7 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   isRegular?: Prisma.BoolFilter<"Event"> | boolean
   recurrence?: Prisma.StringNullableFilter<"Event"> | string | null
   allowRegistration?: Prisma.BoolFilter<"Event"> | boolean
+  color?: Prisma.StringFilter<"Event"> | string
   createdAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -387,6 +397,7 @@ export type EventOrderByWithAggregationInput = {
   isRegular?: Prisma.SortOrder
   recurrence?: Prisma.SortOrderInput | Prisma.SortOrder
   allowRegistration?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EventCountOrderByAggregateInput
@@ -414,6 +425,7 @@ export type EventScalarWhereWithAggregatesInput = {
   isRegular?: Prisma.BoolWithAggregatesFilter<"Event"> | boolean
   recurrence?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
   allowRegistration?: Prisma.BoolWithAggregatesFilter<"Event"> | boolean
+  color?: Prisma.StringWithAggregatesFilter<"Event"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
 }
@@ -431,6 +443,7 @@ export type EventCreateInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutCreatedEventsInput
@@ -453,6 +466,7 @@ export type EventUncheckedCreateInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   attendees?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutEventInput
@@ -472,6 +486,7 @@ export type EventUpdateInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutCreatedEventsNestedInput
@@ -494,6 +509,7 @@ export type EventUncheckedUpdateInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendees?: Prisma.EventAttendeeUncheckedUpdateManyWithoutEventNestedInput
@@ -515,6 +531,7 @@ export type EventCreateManyInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -532,6 +549,7 @@ export type EventUpdateManyMutationInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -551,6 +569,7 @@ export type EventUncheckedUpdateManyInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -580,6 +599,7 @@ export type EventCountOrderByAggregateInput = {
   isRegular?: Prisma.SortOrder
   recurrence?: Prisma.SortOrder
   allowRegistration?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -607,6 +627,7 @@ export type EventMaxOrderByAggregateInput = {
   isRegular?: Prisma.SortOrder
   recurrence?: Prisma.SortOrder
   allowRegistration?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -626,6 +647,7 @@ export type EventMinOrderByAggregateInput = {
   isRegular?: Prisma.SortOrder
   recurrence?: Prisma.SortOrder
   allowRegistration?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -734,6 +756,7 @@ export type EventCreateWithoutCreatorInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   attendees?: Prisma.EventAttendeeCreateNestedManyWithoutEventInput
@@ -754,6 +777,7 @@ export type EventUncheckedCreateWithoutCreatorInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   attendees?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutEventInput
@@ -804,6 +828,7 @@ export type EventScalarWhereInput = {
   isRegular?: Prisma.BoolFilter<"Event"> | boolean
   recurrence?: Prisma.StringNullableFilter<"Event"> | string | null
   allowRegistration?: Prisma.BoolFilter<"Event"> | boolean
+  color?: Prisma.StringFilter<"Event"> | string
   createdAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Event"> | Date | string
 }
@@ -821,6 +846,7 @@ export type EventCreateWithoutAttendeesInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutCreatedEventsInput
@@ -842,6 +868,7 @@ export type EventUncheckedCreateWithoutAttendeesInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   attendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutEventInput
@@ -876,6 +903,7 @@ export type EventUpdateWithoutAttendeesInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutCreatedEventsNestedInput
@@ -897,6 +925,7 @@ export type EventUncheckedUpdateWithoutAttendeesInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutEventNestedInput
@@ -915,6 +944,7 @@ export type EventCreateWithoutAttendancesInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutCreatedEventsInput
@@ -936,6 +966,7 @@ export type EventUncheckedCreateWithoutAttendancesInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   attendees?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutEventInput
@@ -970,6 +1001,7 @@ export type EventUpdateWithoutAttendancesInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutCreatedEventsNestedInput
@@ -991,6 +1023,7 @@ export type EventUncheckedUpdateWithoutAttendancesInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendees?: Prisma.EventAttendeeUncheckedUpdateManyWithoutEventNestedInput
@@ -1010,6 +1043,7 @@ export type EventCreateManyCreatorInput = {
   isRegular?: boolean
   recurrence?: string | null
   allowRegistration?: boolean
+  color?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1027,6 +1061,7 @@ export type EventUpdateWithoutCreatorInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendees?: Prisma.EventAttendeeUpdateManyWithoutEventNestedInput
@@ -1047,6 +1082,7 @@ export type EventUncheckedUpdateWithoutCreatorInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   attendees?: Prisma.EventAttendeeUncheckedUpdateManyWithoutEventNestedInput
@@ -1067,6 +1103,7 @@ export type EventUncheckedUpdateManyWithoutCreatorInput = {
   isRegular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recurrence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allowRegistration?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1126,6 +1163,7 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   isRegular?: boolean
   recurrence?: boolean
   allowRegistration?: boolean
+  color?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1149,6 +1187,7 @@ export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   isRegular?: boolean
   recurrence?: boolean
   allowRegistration?: boolean
+  color?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1169,6 +1208,7 @@ export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   isRegular?: boolean
   recurrence?: boolean
   allowRegistration?: boolean
+  color?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1189,11 +1229,12 @@ export type EventSelectScalar = {
   isRegular?: boolean
   recurrence?: boolean
   allowRegistration?: boolean
+  color?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "image" | "location" | "locationLatitude" | "locationLongitude" | "locationRadius" | "start" | "end" | "isRegular" | "recurrence" | "allowRegistration" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "creatorId" | "title" | "description" | "image" | "location" | "locationLatitude" | "locationLongitude" | "locationRadius" | "start" | "end" | "isRegular" | "recurrence" | "allowRegistration" | "color" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   attendees?: boolean | Prisma.Event$attendeesArgs<ExtArgs>
@@ -1229,6 +1270,7 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     isRegular: boolean
     recurrence: string | null
     allowRegistration: boolean
+    color: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["event"]>
@@ -1671,6 +1713,7 @@ export interface EventFieldRefs {
   readonly isRegular: Prisma.FieldRef<"Event", 'Boolean'>
   readonly recurrence: Prisma.FieldRef<"Event", 'String'>
   readonly allowRegistration: Prisma.FieldRef<"Event", 'Boolean'>
+  readonly color: Prisma.FieldRef<"Event", 'String'>
   readonly createdAt: Prisma.FieldRef<"Event", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Event", 'DateTime'>
 }

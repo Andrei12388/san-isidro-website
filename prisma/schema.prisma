@@ -240,6 +240,8 @@ model Event {
   //
   allowRegistration Boolean @default(false) 
 
+  color       String   @default("blue") 
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

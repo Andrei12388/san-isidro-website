@@ -21,11 +21,14 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-type CalendarEvent = Event & { id: string | null, 
-  creatorId: string | null, 
-  location: string | null, 
-  creatorName: string | null, 
-  allowRegistration: boolean | false };
+type CalendarEvent = Event & {
+  id: string | null,
+  creatorId: string | null,
+  location: string | null,
+  creatorName: string | null,
+  allowRegistration: boolean | false,
+  color?: string
+};
 
 export default function Scheduler() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -36,7 +39,7 @@ export default function Scheduler() {
   );
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<View>("month");
-  const [slotData, setSlotData] = useState<{ start: Date; end: Date } | null>(
+  const [slotData, setSlotData] = useState<{ start: Date; end: Date, allowRegistration: boolean } | null>(
     null,
   );
   const [newTitle, setNewTitle] = useState("");
@@ -45,6 +48,7 @@ export default function Scheduler() {
   const { access_token, id } = useAuth();
 
   const [closing, setClosing] = useState(false);
+  const [color, setColor] = useState("blue");
 
   //event inputs
   const [description, setDescription] = useState("");
@@ -79,18 +83,19 @@ const fetchEvents = async () => {
 
     const json = await res.json();
 
-    const formatted = json.data.map((e: any) => ({
-      id: String(e.id),
-      creatorId: String(e.creatorId),
-      creatorName: e.creator?.name || "Unknown",
-      title: e.title || "Untitled Event",
-      location: e.location || "TBD",
-      description: e.description || "",
-      image: e.image || "",
-      allowRegistration: e.allowRegistration || "",
-      start: e.start ? new Date(e.start) : new Date(),
-      end: e.end ? new Date(e.end) : new Date(),
-    }));
+   const formatted = json.data.map((e: any) => ({
+    id: String(e.id),
+    creatorId: String(e.creatorId),
+    creatorName: e.creator?.name || "Unknown",
+    title: e.title || "Untitled Event",
+    location: e.location || "TBD",
+    description: e.description || "",
+    image: e.image || "",
+    allowRegistration: e.allowRegistration || "",
+    color: e.allowRegistration ? "green" : e.color || "blue",
+    start: e.start ? new Date(e.start) : new Date(),
+    end: e.end ? new Date(e.end) : new Date(),
+  }));
 
     console.log("formatted data even:", formatted);
 
@@ -114,7 +119,7 @@ const handleSelectEvent = (event: CalendarEvent & any) => {
     creatorId: event.creatorId?.toString() ?? null, // ensure string type
     allowRegistration: event.allowRegistration ?? false, 
   });
-  
+  setColor(event.allowRegistration ? "#22c55e" : event.color || "blue");
   setNewTitle(event.title ?? "");
   setDescription(event.description ?? "");
   setStartInput(toLocalDatetimeInput(event.start));
@@ -125,15 +130,16 @@ const handleSelectEvent = (event: CalendarEvent & any) => {
 };
 
 const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
-  setSlotData({ start, end });
+  setSlotData({ start, end, allowRegistration: false }); // ✅ add allowRegistration
   setSelectedEvent(null);
 
+  setColor("blue"); // default for new events
   setNewTitle("");
   setDescription("");
   setStartInput(toLocalDatetimeInput(start));
   setEndInput(toLocalDatetimeInput(end));
 
-  setIsEditing(true); // <-- force edit mode for new event
+  setIsEditing(true);
   setModalOpen(true);
 };
 
@@ -142,12 +148,13 @@ const handleSave = async () => {
     if (!newTitle.trim() || !access_token) return;
 
     setLoading(true);
-      const payload = {
-      title: newTitle,
-      description,
-      start: new Date(startInput),
-      end: new Date(endInput),
-    };
+   const payload = {
+    title: newTitle,
+    description,
+    start: new Date(startInput),
+    end: new Date(endInput),
+    color: selectedEvent?.allowRegistration ? "#22c55e" : color,
+  };
 
     // UPDATE
     if (selectedEvent) {
@@ -213,25 +220,18 @@ const handleSave = async () => {
   if (!mounted) return <div style={{ height: "700px", margin: "20px" }} />;
 
   //for designing event item
-  const eventStyleGetter = (event: CalendarEvent) => {
-  let backgroundColor = "#3174ad"; // default blue
-
-  if (event.allowRegistration) {
-    backgroundColor = "#22c55e"; // green
-  }
-
+ const eventStyleGetter = (event: CalendarEvent) => {
   return {
     style: {
-      backgroundColor,
+      backgroundColor: event.color || "#3174ad",
       borderRadius: "6px",
       opacity: 0.9,
       color: "white",
       fontWeight: "bold",
       border: "none",
-
       display: "flex",
-      alignItems: "center",  
-      justifyContent: "center", 
+      alignItems: "center",
+      justifyContent: "center",
     },
   };
 };
@@ -319,9 +319,35 @@ const handleSave = async () => {
         value={endInput}
         onChange={(e) => setEndInput(e.target.value)}
       />
-      {selectedEvent?.allowRegistration && (
+     
+      {selectedEvent?.allowRegistration ? (
         <label className="text-sm text-green-500">Registration Allowed (Full Details on Events)</label>
-      )}
+      ): (
+        <>
+         <label className="text-sm mb-1">Event Color</label>
+
+        <div className="flex gap-2 mb-4">
+          {[
+            { name: "Blue", value: "blue" },
+            { name: "Orange", value: "orange" },
+            { name: "Purple", value: "purple" },
+            { name: "Red", value: "red" },
+          ].map((c) => (
+            <button
+            key={c.value}
+            type="button"
+            onClick={() => setColor(c.value)}
+            className="w-8 h-8 rounded-full border-2 border-gray-300 relative flex items-center justify-center"
+            style={{ backgroundColor: c.value }}
+          >
+            {color === c.value && (
+              <span className="text-green-500 text-5xl font-bold absolute">✓</span>
+            )}
+          </button>
+          ))}
+        </div>
+        </>
+      ) }
     </>
   ) : (
     <>
@@ -354,8 +380,8 @@ const handleSave = async () => {
     )}
 
     {/* Edit button for existing event */}
-    {selectedEvent && !isEditing && (
-       <button
+   {selectedEvent && !isEditing && isOwner && (
+      <button
               onClick={() => setIsEditing(true)}
               className="px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium cursor-pointer"
             >

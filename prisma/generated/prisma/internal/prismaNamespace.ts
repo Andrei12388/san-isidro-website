@@ -1672,6 +1672,7 @@ export const EventScalarFieldEnum = {
   isRegular: 'isRegular',
   recurrence: 'recurrence',
   allowRegistration: 'allowRegistration',
+  color: 'color',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

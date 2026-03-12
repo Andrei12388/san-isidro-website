@@ -99,6 +99,7 @@ export async function PUT(
         end: body.end ? new Date(body.end) : undefined,
         isRegular: body.isRegular,
         recurrence: body.recurrence,
+        color: body.color || "blue",
       },
     });
 
@@ -156,6 +157,7 @@ export async function PATCH(
     if (body.end !== undefined) updateData.end = new Date(body.end);
     if (body.isRegular !== undefined) updateData.isRegular = body.isRegular;
     if (body.recurrence !== undefined) updateData.recurrence = body.recurrence;
+    if (body.color !== undefined) updateData.color = body.color; 
 
     const updated = await prisma.event.update({
       where: { id: eventId },
