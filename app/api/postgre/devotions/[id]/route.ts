@@ -5,10 +5,11 @@ import { verifyAuth } from "@/middleware/auth";
 // ------------------ GET ------------------
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const devotionId = Number(params.id);
+    const { id } = await context.params;
+    const devotionId = Number(id);
 
     if (isNaN(devotionId)) {
       return NextResponse.json({ error: "Invalid devotion ID" }, { status: 400 });
@@ -19,34 +20,29 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const currentUserId = authUser.userId;
-
     const devotion = await prisma.devotion.findUnique({
       where: { id: devotionId },
     });
 
-    if (!devotion || devotion.userId !== currentUserId) {
+    if (!devotion || devotion.userId !== authUser.userId) {
       return NextResponse.json({ error: "Devotion not found" }, { status: 404 });
     }
 
     return NextResponse.json({ data: devotion }, { status: 200 });
   } catch (error) {
     console.error("Get devotion error:", error);
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 // ------------------ PUT ------------------
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const devotionId = Number(params.id);
+    const { id } = await context.params;
+    const devotionId = Number(id);
 
     if (isNaN(devotionId)) {
       return NextResponse.json({ error: "Invalid devotion ID" }, { status: 400 });
@@ -57,13 +53,11 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const currentUserId = authUser.userId;
-
     const devotion = await prisma.devotion.findUnique({
       where: { id: devotionId },
     });
 
-    if (!devotion || devotion.userId !== currentUserId) {
+    if (!devotion || devotion.userId !== authUser.userId) {
       return NextResponse.json({ error: "Devotion not found" }, { status: 404 });
     }
 
@@ -80,21 +74,18 @@ export async function PUT(
     );
   } catch (error) {
     console.error("Update devotion error:", error);
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 // ------------------ DELETE ------------------
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const devotionId = Number(params.id);
+    const { id } = await context.params;
+    const devotionId = Number(id);
 
     if (isNaN(devotionId)) {
       return NextResponse.json({ error: "Invalid devotion ID" }, { status: 400 });
@@ -105,13 +96,11 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const currentUserId = authUser.userId;
-
     const devotion = await prisma.devotion.findUnique({
       where: { id: devotionId },
     });
 
-    if (!devotion || devotion.userId !== currentUserId) {
+    if (!devotion || devotion.userId !== authUser.userId) {
       return NextResponse.json({ error: "Devotion not found" }, { status: 404 });
     }
 
@@ -122,10 +111,6 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error("Delete devotion error:", error);
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
