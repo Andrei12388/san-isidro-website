@@ -8,33 +8,34 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-    
-    const devotionId = parseInt(id);
+    const devotionId = Number(params.id);
 
-       const authUser = await verifyAuth(request); // <-- await here
+    if (isNaN(devotionId)) {
+      return NextResponse.json({ error: "Invalid devotion ID" }, { status: 400 });
+    }
+
+    const authUser = await verifyAuth(request);
     if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const currentUserId = authUser.userId; // <-- extract userId from object
+    const currentUserId = authUser.userId;
+
     const devotion = await prisma.devotion.findUnique({
       where: { id: devotionId },
     });
 
     if (!devotion || devotion.userId !== currentUserId) {
-      return NextResponse.json(
-        { error: "Devotion not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Devotion not found" }, { status: 404 });
     }
 
     return NextResponse.json({ data: devotion }, { status: 200 });
   } catch (error) {
     console.error("Get devotion error:", error);
+
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -45,25 +46,25 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-  
-    const devotionId = parseInt(id);
+    const devotionId = Number(params.id);
 
-      const authUser = await verifyAuth(request); // <-- await here
+    if (isNaN(devotionId)) {
+      return NextResponse.json({ error: "Invalid devotion ID" }, { status: 400 });
+    }
+
+    const authUser = await verifyAuth(request);
     if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const currentUserId = authUser.userId; // <-- extract userId from object
+    const currentUserId = authUser.userId;
+
     const devotion = await prisma.devotion.findUnique({
       where: { id: devotionId },
     });
 
     if (!devotion || devotion.userId !== currentUserId) {
-      return NextResponse.json(
-        { error: "Devotion not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Devotion not found" }, { status: 404 });
     }
 
     const body = await request.json();
@@ -75,13 +76,14 @@ export async function PUT(
 
     return NextResponse.json(
       { data: updated, message: "Devotion updated" },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error("Update devotion error:", error);
+
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -92,36 +94,38 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-    
-    const devotionId = parseInt(id);
+    const devotionId = Number(params.id);
 
-       const authUser = await verifyAuth(request); // <-- await here
+    if (isNaN(devotionId)) {
+      return NextResponse.json({ error: "Invalid devotion ID" }, { status: 400 });
+    }
+
+    const authUser = await verifyAuth(request);
     if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const currentUserId = authUser.userId; // <-- extract userId from object
+    const currentUserId = authUser.userId;
+
     const devotion = await prisma.devotion.findUnique({
       where: { id: devotionId },
     });
 
     if (!devotion || devotion.userId !== currentUserId) {
-      return NextResponse.json(
-        { error: "Devotion not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Devotion not found" }, { status: 404 });
     }
 
-    await prisma.devotion.delete({ where: { id: devotionId } });
+    await prisma.devotion.delete({
+      where: { id: devotionId },
+    });
 
-    // 204 No Content responses should not have a body
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error("Delete devotion error:", error);
+
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
