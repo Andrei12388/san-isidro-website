@@ -5,10 +5,12 @@ import { verifyAuth } from "@/middleware/auth";
 // POST - create a new comment
 export async function POST(request: NextRequest) {
   try {
-    const currentUserId: number | null = verifyAuth(request);
-    if (!currentUserId) {
+       const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
 
     const { devotionId, comment } = await request.json();
     if (!devotionId || !comment || typeof comment !== "string") {

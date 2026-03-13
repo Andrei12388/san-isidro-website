@@ -9,10 +9,12 @@ interface RouteContext {
 /* ===================== PUT ===================== */
 export async function PUT(request: NextRequest, { params }: RouteContext) {
   try {
-    const currentUserId = verifyAuth(request);
-    if (!currentUserId) {
+      const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
 
     const { id } = await params; // ⭐ MUST await
     const commentId = Number(id);
@@ -51,10 +53,12 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
 /* ===================== DELETE ===================== */
 export async function DELETE(request: NextRequest, { params }: RouteContext) {
   try {
-    const currentUserId = verifyAuth(request);
-    if (!currentUserId) {
+     const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
 
     const { id } = await params; // ⭐ MUST await
     const commentId = Number(id);
