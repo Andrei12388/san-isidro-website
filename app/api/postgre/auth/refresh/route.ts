@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new access token
-    const newAccessToken = createAccessToken(payload.userId);
+    const newAccessToken = createAccessToken(payload.userId, payload.role);
 
     return NextResponse.json(
       {
