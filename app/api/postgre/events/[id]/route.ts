@@ -64,12 +64,16 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const currentUserId = verifyAuth(request);
+   
     const eventId = parseInt(id);
 
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const event = await prisma.event.findUnique({
       where: { id: eventId },
@@ -123,12 +127,16 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const currentUserId = verifyAuth(request);
+   
     const eventId = parseInt(id);
 
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const event = await prisma.event.findUnique({
       where: { id: eventId },
@@ -184,12 +192,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const currentUserId = verifyAuth(request);
+    
     const eventId = parseInt(id);
 
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const event = await prisma.event.findUnique({
       where: { id: eventId },

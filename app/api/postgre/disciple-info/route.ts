@@ -34,11 +34,13 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
-
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const discipleInfo = await prisma.discipleInformation.findUnique({
       where: { userId: currentUserId },
@@ -71,11 +73,13 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
-
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const body = await request.json();
 
@@ -107,11 +111,13 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
-
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     await prisma.discipleInformation.delete({
       where: { userId: currentUserId },

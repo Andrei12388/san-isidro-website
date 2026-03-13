@@ -36,11 +36,13 @@ export async function GET(request: NextRequest) {
 // ------------------ CREATE ------------------
 export async function POST(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
-
-    if (!currentUserId) {
+     const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const body = await request.json();
 

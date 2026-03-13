@@ -42,11 +42,13 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
-
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const skip = parseInt(request.nextUrl.searchParams.get("skip") || "0");
     const take = parseInt(request.nextUrl.searchParams.get("take") || "100");

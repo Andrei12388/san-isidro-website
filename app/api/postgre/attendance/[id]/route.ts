@@ -9,12 +9,16 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const currentUserId = verifyAuth(request);
+    
     const attendanceId = parseInt(id);
 
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const attendance = await prisma.attendanceInformation.findUnique({
       where: { id: attendanceId },
@@ -48,12 +52,16 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const currentUserId = verifyAuth(request);
+    
     const attendanceId = parseInt(id);
 
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const attendance = await prisma.attendanceInformation.findUnique({
       where: { id: attendanceId },
@@ -97,12 +105,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const currentUserId = verifyAuth(request);
+   
     const attendanceId = parseInt(id);
 
-    if (!currentUserId) {
+    const authUser = await verifyAuth(request); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     const attendance = await prisma.attendanceInformation.findUnique({
       where: { id: attendanceId },

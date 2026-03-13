@@ -16,10 +16,13 @@ export async function POST(
     const { id } = await context.params; // ✅ await it
 
     // Verify user
-    const currentUserId = verifyAuth(req);
-    if (!currentUserId) {
+  const authUser = await verifyAuth(req); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     // Parse event ID
     const eventId = parseInt(id, 10);
@@ -59,10 +62,13 @@ export async function DELETE(
     const { id } = await context.params; // ✅ await it
 
     // Verify user
-    const currentUserId = verifyAuth(req);
-    if (!currentUserId) {
+   const authUser = await verifyAuth(req); // <-- await here
+    if (!authUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const currentUserId = authUser.userId; // <-- extract userId from object
+
 
     // Parse event ID
     const eventId = parseInt(id, 10);
