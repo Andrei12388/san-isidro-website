@@ -35,13 +35,18 @@ const formatPersonalInfo = (
 // ------------------- GET -------------------
 export async function GET(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
+   const auth = await verifyAuth(request);
+    if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // Extract userId safely
+    const currentUserId = typeof auth === "number" ? auth : auth.userId;
     if (!currentUserId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Check if a specific userId is requested (for viewing other users' profiles)
     const userIdParam = request.nextUrl.searchParams.get("userId");
     const targetUserId = userIdParam ? parseInt(userIdParam) : currentUserId;
+    
 
     const personalInfo = await prisma.personalInformation.findUnique({
       where: { userId: targetUserId },
@@ -70,7 +75,11 @@ export async function GET(request: NextRequest) {
 // ------------------- POST -------------------
 export async function POST(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
+     const auth = await verifyAuth(request);
+    if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // Extract userId safely
+    const currentUserId = typeof auth === "number" ? auth : auth.userId;
     if (!currentUserId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -132,7 +141,11 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
+    const auth = await verifyAuth(request);
+    if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // Extract userId safely
+    const currentUserId = typeof auth === "number" ? auth : auth.userId;
     if (!currentUserId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -209,7 +222,11 @@ export async function PUT(request: NextRequest) {
 // ------------------- DELETE -------------------
 export async function DELETE(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
+     const auth = await verifyAuth(request);
+    if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // Extract userId safely
+    const currentUserId = typeof auth === "number" ? auth : auth.userId;
     if (!currentUserId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

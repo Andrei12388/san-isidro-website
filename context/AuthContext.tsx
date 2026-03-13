@@ -12,10 +12,11 @@ export interface UserSession {
   access_token: string | null;
   refresh_token: string | null;
   id: number | null;
+  role: "ADMIN" | "MEMBER" | null;
   name: string | null;
   email: string | null;
   profileImage: string | null;
-  authActiveItem: string | null; // NEW
+  authActiveItem: string | null;
 }
 
 interface AuthContextType extends UserSession {
@@ -36,6 +37,7 @@ const [session, setSessionState] = useState<UserSession>({
   email: null,
   profileImage: null,
   authActiveItem: null,
+  role: null,
 });
 
   const setSession = (update: Partial<UserSession>) => {
@@ -51,6 +53,7 @@ const [session, setSessionState] = useState<UserSession>({
     email: null,
     profileImage: null,
     authActiveItem: null, 
+    role: null,
   });
 };
 
@@ -67,12 +70,17 @@ const [session, setSessionState] = useState<UserSession>({
           email: data.email ?? null,
           profileImage: data.profileImage ?? null,
           authActiveItem: data.authActiveItem ?? null,
+          role: data.role ?? "MEMBER", // default to MEMBER if not set
         });
       })
       .catch((err) => {
         console.error("Failed to load session", err);
       });
   }, []);
+
+  useEffect(() => {
+  console.log("Updated session: ", session);
+}, [session]);
 
   return (
     <AuthContext.Provider value={{ ...session, setSession, clearSession }}>

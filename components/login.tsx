@@ -131,6 +131,7 @@ export default function LoginPage() {
               access_token: sessionData.access_token ?? null,
               refresh_token: sessionData.refresh_token ?? null,
               id: sessionData.user ?? null,
+              role: sessionData.role ?? null,
               name: sessionData.name ?? null,
               email: sessionData.email ?? null,
               profileImage: sessionData.profileImage ?? null,

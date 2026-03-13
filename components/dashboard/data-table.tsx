@@ -102,6 +102,15 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HoverCard from "../userCard/hoverCard";
 import { useRouter } from "next/navigation";
+import "@tanstack/react-table";
+import { useAuth } from "@/context/AuthContext";
+import { AddMemberModal } from "../ui/addMemberModal";
+
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends unknown> {
+    deleteRow: (id: number) => void;
+  }
+}
 
 type TableMeta = {
   deleteRow: (id: number) => void;
@@ -170,6 +179,7 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
         if (!userId) return;
         router.push(`/user/${userId}`);
       };
+      
 
       return (
         <>
@@ -210,6 +220,7 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
         if (!userId) return;
         router.push(`/user/${userId}`);
       };
+      
       return (
         <>
           <HoverCard
@@ -302,7 +313,12 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
   // ✅ ACTION BUTTONS
   {
     id: "actions",
-    cell: ({ row, table }) => (
+    cell: ({ row, table }) => {
+      const user = useAuth();
+
+      if (user.role !== "ADMIN") return null;
+      return (
+      
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
@@ -325,18 +341,15 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
 
           <DropdownMenuSeparator />
 
-          {/* <DropdownMenuItem
-            variant="destructive"
-            onClick={() => {
-              table.options.meta?.deleteRow?.(row.original.id)
-            }}
+          <DropdownMenuItem
+            className="text-red-600"
+            onClick={() => table.options.meta?.deleteRow(row.original.id)}
           >
             Delete
           </DropdownMenuItem>
-          */}
         </DropdownMenuContent>
       </DropdownMenu>
-    ),
+    )},
   },
 ];
 
@@ -367,8 +380,10 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof memberSchema>> }) {
 
 export function DataTable({
   data: initialData,
+  fetchMembers
 }: {
   data: z.infer<typeof memberSchema>[];
+  fetchMembers: ()=> void
 }) {
   const [data, setData] = React.useState(() => initialData);
   const [refreshKey, setRefreshKey] = React.useState(0);
@@ -419,12 +434,23 @@ export function DataTable({
       return matchSearch && matchLevel;
     });
   }, [data, search, levelFilter]);
+  
+   const { access_token } = useAuth();
 
   const table = useReactTable({
     meta: {
-      deleteRow: (id: number) =>
-        setData((prev) => prev.filter((m) => m.id !== id)),
+    deleteRow: async (id: number) => {
+      await fetch(`/api/postgre/users/${id}`, {
+        method: "DELETE",
+        headers:{
+        Authorization:`Bearer ${access_token}`
+    }
+      });
+
+      setData((prev) => prev.filter((m) => m.id !== id));
+      toast.success("User deleted");
     },
+  },
     data: filteredData,
     columns,
     state: {
@@ -559,10 +585,11 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
-            <IconPlus />
-            <span className="hidden lg:inline">Add Section</span>
-          </Button>
+          
+              <div className="flex justify-end">
+                     <AddMemberModal onAdded={fetchMembers} />
+                    </div>
+         
         </div>
       </div>
       <TabsContent

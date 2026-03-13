@@ -12,11 +12,15 @@ export async function GET(
     const { id } = await params;
     const currentUserId = verifyAuth(request);
     const userId = parseInt(id);
-
+    const auth = await verifyAuth(request);
     // User can only access their own data
-    if (currentUserId !== userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
+  if (!auth) {
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+}
+
+if (auth.userId !== userId && auth.role !== "ADMIN") {
+  return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+}
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -52,14 +56,19 @@ export async function PUT(
     const { id } = await params;
     const currentUserId = verifyAuth(request);
     const userId = parseInt(id);
+    const auth = await verifyAuth(request);
 
     if (!currentUserId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (currentUserId !== userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
+    if (!auth) {
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+}
+
+if (auth.userId !== userId && auth.role !== "ADMIN") {
+  return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+}
 
     const body = await request.json();
     const { name, email, password } = body;
@@ -97,14 +106,19 @@ export async function DELETE(
     const { id } = await params;
     const currentUserId = verifyAuth(request);
     const userId = parseInt(id);
+    const auth = await verifyAuth(request);
 
     if (!currentUserId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (currentUserId !== userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
+   if (!auth) {
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+}
+
+if (auth.role !== "ADMIN") {
+  return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+}
 
     await prisma.user.delete({ where: { id: userId } });
 

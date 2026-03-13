@@ -82,6 +82,8 @@ export function NavUser({ item }: { item: UserType | null }) {
     }
   }, []);
 
+   const user = useAuth();
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -89,7 +91,7 @@ export function NavUser({ item }: { item: UserType | null }) {
           <DropdownMenuTrigger asChild className="bg-background ">
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className={`data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground  ${user.role === "ADMIN" && 'border border-yellow-300'}`}
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={displayAvatar} alt={displayName} />

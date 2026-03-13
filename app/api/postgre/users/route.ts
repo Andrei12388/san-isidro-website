@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
         id: true,
         name: true,
         email: true,
+        role: true,
         createdAt: true,
         personalInformation: {
           select: {
@@ -76,6 +77,7 @@ export async function GET(request: NextRequest) {
       return {
         id: u.id,
         name: u.name,
+        role: u.role,
         email: u.email,
         age: getAge(u.personalInformation?.birthday), // ✅ derived
         gender: u.personalInformation?.gender || "N/A",
@@ -104,7 +106,12 @@ export async function GET(request: NextRequest) {
 /* POST — Create a new user */
 export async function POST(request: NextRequest) {
   try {
-    const currentUserId = verifyAuth(request);
+    const currentUserId = await verifyAuth(request);
+    const currentUser = await verifyAuth(request);
+
+if (!currentUser || currentUser.role !== "ADMIN") {
+  return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+}
 
     if (!currentUserId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -138,6 +145,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         password: hashedPassword,
+        role: "MEMBER",
       },
       select: {
         id: true,

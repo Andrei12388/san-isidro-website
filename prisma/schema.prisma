@@ -12,6 +12,9 @@ model User {
   name                String
   email               String                  @unique
   password            String
+
+  role                Role      @default(MEMBER)
+
   faceDescriptor      String?                 @db.Text // Stores 128-dimensional face descriptor as JSON string
   createdAt           DateTime                @default(now())
   updatedAt           DateTime                @updatedAt
@@ -30,6 +33,11 @@ model User {
   eventAttendances    EventAttendance[]       @relation("EventAttendance")
 
   @@map("users")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
 }
 
 model PersonalInformation {

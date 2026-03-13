@@ -16,9 +16,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+   const user = await prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      password: true, // still need for verifyPassword
+      role: true,     // <-- add this
+    },
+  });
 
     if (!user) {
       return NextResponse.json(
@@ -37,8 +44,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Create tokens
-    const accessToken = createAccessToken(user.id);
-    const refreshToken = createRefreshToken(user.id);
+    const accessToken =  createAccessToken(user.id, user.role);
+    const refreshToken = createRefreshToken(user.id, user.role);
 
     // Create response with refresh token in httpOnly cookie
     const result = {
@@ -46,6 +53,7 @@ export async function POST(request: NextRequest) {
       name: user.name,
       email: user.email,
       accessToken,
+      role: user.role,
       tokenType: "Bearer",
       message: "Login successful",
     };
@@ -82,6 +90,15 @@ export async function POST(request: NextRequest) {
 
     // ✅ Email
     response.cookies.set("email", String(result.email), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    // ✅ Role
+    response.cookies.set("role", String(result.role), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

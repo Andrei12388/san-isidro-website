@@ -6,25 +6,40 @@ const REFRESH_TOKEN_EXPIRY = "15d";
 
 export interface TokenPayload {
   userId: number;
+  role: "ADMIN" | "MEMBER";
   exp?: number;
   iat?: number;
   tokenType?: string;
 }
 
-export const createAccessToken = (userId: number): string => {
+export const createAccessToken = (
+  userId: number,
+  role: "ADMIN" | "MEMBER"
+): string => {
   const payload: TokenPayload = {
     userId,
+    role,
     tokenType: "access",
   };
-  return jwt.sign(payload, SECRET_KEY, { expiresIn: ACCESS_TOKEN_EXPIRY });
+
+  return jwt.sign(payload, SECRET_KEY, {
+    expiresIn: ACCESS_TOKEN_EXPIRY,
+  });
 };
 
-export const createRefreshToken = (userId: number): string => {
+export const createRefreshToken = (
+  userId: number,
+  role: "ADMIN" | "MEMBER"
+): string => {
   const payload: TokenPayload = {
     userId,
+    role,
     tokenType: "refresh",
   };
-  return jwt.sign(payload, SECRET_KEY, { expiresIn: REFRESH_TOKEN_EXPIRY });
+
+  return jwt.sign(payload, SECRET_KEY, {
+    expiresIn: REFRESH_TOKEN_EXPIRY,
+  });
 };
 
 export const verifyAccessToken = (token: string): TokenPayload | null => {

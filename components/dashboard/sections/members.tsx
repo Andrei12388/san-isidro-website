@@ -3,6 +3,7 @@ import { DataTable } from "../data-table";
 import { Member } from "@/lib/data";
 import { useAuth } from "@/context/AuthContext";
 import { Spinner } from "@/components/ui/loadingSpinner";
+import { AddMemberModal } from "@/components/ui/addMemberModal";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -13,6 +14,7 @@ const MembersSection = () => {
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState<Member[]>([]);
   const { access_token } = useAuth();
+
 
   const fetchMembers = async () => {
     try {
@@ -50,7 +52,7 @@ const MembersSection = () => {
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-          <DataTable data={members as any} />
+          <DataTable fetchMembers={fetchMembers} data={members as any} />
         </div>
       </div>
     </div>

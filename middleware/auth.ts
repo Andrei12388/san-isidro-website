@@ -1,30 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { verifyAccessToken } from "@/utils/jwt";
 
-export interface AuthRequest extends NextRequest {
-  userId?: number;
+export interface AuthUser {
+  userId: number;
+  role: "ADMIN" | "MEMBER";
 }
 
-export const verifyAuth = (request: NextRequest): number | null => {
+export const verifyAuth = async (request: NextRequest): Promise<AuthUser | null> => {
   const authHeader = request.headers.get("authorization");
-
-  if (!authHeader) {
-    return null;
-  }
+  if (!authHeader) return null;
 
   const parts = authHeader.split(" ");
-  if (parts.length !== 2 || parts[0] !== "Bearer") {
-    return null;
-  }
+  if (parts.length !== 2 || parts[0] !== "Bearer") return null;
 
   const token = parts[1];
   const payload = verifyAccessToken(token);
+  if (!payload) return null;
 
-  if (!payload) {
-    return null;
-  }
+  // Fetch user from DB to ensure role is current
+  const user = await prisma.user.findUnique({
+    where: { id: payload.userId },
+    select: { id: true, role: true },
+  });
 
-  return payload.userId;
+  if (!user) return null;
+
+  return { userId: user.id, role: user.role };
 };
 
 export const createErrorResponse = (message: string, status: number = 400) => {
