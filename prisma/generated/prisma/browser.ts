@@ -63,6 +63,26 @@ export type Training = Prisma.TrainingModel
  */
 export type MinistryActivities = Prisma.MinistryActivitiesModel
 /**
+ * Model Ministry
+ * 
+ */
+export type Ministry = Prisma.MinistryModel
+/**
+ * Model MinistryMember
+ * 
+ */
+export type MinistryMember = Prisma.MinistryMemberModel
+/**
+ * Model MinistryTraining
+ * 
+ */
+export type MinistryTraining = Prisma.MinistryTrainingModel
+/**
+ * Model MinistryTrainingCompletion
+ * 
+ */
+export type MinistryTrainingCompletion = Prisma.MinistryTrainingCompletionModel
+/**
  * Model AttendanceInformation
  * 
  */

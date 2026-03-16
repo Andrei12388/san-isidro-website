@@ -248,6 +248,7 @@ export type UserWhereInput = {
   assignedOutreaches?: Prisma.OutreachListRelationFilter
   personalInformation?: Prisma.XOR<Prisma.PersonalInformationNullableScalarRelationFilter, Prisma.PersonalInformationWhereInput> | null
   trainings?: Prisma.TrainingListRelationFilter
+  ministryMemberships?: Prisma.MinistryMemberListRelationFilter
   comments?: Prisma.DevotionCommentListRelationFilter
   likes?: Prisma.DevotionLikeListRelationFilter
   createdEvents?: Prisma.EventListRelationFilter
@@ -272,6 +273,7 @@ export type UserOrderByWithRelationInput = {
   assignedOutreaches?: Prisma.OutreachOrderByRelationAggregateInput
   personalInformation?: Prisma.PersonalInformationOrderByWithRelationInput
   trainings?: Prisma.TrainingOrderByRelationAggregateInput
+  ministryMemberships?: Prisma.MinistryMemberOrderByRelationAggregateInput
   comments?: Prisma.DevotionCommentOrderByRelationAggregateInput
   likes?: Prisma.DevotionLikeOrderByRelationAggregateInput
   createdEvents?: Prisma.EventOrderByRelationAggregateInput
@@ -299,6 +301,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   assignedOutreaches?: Prisma.OutreachListRelationFilter
   personalInformation?: Prisma.XOR<Prisma.PersonalInformationNullableScalarRelationFilter, Prisma.PersonalInformationWhereInput> | null
   trainings?: Prisma.TrainingListRelationFilter
+  ministryMemberships?: Prisma.MinistryMemberListRelationFilter
   comments?: Prisma.DevotionCommentListRelationFilter
   likes?: Prisma.DevotionLikeListRelationFilter
   createdEvents?: Prisma.EventListRelationFilter
@@ -352,6 +355,7 @@ export type UserCreateInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -376,6 +380,7 @@ export type UserUncheckedCreateInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -399,6 +404,7 @@ export type UserUpdateInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -423,6 +429,7 @@ export type UserUncheckedUpdateInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -651,6 +658,20 @@ export type UserUpdateOneRequiredWithoutOrganizedActivitiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOrganizedActivitiesInput, Prisma.UserUpdateWithoutOrganizedActivitiesInput>, Prisma.UserUncheckedUpdateWithoutOrganizedActivitiesInput>
 }
 
+export type UserCreateNestedOneWithoutMinistryMembershipsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMinistryMembershipsInput, Prisma.UserUncheckedCreateWithoutMinistryMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMinistryMembershipsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMinistryMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMinistryMembershipsInput, Prisma.UserUncheckedCreateWithoutMinistryMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMinistryMembershipsInput
+  upsert?: Prisma.UserUpsertWithoutMinistryMembershipsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMinistryMembershipsInput, Prisma.UserUpdateWithoutMinistryMembershipsInput>, Prisma.UserUncheckedUpdateWithoutMinistryMembershipsInput>
+}
+
 export type UserCreateNestedOneWithoutAttendancesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAttendancesInput, Prisma.UserUncheckedCreateWithoutAttendancesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendancesInput
@@ -736,6 +757,7 @@ export type UserCreateWithoutPersonalInformationInput = {
   organizedActivities?: Prisma.MinistryActivitiesCreateNestedManyWithoutOrganizerInput
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -759,6 +781,7 @@ export type UserUncheckedCreateWithoutPersonalInformationInput = {
   organizedActivities?: Prisma.MinistryActivitiesUncheckedCreateNestedManyWithoutOrganizerInput
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -797,6 +820,7 @@ export type UserUpdateWithoutPersonalInformationInput = {
   organizedActivities?: Prisma.MinistryActivitiesUpdateManyWithoutOrganizerNestedInput
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -820,6 +844,7 @@ export type UserUncheckedUpdateWithoutPersonalInformationInput = {
   organizedActivities?: Prisma.MinistryActivitiesUncheckedUpdateManyWithoutOrganizerNestedInput
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -842,6 +867,7 @@ export type UserCreateWithoutMenteesInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -865,6 +891,7 @@ export type UserUncheckedCreateWithoutMenteesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -892,6 +919,7 @@ export type UserCreateWithoutDiscipleInformationInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -915,6 +943,7 @@ export type UserUncheckedCreateWithoutDiscipleInformationInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -953,6 +982,7 @@ export type UserUpdateWithoutMenteesInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -976,6 +1006,7 @@ export type UserUncheckedUpdateWithoutMenteesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1009,6 +1040,7 @@ export type UserUpdateWithoutDiscipleInformationInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -1032,6 +1064,7 @@ export type UserUncheckedUpdateWithoutDiscipleInformationInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1054,6 +1087,7 @@ export type UserCreateWithoutDevotionsInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -1077,6 +1111,7 @@ export type UserUncheckedCreateWithoutDevotionsInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -1115,6 +1150,7 @@ export type UserUpdateWithoutDevotionsInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -1138,6 +1174,7 @@ export type UserUncheckedUpdateWithoutDevotionsInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1161,6 +1198,7 @@ export type UserCreateWithoutCommentsInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
@@ -1184,6 +1222,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
@@ -1222,6 +1261,7 @@ export type UserUpdateWithoutCommentsInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
@@ -1245,6 +1285,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
@@ -1267,6 +1308,7 @@ export type UserCreateWithoutLikesInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
@@ -1290,6 +1332,7 @@ export type UserUncheckedCreateWithoutLikesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
@@ -1328,6 +1371,7 @@ export type UserUpdateWithoutLikesInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
@@ -1351,6 +1395,7 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
@@ -1372,6 +1417,7 @@ export type UserCreateWithoutTrainingsInput = {
   organizedActivities?: Prisma.MinistryActivitiesCreateNestedManyWithoutOrganizerInput
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -1395,6 +1441,7 @@ export type UserUncheckedCreateWithoutTrainingsInput = {
   organizedActivities?: Prisma.MinistryActivitiesUncheckedCreateNestedManyWithoutOrganizerInput
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -1433,6 +1480,7 @@ export type UserUpdateWithoutTrainingsInput = {
   organizedActivities?: Prisma.MinistryActivitiesUpdateManyWithoutOrganizerNestedInput
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -1456,6 +1504,7 @@ export type UserUncheckedUpdateWithoutTrainingsInput = {
   organizedActivities?: Prisma.MinistryActivitiesUncheckedUpdateManyWithoutOrganizerNestedInput
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1478,6 +1527,7 @@ export type UserCreateWithoutOrganizedActivitiesInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -1501,6 +1551,7 @@ export type UserUncheckedCreateWithoutOrganizedActivitiesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -1539,6 +1590,7 @@ export type UserUpdateWithoutOrganizedActivitiesInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -1559,6 +1611,117 @@ export type UserUncheckedUpdateWithoutOrganizedActivitiesInput = {
   devotions?: Prisma.DevotionUncheckedUpdateManyWithoutUserNestedInput
   mentees?: Prisma.DiscipleInformationUncheckedUpdateManyWithoutMentorNestedInput
   discipleInformation?: Prisma.DiscipleInformationUncheckedUpdateOneWithoutUserNestedInput
+  assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
+  personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
+  trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
+  createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
+  eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutMinistryMembershipsInput = {
+  name: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  faceDescriptor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendances?: Prisma.AttendanceInformationCreateNestedManyWithoutUserInput
+  devotions?: Prisma.DevotionCreateNestedManyWithoutUserInput
+  mentees?: Prisma.DiscipleInformationCreateNestedManyWithoutMentorInput
+  discipleInformation?: Prisma.DiscipleInformationCreateNestedOneWithoutUserInput
+  organizedActivities?: Prisma.MinistryActivitiesCreateNestedManyWithoutOrganizerInput
+  assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
+  personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
+  trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
+  likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
+  createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
+  eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutMinistryMembershipsInput = {
+  id?: number
+  name: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  faceDescriptor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attendances?: Prisma.AttendanceInformationUncheckedCreateNestedManyWithoutUserInput
+  devotions?: Prisma.DevotionUncheckedCreateNestedManyWithoutUserInput
+  mentees?: Prisma.DiscipleInformationUncheckedCreateNestedManyWithoutMentorInput
+  discipleInformation?: Prisma.DiscipleInformationUncheckedCreateNestedOneWithoutUserInput
+  organizedActivities?: Prisma.MinistryActivitiesUncheckedCreateNestedManyWithoutOrganizerInput
+  assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
+  personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
+  trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
+  createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
+  eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutMinistryMembershipsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMinistryMembershipsInput, Prisma.UserUncheckedCreateWithoutMinistryMembershipsInput>
+}
+
+export type UserUpsertWithoutMinistryMembershipsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMinistryMembershipsInput, Prisma.UserUncheckedUpdateWithoutMinistryMembershipsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMinistryMembershipsInput, Prisma.UserUncheckedCreateWithoutMinistryMembershipsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMinistryMembershipsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMinistryMembershipsInput, Prisma.UserUncheckedUpdateWithoutMinistryMembershipsInput>
+}
+
+export type UserUpdateWithoutMinistryMembershipsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendances?: Prisma.AttendanceInformationUpdateManyWithoutUserNestedInput
+  devotions?: Prisma.DevotionUpdateManyWithoutUserNestedInput
+  mentees?: Prisma.DiscipleInformationUpdateManyWithoutMentorNestedInput
+  discipleInformation?: Prisma.DiscipleInformationUpdateOneWithoutUserNestedInput
+  organizedActivities?: Prisma.MinistryActivitiesUpdateManyWithoutOrganizerNestedInput
+  assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
+  personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
+  trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
+  likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
+  createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
+  eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMinistryMembershipsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  faceDescriptor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attendances?: Prisma.AttendanceInformationUncheckedUpdateManyWithoutUserNestedInput
+  devotions?: Prisma.DevotionUncheckedUpdateManyWithoutUserNestedInput
+  mentees?: Prisma.DiscipleInformationUncheckedUpdateManyWithoutMentorNestedInput
+  discipleInformation?: Prisma.DiscipleInformationUncheckedUpdateOneWithoutUserNestedInput
+  organizedActivities?: Prisma.MinistryActivitiesUncheckedUpdateManyWithoutOrganizerNestedInput
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
@@ -1584,6 +1747,7 @@ export type UserCreateWithoutAttendancesInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -1607,6 +1771,7 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -1645,6 +1810,7 @@ export type UserUpdateWithoutAttendancesInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -1668,6 +1834,7 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1690,6 +1857,7 @@ export type UserCreateWithoutAssignedOutreachesInput = {
   organizedActivities?: Prisma.MinistryActivitiesCreateNestedManyWithoutOrganizerInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -1713,6 +1881,7 @@ export type UserUncheckedCreateWithoutAssignedOutreachesInput = {
   organizedActivities?: Prisma.MinistryActivitiesUncheckedCreateNestedManyWithoutOrganizerInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -1751,6 +1920,7 @@ export type UserUpdateWithoutAssignedOutreachesInput = {
   organizedActivities?: Prisma.MinistryActivitiesUpdateManyWithoutOrganizerNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -1774,6 +1944,7 @@ export type UserUncheckedUpdateWithoutAssignedOutreachesInput = {
   organizedActivities?: Prisma.MinistryActivitiesUncheckedUpdateManyWithoutOrganizerNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1797,6 +1968,7 @@ export type UserCreateWithoutCreatedEventsInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   eventJoins?: Prisma.EventAttendeeCreateNestedManyWithoutUserInput
@@ -1820,6 +1992,7 @@ export type UserUncheckedCreateWithoutCreatedEventsInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   eventJoins?: Prisma.EventAttendeeUncheckedCreateNestedManyWithoutUserInput
@@ -1858,6 +2031,7 @@ export type UserUpdateWithoutCreatedEventsInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   eventJoins?: Prisma.EventAttendeeUpdateManyWithoutUserNestedInput
@@ -1881,6 +2055,7 @@ export type UserUncheckedUpdateWithoutCreatedEventsInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   eventJoins?: Prisma.EventAttendeeUncheckedUpdateManyWithoutUserNestedInput
@@ -1903,6 +2078,7 @@ export type UserCreateWithoutEventJoinsInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -1926,6 +2102,7 @@ export type UserUncheckedCreateWithoutEventJoinsInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -1964,6 +2141,7 @@ export type UserUpdateWithoutEventJoinsInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -1987,6 +2165,7 @@ export type UserUncheckedUpdateWithoutEventJoinsInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2009,6 +2188,7 @@ export type UserCreateWithoutEventAttendancesInput = {
   assignedOutreaches?: Prisma.OutreachCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventCreateNestedManyWithoutCreatorInput
@@ -2032,6 +2212,7 @@ export type UserUncheckedCreateWithoutEventAttendancesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedCreateNestedManyWithoutPastorInput
   personalInformation?: Prisma.PersonalInformationUncheckedCreateNestedOneWithoutUserInput
   trainings?: Prisma.TrainingUncheckedCreateNestedManyWithoutUserInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.DevotionCommentUncheckedCreateNestedManyWithoutUserInput
   likes?: Prisma.DevotionLikeUncheckedCreateNestedManyWithoutUserInput
   createdEvents?: Prisma.EventUncheckedCreateNestedManyWithoutCreatorInput
@@ -2070,6 +2251,7 @@ export type UserUpdateWithoutEventAttendancesInput = {
   assignedOutreaches?: Prisma.OutreachUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUpdateManyWithoutCreatorNestedInput
@@ -2093,6 +2275,7 @@ export type UserUncheckedUpdateWithoutEventAttendancesInput = {
   assignedOutreaches?: Prisma.OutreachUncheckedUpdateManyWithoutPastorNestedInput
   personalInformation?: Prisma.PersonalInformationUncheckedUpdateOneWithoutUserNestedInput
   trainings?: Prisma.TrainingUncheckedUpdateManyWithoutUserNestedInput
+  ministryMemberships?: Prisma.MinistryMemberUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.DevotionCommentUncheckedUpdateManyWithoutUserNestedInput
   likes?: Prisma.DevotionLikeUncheckedUpdateManyWithoutUserNestedInput
   createdEvents?: Prisma.EventUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2111,6 +2294,7 @@ export type UserCountOutputType = {
   organizedActivities: number
   assignedOutreaches: number
   trainings: number
+  ministryMemberships: number
   comments: number
   likes: number
   createdEvents: number
@@ -2125,6 +2309,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   organizedActivities?: boolean | UserCountOutputTypeCountOrganizedActivitiesArgs
   assignedOutreaches?: boolean | UserCountOutputTypeCountAssignedOutreachesArgs
   trainings?: boolean | UserCountOutputTypeCountTrainingsArgs
+  ministryMemberships?: boolean | UserCountOutputTypeCountMinistryMembershipsArgs
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
   likes?: boolean | UserCountOutputTypeCountLikesArgs
   createdEvents?: boolean | UserCountOutputTypeCountCreatedEventsArgs
@@ -2187,6 +2372,13 @@ export type UserCountOutputTypeCountTrainingsArgs<ExtArgs extends runtime.Types.
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountMinistryMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MinistryMemberWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.DevotionCommentWhereInput
 }
@@ -2237,6 +2429,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   assignedOutreaches?: boolean | Prisma.User$assignedOutreachesArgs<ExtArgs>
   personalInformation?: boolean | Prisma.User$personalInformationArgs<ExtArgs>
   trainings?: boolean | Prisma.User$trainingsArgs<ExtArgs>
+  ministryMemberships?: boolean | Prisma.User$ministryMembershipsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   likes?: boolean | Prisma.User$likesArgs<ExtArgs>
   createdEvents?: boolean | Prisma.User$createdEventsArgs<ExtArgs>
@@ -2288,6 +2481,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   assignedOutreaches?: boolean | Prisma.User$assignedOutreachesArgs<ExtArgs>
   personalInformation?: boolean | Prisma.User$personalInformationArgs<ExtArgs>
   trainings?: boolean | Prisma.User$trainingsArgs<ExtArgs>
+  ministryMemberships?: boolean | Prisma.User$ministryMembershipsArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   likes?: boolean | Prisma.User$likesArgs<ExtArgs>
   createdEvents?: boolean | Prisma.User$createdEventsArgs<ExtArgs>
@@ -2309,6 +2503,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     assignedOutreaches: Prisma.$OutreachPayload<ExtArgs>[]
     personalInformation: Prisma.$PersonalInformationPayload<ExtArgs> | null
     trainings: Prisma.$TrainingPayload<ExtArgs>[]
+    ministryMemberships: Prisma.$MinistryMemberPayload<ExtArgs>[]
     comments: Prisma.$DevotionCommentPayload<ExtArgs>[]
     likes: Prisma.$DevotionLikePayload<ExtArgs>[]
     createdEvents: Prisma.$EventPayload<ExtArgs>[]
@@ -2726,6 +2921,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   assignedOutreaches<T extends Prisma.User$assignedOutreachesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignedOutreachesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutreachPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   personalInformation<T extends Prisma.User$personalInformationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$personalInformationArgs<ExtArgs>>): Prisma.Prisma__PersonalInformationClient<runtime.Types.Result.GetResult<Prisma.$PersonalInformationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   trainings<T extends Prisma.User$trainingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$trainingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrainingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ministryMemberships<T extends Prisma.User$ministryMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ministryMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MinistryMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DevotionCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   likes<T extends Prisma.User$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DevotionLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdEvents<T extends Prisma.User$createdEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3335,6 +3531,30 @@ export type User$trainingsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.TrainingScalarFieldEnum | Prisma.TrainingScalarFieldEnum[]
+}
+
+/**
+ * User.ministryMemberships
+ */
+export type User$ministryMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MinistryMember
+   */
+  select?: Prisma.MinistryMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MinistryMember
+   */
+  omit?: Prisma.MinistryMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MinistryMemberInclude<ExtArgs> | null
+  where?: Prisma.MinistryMemberWhereInput
+  orderBy?: Prisma.MinistryMemberOrderByWithRelationInput | Prisma.MinistryMemberOrderByWithRelationInput[]
+  cursor?: Prisma.MinistryMemberWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MinistryMemberScalarFieldEnum | Prisma.MinistryMemberScalarFieldEnum[]
 }
 
 /**

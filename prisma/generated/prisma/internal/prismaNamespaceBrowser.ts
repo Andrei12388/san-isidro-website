@@ -60,6 +60,10 @@ export const ModelName = {
   TrainingCategory: 'TrainingCategory',
   Training: 'Training',
   MinistryActivities: 'MinistryActivities',
+  Ministry: 'Ministry',
+  MinistryMember: 'MinistryMember',
+  MinistryTraining: 'MinistryTraining',
+  MinistryTrainingCompletion: 'MinistryTrainingCompletion',
   AttendanceInformation: 'AttendanceInformation',
   Outreach: 'Outreach',
   Event: 'Event',
@@ -218,6 +222,51 @@ export const MinistryActivitiesScalarFieldEnum = {
 } as const
 
 export type MinistryActivitiesScalarFieldEnum = (typeof MinistryActivitiesScalarFieldEnum)[keyof typeof MinistryActivitiesScalarFieldEnum]
+
+
+export const MinistryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MinistryScalarFieldEnum = (typeof MinistryScalarFieldEnum)[keyof typeof MinistryScalarFieldEnum]
+
+
+export const MinistryMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  ministryId: 'ministryId',
+  status: 'status',
+  role: 'role',
+  joinedAt: 'joinedAt'
+} as const
+
+export type MinistryMemberScalarFieldEnum = (typeof MinistryMemberScalarFieldEnum)[keyof typeof MinistryMemberScalarFieldEnum]
+
+
+export const MinistryTrainingScalarFieldEnum = {
+  id: 'id',
+  ministryId: 'ministryId',
+  title: 'title',
+  description: 'description',
+  createdAt: 'createdAt'
+} as const
+
+export type MinistryTrainingScalarFieldEnum = (typeof MinistryTrainingScalarFieldEnum)[keyof typeof MinistryTrainingScalarFieldEnum]
+
+
+export const MinistryTrainingCompletionScalarFieldEnum = {
+  id: 'id',
+  ministryMemberId: 'ministryMemberId',
+  trainingId: 'trainingId',
+  completed: 'completed',
+  completedAt: 'completedAt'
+} as const
+
+export type MinistryTrainingCompletionScalarFieldEnum = (typeof MinistryTrainingCompletionScalarFieldEnum)[keyof typeof MinistryTrainingCompletionScalarFieldEnum]
 
 
 export const AttendanceInformationScalarFieldEnum = {

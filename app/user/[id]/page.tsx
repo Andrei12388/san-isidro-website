@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   IconBell,
   IconCake,
+  IconCopy,
   IconGenderBigender,
   IconMail,
   IconUser,
@@ -19,12 +20,25 @@ import { Spinner } from "@/components/ui/loadingSpinner";
 import styles from "@/components/dashboard/sections/devotions.module.css";
 import { FaPrayingHands } from "react-icons/fa";
 import DOMPurify from "dompurify";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { copyToClipboard } from "@/lib/utils";
+import { FloatingMessage, showFloatingMessage } from "@/components/notifyClick";
 
 interface UserType {
   name: string;
   email: string;
   avatar: string;
   id: number;
+}
+interface MinistryType {
+  id?: number; // if they have an ID
+  name: string;
 }
 
 interface PersonalInfoType {
@@ -36,7 +50,6 @@ interface PersonalInfoType {
   gender: string;
   level: string;
   groupName: string;
-  ministry: string;
   phone: string;
   city: string;
   barangay: string;
@@ -47,6 +60,7 @@ interface PersonalInfoType {
     id: number;
     name: string;
     email: string;
+    ministries: MinistryType[]; // ← strongly typed
     createdAt?: string;
     updatedAt?: string;
   };
@@ -74,6 +88,11 @@ export default function UserProfilePage({
   const [isImageOpen, setIsImageOpen] = useState(false);
   const { access_token } = useAuth();
   const userId = id;
+
+  const handleClickNotify = (e: React.MouseEvent) => {
+      // e.clientX and e.clientY are the mouse coordinates
+      showFloatingMessage("Copied!", e.clientX, e.clientY);
+    };
 
   useEffect(() => {
       DOMPurify.addHook("afterSanitizeAttributes", (node) => {
@@ -158,6 +177,7 @@ export default function UserProfilePage({
         const personalData = await personalInfoRes.json();
         const fetchedPersonalInfo = personalData.data || {};
         setPersonalInfo(fetchedPersonalInfo);
+        
 
         // Update user with email from personal info response and session
       } catch (err) {
@@ -242,6 +262,7 @@ export default function UserProfilePage({
       </Head>
       <main className="h-screen w-full flex flex-col overflow-hidden">
         {/* header navigation*/}
+         <FloatingMessage />
         <header className="fixed top-0 z-50 w-full bg-background border-b">
           <div className="flex justify-between items-center px-5">
             <a
@@ -380,18 +401,32 @@ export default function UserProfilePage({
                 </div>
               </div>
 
-              {/* Ministry */}
-              <div className="flex flex-col gap-2">
-                <label className="text-medium font-medium opacity-70 flex flex-row items-center gap-2">
-                  <FaPrayingHands size={16} /> Ministry
-                </label>
-                <div className="rounded-sm px-3 py-2">
-                  {personalInfo?.ministry
-                    ? personalInfo.ministry.charAt(0).toUpperCase() +
-                      personalInfo.ministry.slice(1)
-                    : "N/A"}
-                </div>
-              </div>
+             {/* Ministry */}
+<div className="flex flex-col gap-1">
+  <label className="text-sm font-medium">
+    {personalInfo?.user?.ministries?.length && personalInfo.user.ministries.length > 1
+      ? "Ministries"
+      : "Ministry"}{" "}
+    ({personalInfo?.user?.ministries?.length ?? 0})
+  </label>
+
+  <Select>
+    <SelectTrigger>
+      {/* Show first ministry as placeholder or "None" */}
+      <SelectValue
+        placeholder={personalInfo?.user?.ministries?.[0]?.name ?? "None"}
+      />
+    </SelectTrigger>
+
+    <SelectContent>
+      {personalInfo?.user?.ministries?.map((ministry: any, index: number) => (
+        <SelectItem key={index} value={ministry?.name?.toLowerCase() ?? ""}>
+          {ministry?.name ?? "Unnamed"}
+        </SelectItem>
+      )) ?? null}
+    </SelectContent>
+  </Select>
+</div>
 
               {/* Group */}
               <div className="flex flex-col gap-2">
@@ -411,8 +446,8 @@ export default function UserProfilePage({
           <div className="mt-5 px-2 py-2">
             <div className="grid gap-2 md:grid-cols-2">
               {/* Contacts Section */}
-              <div className="rounded-2xl border bg-muted shadow-lg overflow-hidden">
-                <div className="px-5 py-3 border-b bg-muted/70">
+              <div className="rounded-2xl overflow-hidden">
+                <div className="px-5 py-3 border-b ">
                   <h2 className="text-lg font-semibold">Contacts</h2>
                 </div>
 
@@ -442,9 +477,17 @@ export default function UserProfilePage({
                     <span className="text-sm opacity-70">
                       {personalInfo?.user?.email || "N/A"}
                     </span>
+                     <IconCopy
+                      className="cursor-pointer"
+                      onClick={(e) =>
+                        copyToClipboard(`${user?.email}`, () =>
+                          handleClickNotify(e),
+                        )
+                      }
+                    />
                   </div>
                 </div>
-
+                {/*
                 <div className="flex lg:flex-row flex-col px-5 gap-3 justify-between pb-5">
                   <div className="basis-1/2 gap-2 rounded-sm flex flex-col">
                     <span className="text-sm font-medium">Phone</span>
@@ -459,11 +502,12 @@ export default function UserProfilePage({
                     </div>
                   </div>
                 </div>
+                 */}
               </div>
 
               {/* Address Section */}
-              <div className="rounded-2xl border bg-muted shadow-lg overflow-hidden">
-                <div className="px-5 py-3 border-b bg-muted/70">
+              <div className="rounded-2xl  overflow-hidden">
+                <div className="px-5 py-3 border-b ">
                   <h2 className="text-lg font-semibold">Address</h2>
                 </div>
 
@@ -495,10 +539,20 @@ export default function UserProfilePage({
                     </span>
                     <span className="text-sm opacity-70">
                       {personalInfo?.city} {personalInfo?.country}
+                      <IconCopy
+                                                  className="cursor-pointer"
+                                                  onClick={(e) =>
+                                                    copyToClipboard(
+                                                      `${personalInfo?.houseNumber} ${personalInfo?.barangay} ${personalInfo?.city} ${personalInfo?.country}`,
+                                                      () => handleClickNotify(e),
+                                                    )
+                                                  }
+                                                />
                     </span>
                   </div>
                 </div>
 
+                  {/*
                 <div className="flex lg:flex-row flex-col px-5 gap-3 justify-between pb-5">
                   <div className="basis-1/2 gap-2 rounded-sm flex flex-col">
                     <span className="text-sm font-medium">Country</span>
@@ -531,9 +585,13 @@ export default function UserProfilePage({
                     </div>
                   </div>
                 </div>
+                 */}
               </div>
+              
             </div>
+            
           </div>
+          
 
           </section>
   

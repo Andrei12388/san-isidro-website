@@ -1,0 +1,163 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+
+interface Member {
+  id: number;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  completions?: { completed: boolean }[];
+  user: {
+    id: number;
+    name: string;
+    personalInformation?: { profileImage?: string };
+  };
+}
+
+interface MinistryMembersProps {
+  ministryId: string | number;
+}
+
+export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [showPendingModal, setShowPendingModal] = useState(false);
+
+  const fetchMembers = useCallback(async () => {
+    if (!ministryId) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/postgre/ministries/${ministryId}/members`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Fetch members error:", data);
+        setMembers([]);
+        return;
+      }
+
+      setMembers(data.data || []);
+    } catch (error) {
+      console.error("Fetch members failed:", error);
+      setMembers([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [ministryId]);
+
+  useEffect(() => {
+    fetchMembers();
+  }, [fetchMembers]);
+
+  const updateStatus = async (memberId: number, status: "APPROVED" | "REJECTED") => {
+    try {
+      const res = await fetch(
+        `/api/postgre/ministries/${ministryId}/members/${memberId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Failed to update member status:", data);
+        return;
+      }
+
+      fetchMembers(); // refresh list
+    } catch (error) {
+      console.error("Error updating member status:", error);
+    }
+  };
+
+  // Separate pending and other members
+  const pendingMembers = members.filter((m) => m.status === "PENDING");
+  const approvedMembers = members.filter((m) => m.status !== "PENDING");
+
+  return (
+    <div>
+      <h2 className="text-xl font-bold mb-4 flex justify-between items-center">
+        Members
+        {pendingMembers.length > 0 && (
+          <button
+            className="bg-yellow-500 text-white px-3 py-1 rounded text-sm"
+            onClick={() => setShowPendingModal(true)}
+          >
+            Pending ({pendingMembers.length})
+          </button>
+        )}
+      </h2>
+
+      {loading ? (
+        <p>Loading members...</p>
+      ) : (
+        <div className="space-y-4">
+          {approvedMembers.map((m) => {
+            const completed = m.completions?.filter((c) => c.completed)?.length || 0;
+            const total = 5;
+            const percent = Math.round((completed / total) * 100);
+
+            return (
+              <div key={m.id} className="border rounded p-3 flex justify-between items-center">
+                <div>
+                  <div className="font-semibold">{m.user.name}</div>
+                  <div className="text-sm text-muted-foreground">Qualification {percent}%</div>
+                  <div className="w-full bg-gray-200 h-2 rounded mt-1">
+                    <div className="bg-green-500 h-2 rounded" style={{ width: `${percent}%` }} />
+                  </div>
+                </div>
+
+                <div className="ml-4 space-x-2">
+                  <span
+                    className={`text-sm font-medium ${
+                      m.status === "APPROVED" ? "text-blue-600" : "text-red-600"
+                    }`}
+                  >
+                    {m.status}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Pending Members Modal */}
+      {showPendingModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded p-6 w-96 max-h-[80vh] overflow-y-auto">
+            <h3 className="text-lg font-bold mb-4">Pending Members</h3>
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+              onClick={() => setShowPendingModal(false)}
+            >
+              ✕
+            </button>
+
+            {pendingMembers.map((m) => (
+              <div key={m.id} className="border rounded p-3 mb-3 flex justify-between items-center">
+                <div>{m.user.name}</div>
+                <div className="space-x-2">
+                  <button
+                    className="bg-green-500 text-white px-2 py-1 rounded text-sm"
+                    onClick={() => updateStatus(m.id, "APPROVED")}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded text-sm"
+                    onClick={() => updateStatus(m.id, "REJECTED")}
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

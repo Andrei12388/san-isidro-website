@@ -238,7 +238,7 @@ export default function ProfilePage() {
     houseNumber: "",
     city: "",
     country: "",
-    ministry: "",
+    ministry: Array,
     group: "",
     age: "",
     gender: "",
@@ -482,7 +482,7 @@ export default function ProfilePage() {
 
         if (personalInfoRes.ok) {
           personalInfo = await personalInfoRes.json();
-          console.log("Pesonal Info:", personalInfo);
+          console.log("Personal Info:", personalInfo);
         } else {
           console.error("Error fetching personal info", personalInfoRes.status);
           setFormError("Failed to fetch personal info");
@@ -495,7 +495,7 @@ export default function ProfilePage() {
             ? new Date(personalInfo.data.birthday)
             : undefined,
           level: personalInfo.data.level ?? "",
-          ministry: personalInfo.data.ministry ?? "",
+          ministry: personalInfo.data.user.ministries ?? "",
           barangay: personalInfo.data.barangay ?? "",
           houseNumber: personalInfo.data.houseNumber ?? "",
           city: personalInfo.data.city ?? "",
@@ -511,6 +511,8 @@ export default function ProfilePage() {
           phone: personalInfo.data.phone ?? "",
           email: userData.email ?? "",
         };
+
+        console.log("defaults:", defaults)
 
         setForm(defaults);
         setInitialForm(defaults);
@@ -842,28 +844,37 @@ export default function ProfilePage() {
                     </Select>
                   </div>
 
-                  {/* Ministry */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Ministry</label>
-                    <Select
-                      value={form.ministry}
-                      onValueChange={(value) =>
-                        setForm((f) => ({ ...f, ministry: value }))
-                      }
-                    >
-                      <SelectTrigger
-                        className={`${fieldErrors.ministry ? "border border-red-500" : ""}`}
-                      >
-                        <SelectValue placeholder="Select ministry" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="music">Music</SelectItem>
-                        <SelectItem value="children">Children</SelectItem>
-                        <SelectItem value="program">Program</SelectItem>
-                        <SelectItem value="multimedia">Multimedia</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+            {/* Ministry */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium">
+                {form.ministry.length > 1 ? 'Ministries' : 'Ministry'} ({Array.isArray(form.ministry) ? form.ministry.length : 0})
+              </label>
+
+              <Select>
+                <SelectTrigger
+                  className={`${fieldErrors.ministry ? "border border-red-500" : ""}`}
+                >
+                  {/* Show first ministry as placeholder or "None" */}
+                  <SelectValue
+                    placeholder={
+                      Array.isArray(form.ministry) && form.ministry.length > 0
+                        ? form.ministry[0].name
+                        : "None"
+                    }
+                  />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {(Array.isArray(form.ministry) ? form.ministry : []).map(
+                    (ministry: any, index: number) => (
+                      <SelectItem key={index} value={ministry.name.toLowerCase()}>
+                        {ministry.name}
+                      </SelectItem>
+                    )
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
 
                   {/* Group */}
                   <div className="flex flex-col gap-1 mb-5">

@@ -393,6 +393,10 @@ export const ModelName = {
   TrainingCategory: 'TrainingCategory',
   Training: 'Training',
   MinistryActivities: 'MinistryActivities',
+  Ministry: 'Ministry',
+  MinistryMember: 'MinistryMember',
+  MinistryTraining: 'MinistryTraining',
+  MinistryTrainingCompletion: 'MinistryTrainingCompletion',
   AttendanceInformation: 'AttendanceInformation',
   Outreach: 'Outreach',
   Event: 'Event',
@@ -413,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "personalInformation" | "discipleInformation" | "devotion" | "devotionComment" | "devotionLike" | "trainingCategory" | "training" | "ministryActivities" | "attendanceInformation" | "outreach" | "event" | "eventAttendee" | "eventAttendance"
+    modelProps: "user" | "personalInformation" | "discipleInformation" | "devotion" | "devotionComment" | "devotionLike" | "trainingCategory" | "training" | "ministryActivities" | "ministry" | "ministryMember" | "ministryTraining" | "ministryTrainingCompletion" | "attendanceInformation" | "outreach" | "event" | "eventAttendee" | "eventAttendance"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1083,6 +1087,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Ministry: {
+      payload: Prisma.$MinistryPayload<ExtArgs>
+      fields: Prisma.MinistryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MinistryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MinistryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>
+        }
+        findFirst: {
+          args: Prisma.MinistryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MinistryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>
+        }
+        findMany: {
+          args: Prisma.MinistryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>[]
+        }
+        create: {
+          args: Prisma.MinistryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>
+        }
+        createMany: {
+          args: Prisma.MinistryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MinistryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>[]
+        }
+        delete: {
+          args: Prisma.MinistryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>
+        }
+        update: {
+          args: Prisma.MinistryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>
+        }
+        deleteMany: {
+          args: Prisma.MinistryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MinistryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MinistryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>[]
+        }
+        upsert: {
+          args: Prisma.MinistryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryPayload>
+        }
+        aggregate: {
+          args: Prisma.MinistryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMinistry>
+        }
+        groupBy: {
+          args: Prisma.MinistryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MinistryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MinistryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MinistryCountAggregateOutputType> | number
+        }
+      }
+    }
+    MinistryMember: {
+      payload: Prisma.$MinistryMemberPayload<ExtArgs>
+      fields: Prisma.MinistryMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MinistryMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MinistryMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.MinistryMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MinistryMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>
+        }
+        findMany: {
+          args: Prisma.MinistryMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>[]
+        }
+        create: {
+          args: Prisma.MinistryMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>
+        }
+        createMany: {
+          args: Prisma.MinistryMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MinistryMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.MinistryMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>
+        }
+        update: {
+          args: Prisma.MinistryMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.MinistryMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MinistryMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MinistryMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.MinistryMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.MinistryMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMinistryMember>
+        }
+        groupBy: {
+          args: Prisma.MinistryMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MinistryMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MinistryMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MinistryMemberCountAggregateOutputType> | number
+        }
+      }
+    }
+    MinistryTraining: {
+      payload: Prisma.$MinistryTrainingPayload<ExtArgs>
+      fields: Prisma.MinistryTrainingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MinistryTrainingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MinistryTrainingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>
+        }
+        findFirst: {
+          args: Prisma.MinistryTrainingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MinistryTrainingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>
+        }
+        findMany: {
+          args: Prisma.MinistryTrainingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>[]
+        }
+        create: {
+          args: Prisma.MinistryTrainingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>
+        }
+        createMany: {
+          args: Prisma.MinistryTrainingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MinistryTrainingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>[]
+        }
+        delete: {
+          args: Prisma.MinistryTrainingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>
+        }
+        update: {
+          args: Prisma.MinistryTrainingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>
+        }
+        deleteMany: {
+          args: Prisma.MinistryTrainingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MinistryTrainingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MinistryTrainingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>[]
+        }
+        upsert: {
+          args: Prisma.MinistryTrainingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingPayload>
+        }
+        aggregate: {
+          args: Prisma.MinistryTrainingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMinistryTraining>
+        }
+        groupBy: {
+          args: Prisma.MinistryTrainingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MinistryTrainingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MinistryTrainingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MinistryTrainingCountAggregateOutputType> | number
+        }
+      }
+    }
+    MinistryTrainingCompletion: {
+      payload: Prisma.$MinistryTrainingCompletionPayload<ExtArgs>
+      fields: Prisma.MinistryTrainingCompletionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MinistryTrainingCompletionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MinistryTrainingCompletionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>
+        }
+        findFirst: {
+          args: Prisma.MinistryTrainingCompletionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MinistryTrainingCompletionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>
+        }
+        findMany: {
+          args: Prisma.MinistryTrainingCompletionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>[]
+        }
+        create: {
+          args: Prisma.MinistryTrainingCompletionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>
+        }
+        createMany: {
+          args: Prisma.MinistryTrainingCompletionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MinistryTrainingCompletionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>[]
+        }
+        delete: {
+          args: Prisma.MinistryTrainingCompletionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>
+        }
+        update: {
+          args: Prisma.MinistryTrainingCompletionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>
+        }
+        deleteMany: {
+          args: Prisma.MinistryTrainingCompletionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MinistryTrainingCompletionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MinistryTrainingCompletionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>[]
+        }
+        upsert: {
+          args: Prisma.MinistryTrainingCompletionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MinistryTrainingCompletionPayload>
+        }
+        aggregate: {
+          args: Prisma.MinistryTrainingCompletionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMinistryTrainingCompletion>
+        }
+        groupBy: {
+          args: Prisma.MinistryTrainingCompletionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MinistryTrainingCompletionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MinistryTrainingCompletionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MinistryTrainingCompletionCountAggregateOutputType> | number
+        }
+      }
+    }
     AttendanceInformation: {
       payload: Prisma.$AttendanceInformationPayload<ExtArgs>
       fields: Prisma.AttendanceInformationFieldRefs
@@ -1629,6 +1929,51 @@ export const MinistryActivitiesScalarFieldEnum = {
 export type MinistryActivitiesScalarFieldEnum = (typeof MinistryActivitiesScalarFieldEnum)[keyof typeof MinistryActivitiesScalarFieldEnum]
 
 
+export const MinistryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MinistryScalarFieldEnum = (typeof MinistryScalarFieldEnum)[keyof typeof MinistryScalarFieldEnum]
+
+
+export const MinistryMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  ministryId: 'ministryId',
+  status: 'status',
+  role: 'role',
+  joinedAt: 'joinedAt'
+} as const
+
+export type MinistryMemberScalarFieldEnum = (typeof MinistryMemberScalarFieldEnum)[keyof typeof MinistryMemberScalarFieldEnum]
+
+
+export const MinistryTrainingScalarFieldEnum = {
+  id: 'id',
+  ministryId: 'ministryId',
+  title: 'title',
+  description: 'description',
+  createdAt: 'createdAt'
+} as const
+
+export type MinistryTrainingScalarFieldEnum = (typeof MinistryTrainingScalarFieldEnum)[keyof typeof MinistryTrainingScalarFieldEnum]
+
+
+export const MinistryTrainingCompletionScalarFieldEnum = {
+  id: 'id',
+  ministryMemberId: 'ministryMemberId',
+  trainingId: 'trainingId',
+  completed: 'completed',
+  completedAt: 'completedAt'
+} as const
+
+export type MinistryTrainingCompletionScalarFieldEnum = (typeof MinistryTrainingCompletionScalarFieldEnum)[keyof typeof MinistryTrainingCompletionScalarFieldEnum]
+
+
 export const AttendanceInformationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1793,6 +2138,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'MinistryStatus'
+ */
+export type EnumMinistryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MinistryStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MinistryStatus[]'
+ */
+export type ListEnumMinistryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MinistryStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -1916,6 +2275,10 @@ export type GlobalOmitConfig = {
   trainingCategory?: Prisma.TrainingCategoryOmit
   training?: Prisma.TrainingOmit
   ministryActivities?: Prisma.MinistryActivitiesOmit
+  ministry?: Prisma.MinistryOmit
+  ministryMember?: Prisma.MinistryMemberOmit
+  ministryTraining?: Prisma.MinistryTrainingOmit
+  ministryTrainingCompletion?: Prisma.MinistryTrainingCompletionOmit
   attendanceInformation?: Prisma.AttendanceInformationOmit
   outreach?: Prisma.OutreachOmit
   event?: Prisma.EventOmit

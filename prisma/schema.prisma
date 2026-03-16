@@ -7,6 +7,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum MinistryStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id                  Int                     @id @default(autoincrement())
   name                String
@@ -26,6 +32,7 @@ model User {
   assignedOutreaches  Outreach[]              @relation("AssignedPastor")
   personalInformation PersonalInformation?
   trainings           Training[]
+  ministryMemberships MinistryMember[]
   comments            DevotionComment[]
   likes               DevotionLike[]
   createdEvents       Event[]                 @relation("EventCreator")
@@ -149,7 +156,7 @@ model Training {
   description      String
   trainerName      String?
   trainingDate     DateTime
-  completionStatus String                  @default("pending")
+  completionStatus MinistryStatus          @default(PENDING)
   categoryId       Int?
   notes            String?
   createdAt        DateTime                @default(now())
@@ -182,6 +189,79 @@ model MinistryActivities {
   outreach     Outreach?               @relation(fields: [outreachId], references: [id])
 
   @@map("ministry_activities")
+}
+
+model Ministry {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members     MinistryMember[]
+  trainings   MinistryTraining[]
+
+  @@map("ministries")
+}
+
+model MinistryMember {
+  id         Int      @id @default(autoincrement())
+
+  userId     Int
+  ministryId Int
+
+  status     MinistryStatus   @default(PENDING)
+  role       String?
+
+  joinedAt   DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ministry   Ministry @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+
+  completions MinistryTrainingCompletion[]
+
+  @@unique([userId, ministryId])
+
+  @@index([ministryId])   // ⭐ add
+  @@index([userId])       // ⭐ add
+  @@index([status])       // ⭐ add
+
+  @@map("ministry_members")
+}
+
+model MinistryTraining {
+  id          Int      @id @default(autoincrement())
+  ministryId  Int
+  title       String
+  description String?
+
+  ministry    Ministry @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+
+  completions MinistryTrainingCompletion[]
+
+  createdAt   DateTime @default(now())
+
+  @@map("ministry_trainings")
+}
+
+model MinistryTrainingCompletion {
+  id                Int      @id @default(autoincrement())
+
+  ministryMemberId  Int
+  trainingId        Int
+
+  completed         Boolean  @default(false)
+  completedAt       DateTime?
+
+  member            MinistryMember @relation(fields: [ministryMemberId], references: [id], onDelete: Cascade)
+  training          MinistryTraining @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+
+  @@unique([ministryMemberId, trainingId])
+
+  @@index([ministryMemberId])   // ⭐ add
+  @@index([trainingId])         // ⭐ add
+
+  @@map("ministry_training_completions")
 }
 
 model AttendanceInformation {

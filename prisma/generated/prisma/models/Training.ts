@@ -45,7 +45,7 @@ export type TrainingMinAggregateOutputType = {
   description: string | null
   trainerName: string | null
   trainingDate: Date | null
-  completionStatus: string | null
+  completionStatus: $Enums.MinistryStatus | null
   categoryId: number | null
   notes: string | null
   createdAt: Date | null
@@ -59,7 +59,7 @@ export type TrainingMaxAggregateOutputType = {
   description: string | null
   trainerName: string | null
   trainingDate: Date | null
-  completionStatus: string | null
+  completionStatus: $Enums.MinistryStatus | null
   categoryId: number | null
   notes: string | null
   createdAt: Date | null
@@ -230,7 +230,7 @@ export type TrainingGroupByOutputType = {
   description: string
   trainerName: string | null
   trainingDate: Date
-  completionStatus: string
+  completionStatus: $Enums.MinistryStatus
   categoryId: number | null
   notes: string | null
   createdAt: Date
@@ -267,7 +267,7 @@ export type TrainingWhereInput = {
   description?: Prisma.StringFilter<"Training"> | string
   trainerName?: Prisma.StringNullableFilter<"Training"> | string | null
   trainingDate?: Prisma.DateTimeFilter<"Training"> | Date | string
-  completionStatus?: Prisma.StringFilter<"Training"> | string
+  completionStatus?: Prisma.EnumMinistryStatusFilter<"Training"> | $Enums.MinistryStatus
   categoryId?: Prisma.IntNullableFilter<"Training"> | number | null
   notes?: Prisma.StringNullableFilter<"Training"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Training"> | Date | string
@@ -304,7 +304,7 @@ export type TrainingWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringFilter<"Training"> | string
   trainerName?: Prisma.StringNullableFilter<"Training"> | string | null
   trainingDate?: Prisma.DateTimeFilter<"Training"> | Date | string
-  completionStatus?: Prisma.StringFilter<"Training"> | string
+  completionStatus?: Prisma.EnumMinistryStatusFilter<"Training"> | $Enums.MinistryStatus
   categoryId?: Prisma.IntNullableFilter<"Training"> | number | null
   notes?: Prisma.StringNullableFilter<"Training"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Training"> | Date | string
@@ -343,7 +343,7 @@ export type TrainingScalarWhereWithAggregatesInput = {
   description?: Prisma.StringWithAggregatesFilter<"Training"> | string
   trainerName?: Prisma.StringNullableWithAggregatesFilter<"Training"> | string | null
   trainingDate?: Prisma.DateTimeWithAggregatesFilter<"Training"> | Date | string
-  completionStatus?: Prisma.StringWithAggregatesFilter<"Training"> | string
+  completionStatus?: Prisma.EnumMinistryStatusWithAggregatesFilter<"Training"> | $Enums.MinistryStatus
   categoryId?: Prisma.IntNullableWithAggregatesFilter<"Training"> | number | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Training"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Training"> | Date | string
@@ -355,7 +355,7 @@ export type TrainingCreateInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -371,7 +371,7 @@ export type TrainingUncheckedCreateInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   categoryId?: number | null
   notes?: string | null
   createdAt?: Date | string
@@ -384,7 +384,7 @@ export type TrainingUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -400,7 +400,7 @@ export type TrainingUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -415,7 +415,7 @@ export type TrainingCreateManyInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   categoryId?: number | null
   notes?: string | null
   createdAt?: Date | string
@@ -427,7 +427,7 @@ export type TrainingUpdateManyMutationInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -440,7 +440,7 @@ export type TrainingUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -600,6 +600,10 @@ export type TrainingUncheckedUpdateManyWithoutCategoryNestedInput = {
   deleteMany?: Prisma.TrainingScalarWhereInput | Prisma.TrainingScalarWhereInput[]
 }
 
+export type EnumMinistryStatusFieldUpdateOperationsInput = {
+  set?: $Enums.MinistryStatus
+}
+
 export type TrainingCreateNestedOneWithoutAttendancesInput = {
   create?: Prisma.XOR<Prisma.TrainingCreateWithoutAttendancesInput, Prisma.TrainingUncheckedCreateWithoutAttendancesInput>
   connectOrCreate?: Prisma.TrainingCreateOrConnectWithoutAttendancesInput
@@ -621,7 +625,7 @@ export type TrainingCreateWithoutUserInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -635,7 +639,7 @@ export type TrainingUncheckedCreateWithoutUserInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   categoryId?: number | null
   notes?: string | null
   createdAt?: Date | string
@@ -679,7 +683,7 @@ export type TrainingScalarWhereInput = {
   description?: Prisma.StringFilter<"Training"> | string
   trainerName?: Prisma.StringNullableFilter<"Training"> | string | null
   trainingDate?: Prisma.DateTimeFilter<"Training"> | Date | string
-  completionStatus?: Prisma.StringFilter<"Training"> | string
+  completionStatus?: Prisma.EnumMinistryStatusFilter<"Training"> | $Enums.MinistryStatus
   categoryId?: Prisma.IntNullableFilter<"Training"> | number | null
   notes?: Prisma.StringNullableFilter<"Training"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Training"> | Date | string
@@ -691,7 +695,7 @@ export type TrainingCreateWithoutCategoryInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -706,7 +710,7 @@ export type TrainingUncheckedCreateWithoutCategoryInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -744,7 +748,7 @@ export type TrainingCreateWithoutAttendancesInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -759,7 +763,7 @@ export type TrainingUncheckedCreateWithoutAttendancesInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   categoryId?: number | null
   notes?: string | null
   createdAt?: Date | string
@@ -787,7 +791,7 @@ export type TrainingUpdateWithoutAttendancesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -802,7 +806,7 @@ export type TrainingUncheckedUpdateWithoutAttendancesInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -815,7 +819,7 @@ export type TrainingCreateManyUserInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   categoryId?: number | null
   notes?: string | null
   createdAt?: Date | string
@@ -827,7 +831,7 @@ export type TrainingUpdateWithoutUserInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -841,7 +845,7 @@ export type TrainingUncheckedUpdateWithoutUserInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -855,7 +859,7 @@ export type TrainingUncheckedUpdateManyWithoutUserInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -869,7 +873,7 @@ export type TrainingCreateManyCategoryInput = {
   description: string
   trainerName?: string | null
   trainingDate: Date | string
-  completionStatus?: string
+  completionStatus?: $Enums.MinistryStatus
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -880,7 +884,7 @@ export type TrainingUpdateWithoutCategoryInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -895,7 +899,7 @@ export type TrainingUncheckedUpdateWithoutCategoryInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -909,7 +913,7 @@ export type TrainingUncheckedUpdateManyWithoutCategoryInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   trainerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trainingDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  completionStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  completionStatus?: Prisma.EnumMinistryStatusFieldUpdateOperationsInput | $Enums.MinistryStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1040,7 +1044,7 @@ export type $TrainingPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     description: string
     trainerName: string | null
     trainingDate: Date
-    completionStatus: string
+    completionStatus: $Enums.MinistryStatus
     categoryId: number | null
     notes: string | null
     createdAt: Date
@@ -1477,7 +1481,7 @@ export interface TrainingFieldRefs {
   readonly description: Prisma.FieldRef<"Training", 'String'>
   readonly trainerName: Prisma.FieldRef<"Training", 'String'>
   readonly trainingDate: Prisma.FieldRef<"Training", 'DateTime'>
-  readonly completionStatus: Prisma.FieldRef<"Training", 'String'>
+  readonly completionStatus: Prisma.FieldRef<"Training", 'MinistryStatus'>
   readonly categoryId: Prisma.FieldRef<"Training", 'Int'>
   readonly notes: Prisma.FieldRef<"Training", 'String'>
   readonly createdAt: Prisma.FieldRef<"Training", 'DateTime'>

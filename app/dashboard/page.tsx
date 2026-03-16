@@ -6,7 +6,6 @@ import { SectionCards } from "@/components/dashboard/section-cards";
 import { SiteHeader } from "@/components/dashboard/site-header";
 import {
   SidebarInset,
-  SidebarProvider,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -21,7 +20,7 @@ import { useAuth } from "@/context/AuthContext";
 import CalendarSection from "@/components/dashboard/sections/calendar";
 import AttendanceSection from "@/components/dashboard/sections/attendance";
 import CheckInSection from "@/components/dashboard/sections/check-in";
-import AttendanceAnalyticsSection from "@/components/dashboard/sections/attendance-analytics";
+import MinistriesPage from "@/components/dashboard/sections/ministry";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -129,6 +128,7 @@ export default function Page() {
         {activeItem === "Calendar" && <CalendarSection />}
         {activeItem === "Calendar Summary" && <CalendarSection />}
         {activeItem === "Attendance" && <AttendanceSection />}
+        {activeItem === "Ministry" && <MinistriesPage />}
         {activeItem === "Attendance Summary" && <AttendanceSection />}
         {activeItem === "Check In" && <CheckInSection />}
       </SidebarInset>

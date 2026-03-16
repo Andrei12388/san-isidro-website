@@ -9,6 +9,15 @@
 * 🟢 You can import this file directly.
 */
 
+export const MinistryStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type MinistryStatus = (typeof MinistryStatus)[keyof typeof MinistryStatus]
+
+
 export const Role = {
   ADMIN: 'ADMIN',
   MEMBER: 'MEMBER'
