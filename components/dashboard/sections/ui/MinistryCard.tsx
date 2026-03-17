@@ -27,9 +27,9 @@ Members: {members}
 Trainings: {trainings}
 </div>
 
-<div className="flex gap-2">
+<div className="flex items-center gap-2">
 
-<Link href={`/ministry/${ministry.id}`}>
+<Link className="" href={`/ministry/${ministry.id}`}>
 View
 </Link>
 

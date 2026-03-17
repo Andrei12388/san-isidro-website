@@ -1,11 +1,17 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import styles from "@/components/dashboard/sections/devotions.module.css";
+import { useMinistryMembers } from "@/context/MinistryMemberContext";
+
+interface Completion {
+  completed: boolean;
+}
 
 interface Member {
   id: number;
   status: "PENDING" | "APPROVED" | "REJECTED";
-  completions?: { completed: boolean }[];
+  completions?: Completion[];
   user: {
     id: number;
     name: string;
@@ -18,27 +24,37 @@ interface MinistryMembersProps {
 }
 
 export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
-  const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showRejectedModal, setShowRejectedModal] = useState(false);
   const [showPendingModal, setShowPendingModal] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const { members } = useMinistryMembers();
 
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => {
+      setShowPendingModal(false);
+      setShowRejectedModal(false);
+      setClosing(false);
+    }, 300);
+  };
+
+  // Fetch members with completions
   const fetchMembers = useCallback(async () => {
     if (!ministryId) return;
     setLoading(true);
     try {
       const res = await fetch(`/api/postgre/ministries/${ministryId}/members`);
       const data = await res.json();
-
       if (!res.ok) {
         console.error("Fetch members error:", data);
-        setMembers([]);
+       
         return;
       }
-
-      setMembers(data.data || []);
+    
     } catch (error) {
       console.error("Fetch members failed:", error);
-      setMembers([]);
+    
     } finally {
       setLoading(false);
     }
@@ -48,6 +64,7 @@ export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
     fetchMembers();
   }, [fetchMembers]);
 
+  // Update member status
   const updateStatus = async (memberId: number, status: "APPROVED" | "REJECTED") => {
     try {
       const res = await fetch(
@@ -58,23 +75,39 @@ export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
           body: JSON.stringify({ status }),
         }
       );
-
       const data = await res.json();
-
       if (!res.ok) {
         console.error("Failed to update member status:", data);
         return;
       }
-
       fetchMembers(); // refresh list
     } catch (error) {
       console.error("Error updating member status:", error);
     }
   };
 
-  // Separate pending and other members
+  // Toggle completion for a member's training
+  const toggleCompletion = async (
+    memberId: number,
+    trainingId: number,
+    completed: boolean
+  ) => {
+    try {
+      const res = await fetch(`/api/postgre/trainings/${trainingId}/completion`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ memberId, completed }),
+      });
+      if (!res.ok) throw new Error("Failed to update completion");
+      fetchMembers(); // refetch after completion change
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const pendingMembers = members.filter((m) => m.status === "PENDING");
-  const approvedMembers = members.filter((m) => m.status !== "PENDING");
+  const approvedMembers = members.filter((m) => m.status === "APPROVED");
+  const rejectedMembers = members.filter((m) => m.status === "REJECTED");
 
   return (
     <div>
@@ -82,10 +115,18 @@ export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
         Members
         {pendingMembers.length > 0 && (
           <button
-            className="bg-yellow-500 text-white px-3 py-1 rounded text-sm"
+            className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:cursor-pointer"
             onClick={() => setShowPendingModal(true)}
           >
             Pending ({pendingMembers.length})
+          </button>
+        )}
+        {rejectedMembers.length > 0 && (
+          <button
+            className="bg-red-500 text-white px-3 py-1 rounded text-sm ml-2 hover:cursor-pointer"
+            onClick={() => setShowRejectedModal(true)}
+          >
+            Rejected ({rejectedMembers.length})
           </button>
         )}
       </h2>
@@ -95,28 +136,23 @@ export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
       ) : (
         <div className="space-y-4">
           {approvedMembers.map((m) => {
+            const total = m.completions?.length || 0;
             const completed = m.completions?.filter((c) => c.completed)?.length || 0;
-            const total = 5;
-            const percent = Math.round((completed / total) * 100);
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
             return (
               <div key={m.id} className="border rounded p-3 flex justify-between items-center">
                 <div>
                   <div className="font-semibold">{m.user.name}</div>
-                  <div className="text-sm text-muted-foreground">Qualification {percent}%</div>
-                  <div className="w-full bg-gray-200 h-2 rounded mt-1">
-                    <div className="bg-green-500 h-2 rounded" style={{ width: `${percent}%` }} />
+                  <div className="text-sm text-muted-foreground">
+                    {completed}/{total} trainings completed ({percent}%)
                   </div>
-                </div>
-
-                <div className="ml-4 space-x-2">
-                  <span
-                    className={`text-sm font-medium ${
-                      m.status === "APPROVED" ? "text-blue-600" : "text-red-600"
-                    }`}
-                  >
-                    {m.status}
-                  </span>
+                  <div className="w-full bg-gray-200 h-2 rounded mt-1">
+                    <div
+                      className="bg-green-500 h-2 rounded"
+                      style={{ width: `${percent}%` }}
+                    />
+                  </div>
                 </div>
               </div>
             );
@@ -124,20 +160,31 @@ export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
         </div>
       )}
 
-      {/* Pending Members Modal */}
-      {showPendingModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded p-6 w-96 max-h-[80vh] overflow-y-auto">
-            <h3 className="text-lg font-bold mb-4">Pending Members</h3>
+      {/* Rejected Members Modal */}
+      {showRejectedModal && (
+        <div
+          className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ${
+            closing ? styles.backdropOut : styles.backdropIn
+          }`}
+        >
+          <div
+            className={`bg-white rounded p-6 w-96 max-h-[80vh] overflow-y-auto ${
+              closing ? styles.modalOut : styles.modalIn
+            }`}
+          >
+            <h3 className="text-lg font-bold mb-4">Rejected Members</h3>
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-              onClick={() => setShowPendingModal(false)}
+              onClick={handleClose}
             >
               ✕
             </button>
 
-            {pendingMembers.map((m) => (
-              <div key={m.id} className="border rounded p-3 mb-3 flex justify-between items-center">
+            {rejectedMembers.map((m) => (
+              <div
+                key={m.id}
+                className="border rounded p-3 mb-3 flex justify-between items-center"
+              >
                 <div>{m.user.name}</div>
                 <div className="space-x-2">
                   <button
@@ -146,8 +193,48 @@ export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
                   >
                     Accept
                   </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Pending Members Modal */}
+      {showPendingModal && (
+        <div
+          className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ${
+            closing ? styles.backdropOut : styles.backdropIn
+          }`}
+        >
+          <div
+            className={`bg-background rounded p-6 w-120 max-h-[80vh] overflow-y-auto ${
+              closing ? styles.modalOut : styles.modalIn
+            }`}
+          >
+            <h3 className="text-lg font-bold mb-4">Pending Members</h3>
+            <button
+              className="absolute top-2 right-2 text-muted-foreground hover:text-gray-800 hover:cursor-pointer"
+              onClick={handleClose}
+            >
+              ✕
+            </button>
+
+            {pendingMembers.map((m) => (
+              <div
+                key={m.id}
+                className="border rounded p-3 mb-3 flex justify-between items-center"
+              >
+                <div>{m.user.name}</div>
+                <div className="space-x-2">
                   <button
-                    className="bg-red-500 text-white px-2 py-1 rounded text-sm"
+                    className="bg-green-500 text-foreground px-2 py-1 rounded text-sm hover:cursor-pointer"
+                    onClick={() => updateStatus(m.id, "APPROVED")}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="bg-red-500 text-foreground px-2 py-1 rounded text-sm hover:cursor-pointer"
                     onClick={() => updateStatus(m.id, "REJECTED")}
                   >
                     Reject
