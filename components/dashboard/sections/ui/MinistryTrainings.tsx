@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthContext";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { useAuth } from "@/context/AuthContext";
 import { useMinistryMembers } from "@/context/MinistryMemberContext";
 
 interface Training {
@@ -28,19 +29,15 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
   const [editingTraining, setEditingTraining] = useState<Training | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch trainings and members
+  // Fetch trainings
   async function fetchData() {
     setLoading(true);
     try {
-      const [trainRes, memberRes] = await Promise.all([
-        fetch(`/api/postgre/ministries/${ministryId}/trainings`),
-        fetch(`/api/postgre/ministries/${ministryId}/members`),
-      ]);
-      const trainingsData = await trainRes.json();
-      const membersData = await memberRes.json();
-      setTrainings(trainingsData.data || []);
-     
+      const res = await fetch(`/api/postgre/ministries/${ministryId}/trainings`);
+      const data = await res.json();
+      setTrainings(data.data || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -76,6 +73,7 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
       setTitle("");
       setDescription("");
       setEditingTraining(null);
+      setIsModalOpen(false);
     } catch (err: any) {
       alert(err.message || "Error saving training");
     } finally {
@@ -83,18 +81,14 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
     }
   }
 
-  // Delete training
   async function deleteTraining(id: number) {
-    if (!access_token) return;
-    if (!confirm("Are you sure you want to delete this training?")) return;
-
+    if (!access_token || !confirm("Are you sure you want to delete this training?")) return;
     setLoading(true);
     try {
       const res = await fetch(`/api/postgre/ministries/${ministryId}/trainings/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${access_token}` },
       });
-
       if (!res.ok) throw new Error("Failed to delete training");
       await fetchData();
     } catch (err: any) {
@@ -104,7 +98,6 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
     }
   }
 
-  // Toggle completion
   async function toggleCompletion(trainingId: number, memberId: number, completed: boolean) {
     if (!access_token) return;
     try {
@@ -117,53 +110,68 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
         body: JSON.stringify({ memberId, completed }),
       });
       if (!res.ok) throw new Error("Failed to update completion");
-     await fetchData();
-     refreshMembers(); // <-- update the members progress
+      await fetchData();
+      refreshMembers();
     } catch (err: any) {
       alert(err.message || "Error updating completion");
     }
   }
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Trainings</h2>
+    <div className="p-6 rounded-2xl bg-muted/70">
+      
+      <h2 className="text-xl font-bold mb-4 text-center">Trainings</h2>
+     
 
-      {/* Add/Edit Form */}
-      <div className="border p-4 rounded mb-4 space-y-2">
-        <Input
-          placeholder="Training Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <div className="flex space-x-2">
-          <Button onClick={saveTraining} disabled={loading}>
-            {editingTraining ? "Update" : "Add"} Training
-          </Button>
-          {editingTraining && (
+      {/* Modal Trigger */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <div className="flex justify-end mb-4">
+            <DialogTrigger asChild>
             <Button
-              variant="secondary"
-              onClick={() => {
+                onClick={() => {
                 setEditingTraining(null);
                 setTitle("");
                 setDescription("");
-              }}
+                }}
             >
+                Add Training
+            </Button>
+            </DialogTrigger>
+        </div>
+
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{editingTraining ? "Edit Training" : "Add Training"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <Input
+              placeholder="Training Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <textarea
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full border rounded p-2"
+            />
+          </div>
+          <DialogFooter className="mt-4 flex space-x-2">
+            <Button onClick={saveTraining} disabled={loading}>
+              {editingTraining ? "Update" : "Add"} Training
+            </Button>
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
-          )}
-        </div>
-      </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Trainings List */}
       {loading ? (
         <p>Loading trainings...</p>
       ) : (
-        <ul className="space-y-4">
+        <ul className="space-y-4 mt-4">
           {trainings.map((t) => (
             <li key={t.id} className="border rounded p-3 space-y-2">
               <div className="flex justify-between items-center">
@@ -179,6 +187,7 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
                       setEditingTraining(t);
                       setTitle(t.title);
                       setDescription(t.description || "");
+                      setIsModalOpen(true);
                     }}
                   >
                     Edit

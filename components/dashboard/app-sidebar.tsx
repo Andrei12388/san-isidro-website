@@ -163,15 +163,15 @@ const data = {
       url: "#",
       icon: IconBook,
     },
+     {
+      name: "Ministry",
+      url: "#",
+      icon: IconFileWord,
+    },
     {
       name: "Reports",
       url: "#reports",
       icon: IconReport,
-    },
-    {
-      name: "Ministry",
-      url: "#",
-      icon: IconFileWord,
     },
   ],
 };

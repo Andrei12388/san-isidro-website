@@ -8,6 +8,13 @@ interface Completion {
   completed: boolean;
 }
 
+
+// Define the Ministry type
+interface Ministry {
+  id: number;
+  name: string;
+}
+
 interface Member {
   id: number;
   status: "PENDING" | "APPROVED" | "REJECTED";
@@ -19,11 +26,7 @@ interface Member {
   };
 }
 
-interface MinistryMembersProps {
-  ministryId: string | number;
-}
-
-export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
+export default function MinistryMembers({ ministryId }: { ministryId: number }) {
   const [loading, setLoading] = useState(false);
   const [showRejectedModal, setShowRejectedModal] = useState(false);
   const [showPendingModal, setShowPendingModal] = useState(false);
@@ -109,8 +112,36 @@ export default function MinistryMembers({ ministryId }: MinistryMembersProps) {
   const approvedMembers = members.filter((m) => m.status === "APPROVED");
   const rejectedMembers = members.filter((m) => m.status === "REJECTED");
 
+     // Inside your component
+          const [ministries, setMinistries] = useState<Ministry[]>([]);
+          const [loadingMinistries, setLoadingMinistries] = useState(true);
+  
+          useEffect(() => {
+          async function fetchMinistries() {
+              const token = localStorage.getItem("token");
+              if (!token) return;
+  
+              try {
+              const res = await fetch("/api/postgre/ministries", {
+                  headers: { Authorization: `Bearer ${token}` },
+              });
+              const data = await res.json();
+              setMinistries(data.data || []);
+              } catch (err) {
+              console.error(err);
+              } finally {
+              setLoadingMinistries(false);
+              }
+          }
+          fetchMinistries();
+          }, []);
+  
+          // Find ministry safely
+          const currentMinistry = ministries[ministryId - 1]?.name || "Unknown Ministry";
+
   return (
-    <div>
+    <div className="border  bg-muted/70 rounded-2xl p-5">
+      <h2 className="text-xl font-bold mb-4 text-center"> {loadingMinistries ? "Loading..." : `${currentMinistry} Ministry`}</h2>
       <h2 className="text-xl font-bold mb-4 flex justify-between items-center">
         Members
         {pendingMembers.length > 0 && (
