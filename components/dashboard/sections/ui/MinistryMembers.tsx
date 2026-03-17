@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import styles from "@/components/dashboard/sections/devotions.module.css";
 import { useMinistryMembers } from "@/context/MinistryMemberContext";
+import HoverCard from "@/components/userCard/hoverCard";
 
 interface Completion {
   completed: boolean;
@@ -174,7 +175,35 @@ export default function MinistryMembers({ ministryId }: { ministryId: number }) 
             return (
               <div key={m.id} className="border rounded p-3 flex justify-between items-center">
                 <div>
-                  <div className="font-semibold">{m.user.name}</div>
+                  <div className="flex flex-row items-center gap-2">
+                    <HoverCard
+                  userId={m.user?.id || 0}
+                  name={m.user?.name || "Unknown"}
+                  title={"Member"}
+                  image={
+                    m.user?.personalInformation?.profileImage ||
+                    "/images/userIcon.png"
+                  }
+                >
+                    <img
+                          src={m.user?.personalInformation?.profileImage ||
+                           "/images/userIcon.png"}
+                          className="w-10 h-10 rounded-full object-cover cursor-pointer hover:brightness-110 transition"
+                        />
+                        </HoverCard>
+                  <HoverCard
+                  userId={m.user?.id || 0}
+                  name={m.user?.name || "Unknown"}
+                  title={"Member"}
+                  image={
+                    m.user?.personalInformation?.profileImage ||
+                    "/images/userIcon.png"
+                  }
+                >
+                    <div className="font-semibold">{m.user.name}</div>
+                </HoverCard>
+                </div>
+                 
                   <div className="text-sm text-muted-foreground">
                     {completed}/{total} trainings completed ({percent}%)
                   </div>

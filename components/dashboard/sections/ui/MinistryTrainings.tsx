@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { useAuth } from "@/context/AuthContext";
+import styles from "@/components/dashboard/sections/devotions.module.css";
 import { useMinistryMembers } from "@/context/MinistryMemberContext";
 
 interface Training {
@@ -24,6 +25,15 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [loading, setLoading] = useState(false);
   const { members, refreshMembers } = useMinistryMembers();
+  const [closing, setClosing] = useState(false);
+
+   const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => {
+        setIsModalOpen(false);
+        setClosing(false);
+    }, 10);
+  };
 
   // Form state
   const [editingTraining, setEditingTraining] = useState<Training | null>(null);
@@ -139,7 +149,8 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
             </DialogTrigger>
         </div>
 
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className={`sm:max-w-[500px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in ${
+            closing ? styles.modalOut : styles.modalIn}`}>
           <DialogHeader>
             <DialogTitle>{editingTraining ? "Edit Training" : "Add Training"}</DialogTitle>
           </DialogHeader>
@@ -160,7 +171,7 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
             <Button onClick={saveTraining} disabled={loading}>
               {editingTraining ? "Update" : "Add"} Training
             </Button>
-            <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
+            <Button variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
           </DialogFooter>

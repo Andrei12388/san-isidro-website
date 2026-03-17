@@ -59,7 +59,7 @@ export default function MinistryPage({ params }: { params: Promise<{ id: number 
   }, [access_token]);
 
   return (
-    <div className="space-y-8 p-6 mt-10 w-full">
+    <div className="space-y-8  mt-10 w-full">
       <MinistryMembersProvider ministryId={ministryId}>
         <header className="fixed top-0 z-50 w-full bg-background border-b">
           <div className="flex justify-between items-center px-5">
@@ -89,9 +89,10 @@ export default function MinistryPage({ params }: { params: Promise<{ id: number 
             </div>
           </div>
         </header>
-
+        <div className="p-6 flex flex-col gap-4">
         <MinistryMembers ministryId={ministryId} />
          <MinistryTrainings ministryId={ministryId} />
+         </div>
       </MinistryMembersProvider>
     </div>
   );
