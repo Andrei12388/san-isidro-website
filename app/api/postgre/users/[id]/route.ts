@@ -19,14 +19,14 @@ export async function GET(
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, name: true, email: true, createdAt: true, updatedAt: true },
+      select: { id: true, name: true, email: true, createdAt: true, updatedAt: true, role: true },
     });
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
     return NextResponse.json({ data: user }, { status: 200 });
   } catch (error) {
-    console.error("Get user error:", error);
+    console.error("GET user error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -61,7 +61,38 @@ export async function PUT(
 
     return NextResponse.json({ data: updatedUser, message: "User updated successfully" }, { status: 200 });
   } catch (error) {
-    console.error("Update user error:", error);
+    console.error("PUT user error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+// ------------------ PATCH (role only) ------------------
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const userId = parseInt(params.id, 10);
+    const auth = await verifyAuth(req);
+
+    if (!auth || auth.role !== "ADMIN") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { role } = body;
+
+    if (!role) return NextResponse.json({ error: "Role is required" }, { status: 400 });
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: { id: true, name: true, email: true, role: true },
+    });
+
+    return NextResponse.json({ data: updatedUser }, { status: 200 });
+  } catch (error) {
+    console.error("PATCH user error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -82,46 +113,7 @@ export async function DELETE(
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {
-    console.error("Delete user error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
-
-// ------------------ PATCH ------------------
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> } // note Promise
-) {
-  try {
-    // unwrap params
-    const { id } = await params;
-    if (!id) {
-      return NextResponse.json({ error: "Missing user id" }, { status: 400 });
-    }
-
-    const userId = parseInt(id);
-    const currentUser = await verifyAuth(req);
-
-    if (!currentUser || currentUser.role !== "ADMIN") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-
-    const body = await req.json();
-    const { role } = body;
-
-    if (!role) {
-      return NextResponse.json({ error: "Role is required" }, { status: 400 });
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { role },
-      select: { id: true, name: true, email: true, role: true },
-    });
-
-    return NextResponse.json({ data: updatedUser }, { status: 200 });
-  } catch (err) {
-    console.error("PATCH user error:", err);
+    console.error("DELETE user error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
