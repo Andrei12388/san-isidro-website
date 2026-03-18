@@ -21,7 +21,7 @@ interface Member {
 }
 
 export default function MinistryTrainings({ ministryId }: { ministryId: number }) {
-  const { access_token } = useAuth();
+  const { access_token, role } = useAuth();
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [loading, setLoading] = useState(false);
   const { members, refreshMembers } = useMinistryMembers();
@@ -137,6 +137,7 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <div className="flex justify-end mb-4">
             <DialogTrigger asChild>
+              {role === "ADMIN" && 
             <Button
                 onClick={() => {
                 setEditingTraining(null);
@@ -146,10 +147,11 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
             >
                 Add Training
             </Button>
+            }
             </DialogTrigger>
         </div>
 
-        <DialogContent className={`sm:max-w-[500px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in ${
+        <DialogContent className={`sm:max-w-[500px] bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in ${
             closing ? styles.modalOut : styles.modalIn}`}>
           <DialogHeader>
             <DialogTitle>{editingTraining ? "Edit Training" : "Add Training"}</DialogTitle>
@@ -190,6 +192,7 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
                   <div className="font-semibold">{t.title}</div>
                   <div className="text-sm text-muted-foreground">{t.description}</div>
                 </div>
+                 {role === "ADMIN" && 
                 <div className="space-x-2">
                   <Button
                     size="sm"
@@ -207,6 +210,7 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
                     Delete
                   </Button>
                 </div>
+                } 
               </div>
 
               {/* Members Completion */}
@@ -216,9 +220,18 @@ export default function MinistryTrainings({ ministryId }: { ministryId: number }
                   {members.map((m) => {
                     const completion = t.completions?.find((c) => c.member.id === m.id);
                     const isCompleted = completion?.completed || false;
+                    if (role !== "ADMIN" ) return  <Button
+                        key={m.id}
+                        size="xs"
+                        variant={isCompleted ? "default" : "outline"}
+                        
+                      >
+                        {m.user.name} {isCompleted ? "✅" : "❌"}
+                      </Button>
                     return (
                       <Button
                         key={m.id}
+                        className="hover:cursor-pointer"
                         size="xs"
                         variant={isCompleted ? "default" : "outline"}
                         onClick={() => toggleCompletion(t.id, m.id, !isCompleted)}

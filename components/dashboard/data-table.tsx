@@ -26,12 +26,11 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconCircleCheckFilled,
+
   IconDotsVertical,
   IconGripVertical,
   IconLayoutColumns,
-  IconLoader,
-  IconPlus,
+
   IconTrendingUp,
 } from "@tabler/icons-react";
 import {
@@ -105,6 +104,7 @@ import { useRouter } from "next/navigation";
 import "@tanstack/react-table";
 import { useAuth } from "@/context/AuthContext";
 import { AddMemberModal } from "../ui/addMemberModal";
+import {  formatDatetoBirthDay } from "@/lib/formatData";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends unknown> {
@@ -122,6 +122,7 @@ export const memberSchema = z.object({
   email: z.string(),
   age: z.number(),
   gender: z.string(),
+  role: z.enum(["ADMIN", "MEMBER"]),
   phone: z.string(),
   address: z.string(),
   level: z.enum(["disciple", "head", "vine", "cluster"]),
@@ -129,7 +130,16 @@ export const memberSchema = z.object({
   mentor_id: z.number(),
   image: z.string(),
   birthday: z.string().nullable(),
-  ministry: z.string(),
+  // change from single string to array of ministry objects
+  ministries: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      role: z.string().nullable(),
+      status: z.string(),
+      joinedAt: z.date(),
+    })
+  ).optional(), // optional if some users have no ministries
 });
 
 // Create a separate component for the drag handle
@@ -296,19 +306,109 @@ const columns: ColumnDef<z.infer<typeof memberSchema>>[] = [
   },
 
   // Birthday
-  {
-    id: "birthday",
-    accessorKey: "birthday",
-    header: "Birthday",
-    cell: ({ row }) => row.original.birthday || "N/A",
-  },
+ {
+  id: "birthday",
+  accessorKey: "birthday",
+  header: "Birthday",
+  cell: ({ row }) =>
+    row.original.birthday ? formatDatetoBirthDay(row.original.birthday) : "N/A",
+},
+// Ministry Column
+{
+  id: "ministries",
+  header: "Ministries",
+  accessorKey: "ministries",
+  cell: ({ row }) => {
+    const ministries = row.original.ministries ?? [];
 
-  // Ministry
-  {
-    id: "ministry",
-    accessorKey: "ministry",
-    header: "Ministry",
+    return (
+      <div className="w-full">
+        <Select>
+          <SelectTrigger className="w-full">
+            <SelectValue
+              placeholder={
+                ministries.length > 0
+                  ? `${ministries[0].name} (${ministries.length})`
+                  : "None"
+              }
+            />
+          </SelectTrigger>
+
+          <SelectContent>
+            {ministries.length > 0 ? (
+              ministries.map((m) => (
+                <SelectItem key={m.id} value={m.name.toLowerCase()}>
+                  {m.name}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectItem value="none">None</SelectItem>
+            )}
+          </SelectContent>
+        </Select>
+      </div>
+    );
   },
+},
+ {
+  id: "role",
+  accessorKey: "role",
+  header: "User Role",
+  cell: ({ row }) => {
+    const { role: currentUserRole, access_token } = useAuth();
+    const [loading, setLoading] = React.useState(false);
+
+   
+    if (currentUserRole !== "ADMIN") {
+      return (
+        <span className="capitalize text-muted-foreground">
+          {row.original.role || "N/A"}
+        </span>
+      );
+    }
+
+    const handleChange = async (value: string) => {
+      const roleValue = value as "ADMIN" | "MEMBER";
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/postgre/users/${row.original.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({ role: roleValue }),
+        });
+        if (!res.ok) throw new Error("Failed to update role");
+        row.original.role = roleValue; // instant update
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to update role");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <Select
+        value={row.original.role || ""}
+        onValueChange={handleChange}
+        disabled={loading}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select role" />
+        </SelectTrigger>
+        <SelectContent>
+          {["ADMIN", "MEMBER"].map((role) => (
+            <SelectItem key={role} value={role}>
+              {role}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  },
+},
 
   // ✅ ACTION BUTTONS
   {

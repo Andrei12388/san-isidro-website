@@ -72,19 +72,24 @@ export async function GET(request: NextRequest) {
     const userIdParam = request.nextUrl.searchParams.get("userId");
     const targetUserId = userIdParam ? parseInt(userIdParam) : currentUserId;
 
-    const personalInfo = await prisma.personalInformation.findUnique({
-      where: { userId: targetUserId },
-      include: {
-        user: {
-          include: {
-            discipleInformation: true,
-            ministryMemberships: {
-              include: { ministry: true },
+      const personalInfo = await prisma.personalInformation.findUnique({
+        where: { userId: targetUserId },
+        include: {
+          user: {
+            include: {
+              discipleInformation: true,
+              ministryMemberships: {
+                where: {
+                  status: "APPROVED", 
+                },
+                include: {
+                  ministry: true,
+                },
+              },
             },
           },
         },
-      },
-    });
+      });
 
     if (!personalInfo)
       return NextResponse.json({ error: "Personal information not found" }, { status: 404 });

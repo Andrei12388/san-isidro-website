@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -6,6 +7,7 @@ export async function POST(
   req: Request,
   { params }: { params: { trainingId: string } | Promise<{ trainingId: string }> }
 ) {
+  console.log("Completion route hit");
   const { trainingId } = await params;
   const tId = parseInt(trainingId);
 

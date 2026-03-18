@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import styles from "@/components/dashboard/sections/devotions.module.css";
 import { useMinistryMembers } from "@/context/MinistryMemberContext";
 import HoverCard from "@/components/userCard/hoverCard";
+import { useAuth } from "@/context/AuthContext";
 
 interface Completion {
   completed: boolean;
@@ -33,6 +34,7 @@ export default function MinistryMembers({ ministryId }: { ministryId: number }) 
   const [showPendingModal, setShowPendingModal] = useState(false);
   const [closing, setClosing] = useState(false);
   const { members } = useMinistryMembers();
+  const { access_token, role } = useAuth();
 
   const handleClose = () => {
     setClosing(true);
@@ -90,25 +92,6 @@ export default function MinistryMembers({ ministryId }: { ministryId: number }) 
     }
   };
 
-  // Toggle completion for a member's training
-  const toggleCompletion = async (
-    memberId: number,
-    trainingId: number,
-    completed: boolean
-  ) => {
-    try {
-      const res = await fetch(`/api/postgre/trainings/${trainingId}/completion`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ memberId, completed }),
-      });
-      if (!res.ok) throw new Error("Failed to update completion");
-      fetchMembers(); // refetch after completion change
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const pendingMembers = members.filter((m) => m.status === "PENDING");
   const approvedMembers = members.filter((m) => m.status === "APPROVED");
   const rejectedMembers = members.filter((m) => m.status === "REJECTED");
@@ -139,19 +122,24 @@ export default function MinistryMembers({ ministryId }: { ministryId: number }) 
   
           // Find ministry safely
           const currentMinistry = ministries[ministryId - 1]?.name || "Unknown Ministry";
+         
 
   return (
     <div className="border  bg-muted/70 rounded-2xl p-5">
       <h2 className="text-xl font-bold mb-4 text-center"> {loadingMinistries ? "Loading..." : `${currentMinistry} Ministry`}</h2>
       <h2 className="text-xl font-bold mb-4 flex justify-between items-center">
         Members
-        {pendingMembers.length > 0 && (
+        {role === "ADMIN" && (
+          <>
+           {pendingMembers.length > 0 && (
+          
           <button
             className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:cursor-pointer"
             onClick={() => setShowPendingModal(true)}
           >
             Pending ({pendingMembers.length})
           </button>
+    
         )}
         {rejectedMembers.length > 0 && (
           <button
@@ -161,6 +149,9 @@ export default function MinistryMembers({ ministryId }: { ministryId: number }) 
             Rejected ({rejectedMembers.length})
           </button>
         )}
+        </>
+        )}
+       
       </h2>
 
       {loading ? (
@@ -228,7 +219,7 @@ export default function MinistryMembers({ ministryId }: { ministryId: number }) 
           }`}
         >
           <div
-            className={`bg-white rounded p-6 w-96 max-h-[80vh] overflow-y-auto ${
+            className={`bg-muted rounded p-6 w-96 max-h-[80vh] overflow-y-auto ${
               closing ? styles.modalOut : styles.modalIn
             }`}
           >

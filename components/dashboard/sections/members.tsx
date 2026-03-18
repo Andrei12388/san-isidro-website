@@ -38,7 +38,7 @@ const MembersSection = () => {
   useEffect(() => {
     fetchMembers();
   }, []);
-
+  console.log("Members:", members)
   if (loading) {
     return (
       <div className="flex flex-1 flex-row justify-center items-center text-center">

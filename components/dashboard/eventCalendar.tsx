@@ -241,7 +241,7 @@ const handleSave = async () => {
       style={{
         height: "700px",
         margin: "20px",
-        border: "1px solid",
+       
         borderRadius: "8px",
         padding: "10px",
       }}

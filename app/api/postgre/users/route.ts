@@ -15,84 +15,66 @@ export async function GET(request: NextRequest) {
     const skip = Number(request.nextUrl.searchParams.get("skip") ?? 0);
     const take = Number(request.nextUrl.searchParams.get("take") ?? 100);
 
-    const users = await prisma.user.findMany({
-      skip,
-      take,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        createdAt: true,
-        personalInformation: {
-          select: {
-            phone: true,
-            gender: true,
-            profileImage: true,
-            birthday: true,
-            houseNumber: true,
-            barangay: true,
-            city: true,
-            country: true,
-          },
-        },
-        discipleInformation: {
-          select: {
-            level: true,
-            groupName: true,
-            mentorId: true,
-          },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+   const users = await prisma.user.findMany({
+  skip,
+  take,
+  include: {
+    personalInformation: true,
+    discipleInformation: true,
+    ministryMemberships: {
+      where: { status: "APPROVED" },
+      include: { ministry: true },
+    },
+  },
+  orderBy: { createdAt: "desc" },
+});
 
-    const mapped = users.map((u) => {
-      // Construct address from address components
-      const addressParts = [
-        u.personalInformation?.houseNumber,
-        u.personalInformation?.barangay,
-        u.personalInformation?.city,
-        u.personalInformation?.country,
-      ].filter(Boolean);
-      const address = addressParts.length > 0 ? addressParts.join(", ") : "N/A";
+const mapped = users.map((u) => {
+  const addressParts = [
+    u.personalInformation?.houseNumber,
+    u.personalInformation?.barangay,
+    u.personalInformation?.city,
+    u.personalInformation?.country,
+  ].filter(Boolean);
+  const address = addressParts.length > 0 ? addressParts.join(", ") : "N/A";
 
-      function getAge(birthday: Date | null | undefined): number {
-        if (!birthday) return 0;
+  function getAge(birthday: Date | null | undefined): number {
+    if (!birthday) return 0;
+    const today = new Date();
+    let age = today.getFullYear() - birthday.getFullYear();
+    const hasHadBirthdayThisYear =
+      today.getMonth() > birthday.getMonth() ||
+      (today.getMonth() === birthday.getMonth() &&
+        today.getDate() >= birthday.getDate());
+    if (!hasHadBirthdayThisYear) age--;
+    return age;
+  }
 
-        const today = new Date();
-
-        let age = today.getFullYear() - birthday.getFullYear();
-
-        const hasHadBirthdayThisYear =
-          today.getMonth() > birthday.getMonth() ||
-          (today.getMonth() === birthday.getMonth() &&
-            today.getDate() >= birthday.getDate());
-
-        if (!hasHadBirthdayThisYear) age--;
-
-        return age;
-      }
-
-      return {
-        id: u.id,
-        name: u.name,
-        role: u.role,
-        email: u.email,
-        age: getAge(u.personalInformation?.birthday), // ✅ derived
-        gender: u.personalInformation?.gender || "N/A",
-        phone: u.personalInformation?.phone || "N/A",
-        address: address,
-        level: u.discipleInformation?.level || "disciple",
-        group_name: u.discipleInformation?.groupName || "N/A",
-        mentor_id: u.discipleInformation?.mentorId || 0,
-        image: u.personalInformation?.profileImage || "",
-        birthday: u.personalInformation?.birthday
-          ? new Date(u.personalInformation.birthday).toISOString().split("T")[0]
-          : null,
-        ministry: u.discipleInformation?.groupName || "N/A",
-      };
-    });
+  return {
+    id: u.id,
+    name: u.name,
+    role: u.role,
+    email: u.email,
+    age: getAge(u.personalInformation?.birthday),
+    gender: u.personalInformation?.gender || "N/A",
+    phone: u.personalInformation?.phone || "N/A",
+    address,
+    level: u.discipleInformation?.level || "disciple",
+    group_name: u.discipleInformation?.groupName || "N/A",
+    mentor_id: u.discipleInformation?.mentorId || 0,
+    image: u.personalInformation?.profileImage || "",
+    birthday: u.personalInformation?.birthday
+      ? new Date(u.personalInformation.birthday).toISOString().split("T")[0]
+      : null,
+    ministries: u.ministryMemberships?.map((m) => ({
+      id: m.ministry.id,
+      name: m.ministry.name,
+      role: m.role ?? null,
+      status: m.status,
+      joinedAt: m.joinedAt,
+    })) || [],
+  };
+});
 
     return NextResponse.json({ data: mapped }, { status: 200 });
   } catch (error: unknown) {

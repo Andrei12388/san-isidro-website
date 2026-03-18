@@ -78,7 +78,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ onAdded }) => {
          <IconPlus /> Add Member
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[400px] z-500">
+      <DialogContent className="sm:max-w-[400px] z-50 bg-background rounded-lg shadow-lg p-6">
         <DialogHeader>
           <DialogTitle>Add New Member</DialogTitle>
           <DialogDescription>

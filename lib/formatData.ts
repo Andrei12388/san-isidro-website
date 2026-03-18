@@ -9,6 +9,14 @@
     hour12: true,
   });
 
+export const formatDatetoBirthDay = (date:string) =>
+  new Date(date).toLocaleString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour12: true,
+  });
+
 export const formatDateToHours = (date:string) =>
     new Date(date).toLocaleString("en-US", {
     hour: "numeric",
